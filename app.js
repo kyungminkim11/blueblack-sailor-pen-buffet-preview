@@ -111,31 +111,142 @@ function addRing(parent, x, radius, width, material = fixedMetal, name = '') {
   parent.add(ring);
   return ring;
 }
+function curvedNibGeometry() {
+  const rows = [
+    { x: -36.6, width: 0.2, edgeZ: 2.72, crownZ: 2.82 },
+    { x: -35.7, width: 0.55, edgeZ: 2.45, crownZ: 3.05 },
+    { x: -33.8, width: 1.25, edgeZ: 2.05, crownZ: 3.15 },
+    { x: -31.2, width: 2.35, edgeZ: 1.65, crownZ: 3.25 },
+    { x: -27.8, width: 3.65, edgeZ: 1.25, crownZ: 3.35 },
+    { x: -23.8, width: 5.05, edgeZ: 1.05, crownZ: 3.4 },
+    { x: -20.7, width: 4.8, edgeZ: 1.1, crownZ: 3.36 },
+    { x: -18.2, width: 4.25, edgeZ: 1.2, crownZ: 3.28 },
+  ];
+  const columns = 13;
+  const thickness = 0.24;
+  const positions = [];
+  const indices = [];
+  const rowSize = columns;
+  const surfaceSize = rows.length * rowSize;
+
+  const makeZ = (row, v) => {
+    const arch = Math.max(0, 1 - Math.pow(Math.abs(v), 1.75));
+    return row.edgeZ + (row.crownZ - row.edgeZ) * arch;
+  };
+
+  for (const offset of [0, -thickness]) {
+    for (const row of rows) {
+      for (let column = 0; column < columns; column += 1) {
+        const v = column / (columns - 1) * 2 - 1;
+        positions.push(row.x, v * row.width, makeZ(row, v) + offset);
+      }
+    }
+  }
+
+  for (let row = 0; row < rows.length - 1; row += 1) {
+    for (let column = 0; column < columns - 1; column += 1) {
+      const a = row * rowSize + column;
+      const b = (row + 1) * rowSize + column;
+      const c = a + 1;
+      const d = b + 1;
+      indices.push(a, b, c, b, d, c);
+
+      const bottomA = surfaceSize + a;
+      const bottomB = surfaceSize + b;
+      const bottomC = surfaceSize + c;
+      const bottomD = surfaceSize + d;
+      indices.push(bottomA, bottomC, bottomB, bottomB, bottomC, bottomD);
+    }
+  }
+
+  const connectEdge = (topA, topB) => {
+    const bottomA = surfaceSize + topA;
+    const bottomB = surfaceSize + topB;
+    indices.push(topA, bottomA, topB, topB, bottomA, bottomB);
+  };
+
+  for (let row = 0; row < rows.length - 1; row += 1) {
+    connectEdge(row * rowSize, (row + 1) * rowSize);
+    connectEdge((row + 1) * rowSize - 1, (row + 2) * rowSize - 1);
+  }
+  for (let column = 0; column < columns - 1; column += 1) {
+    connectEdge(column + 1, column);
+    const lastRow = (rows.length - 1) * rowSize;
+    connectEdge(lastRow + column, lastRow + column + 1);
+  }
+
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+  geometry.setIndex(indices);
+  geometry.computeVertexNormals();
+  geometry.computeBoundingSphere();
+  return geometry;
+}
 function makeNib() {
-  const shape = new THREE.Shape();
-  shape.moveTo(-36, 0);
-  shape.quadraticCurveTo(-31, 4.5, -20, 5.1);
-  shape.lineTo(-18, 3.8);
-  shape.lineTo(-18, -3.8);
-  shape.lineTo(-20, -5.1);
-  shape.quadraticCurveTo(-31, -4.5, -36, 0);
-  const geometry = new THREE.ExtrudeGeometry(shape, { depth: 0.7, bevelEnabled: true, bevelSize: 0.18, bevelThickness: 0.12, bevelSegments: 2 });
-  geometry.translate(0, 0, -0.35);
-  const nib = new THREE.Mesh(geometry, fixedMetal.clone());
+  const group = new THREE.Group();
+  group.name = 'nib_group';
+
+  const nibMaterial = fixedMetal.clone();
+  nibMaterial.color.set('#d6d9de');
+  nibMaterial.metalness = 0.9;
+  nibMaterial.roughness = 0.14;
+  const nib = new THREE.Mesh(curvedNibGeometry(), nibMaterial);
   nib.name = 'nib';
-  nib.rotation.x = -0.13;
-  nib.position.z = 0.8;
   nib.castShadow = true;
-  const slit = new THREE.Mesh(new THREE.BoxGeometry(11, 0.18, 0.12), darkInset.clone());
+  nib.receiveShadow = true;
+  group.add(nib);
+
+  const slitCurve = new THREE.CatmullRomCurve3([
+    new THREE.Vector3(-36.25, 0, 2.94),
+    new THREE.Vector3(-33.2, 0, 3.22),
+    new THREE.Vector3(-30.1, 0, 3.34),
+    new THREE.Vector3(-27.55, 0, 3.44),
+  ]);
+  const slit = new THREE.Mesh(new THREE.TubeGeometry(slitCurve, 32, 0.055, 6, false), darkInset.clone());
   slit.name = 'nib_slit';
-  slit.position.set(-27.5, 0, 1.18);
-  nib.add(slit);
-  const hole = cylinderAlongX(0.65, 0.18, darkInset.clone(), 40);
-  hole.rotation.set(Math.PI / 2, 0, 0);
-  hole.position.set(-24.2, 0, 1.22);
-  hole.name = 'nib_breather_hole';
-  nib.add(hole);
-  return nib;
+  group.add(slit);
+
+  const breatherHole = new THREE.Mesh(new THREE.CircleGeometry(0.58, 48), darkInset.clone());
+  breatherHole.name = 'nib_breather_hole';
+  breatherHole.position.set(-27.15, 0, 3.46);
+  group.add(breatherHole);
+
+  const tipping = new THREE.Mesh(new THREE.SphereGeometry(0.5, 40, 20), nibMaterial.clone());
+  tipping.name = 'nib_tipping';
+  tipping.position.set(-36.45, 0, 2.78);
+  tipping.scale.set(1.05, 0.46, 0.42);
+  tipping.castShadow = true;
+  group.add(tipping);
+
+  return group;
+}
+function makeFeed() {
+  const group = new THREE.Group();
+  group.name = 'feed_group';
+
+  const core = cylinderAlongX(2.48, 16.4, feedMaterial.clone(), 72);
+  core.position.set(-26.05, -1.12, -0.18);
+  core.name = 'feed';
+  group.add(core);
+
+  const nose = cylinderAlongX(1.7, 4.2, feedMaterial.clone(), 56);
+  nose.position.set(-35.95, -1.12, -0.18);
+  nose.name = 'feed_nose';
+  group.add(nose);
+
+  for (let index = 0; index < 7; index += 1) {
+    const fin = cylinderAlongX(2.72, 0.28, feedMaterial.clone(), 72);
+    fin.position.set(-23.8 + index * 0.78, -1.12, -0.18);
+    fin.name = `feed_fin_${index + 1}`;
+    group.add(fin);
+  }
+
+  const inkChannel = new THREE.Mesh(new THREE.BoxGeometry(10.5, 0.18, 0.16), darkInset.clone());
+  inkChannel.position.set(-29.2, -1.12, 2.36);
+  inkChannel.name = 'feed_ink_channel';
+  group.add(inkChannel);
+
+  return group;
 }
 function makeClip() {
   const group = new THREE.Group();
@@ -174,11 +285,7 @@ function buildPenModel() {
   bodyGroup.add(latheMesh('barrel_end', [[80.5, 6.15], [84, 5.65], [88, 4.42], [90.5, 2.4], [91.4, 0.55]]));
   addRing(bodyGroup, 3.65, 5.65, 0.7, fixedMetal.clone(), 'connector_ring_fixed');
   addRing(bodyGroup, 12.65, 6.78, 0.55, fixedMetal.clone(), 'barrel_ring_fixed');
-  const feed = cylinderAlongX(2.72, 16.5, feedMaterial.clone(), 72);
-  feed.position.x = -26.1;
-  feed.position.y = -1.05;
-  feed.name = 'feed';
-  bodyGroup.add(feed);
+  bodyGroup.add(makeFeed());
   bodyGroup.add(makeNib());
   root.add(bodyGroup);
   const capGroup = new THREE.Group();
