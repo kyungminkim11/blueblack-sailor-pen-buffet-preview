@@ -1,3 +1,6 @@
+import './pwa-v5.js';
+import './store-experience-v5.js';
+
 const STORAGE_KEY = 'blueblack-pen-combination-query';
 const PART_IDS = ['cap_body', 'cap_end', 'nib_grip', 'metal_parts', 'barrel_body', 'barrel_end'];
 
