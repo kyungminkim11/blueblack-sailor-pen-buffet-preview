@@ -3,7 +3,16 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { parts, colors, defaultSelection } from './data.js';
 import { buildPenModel } from './pen-model.js';
 
-const state = { activePartId: parts[0].id, selections: { ...defaultSelection }, viewMode: 'open', autoRotate: true, root: null, capGroup: null, partMeshes: new Map() };
+const state = {
+  activePartId: parts[0].id,
+  selections: { ...defaultSelection },
+  viewMode: 'open',
+  autoRotate: true,
+  root: null,
+  groups: null,
+  partMeshes: new Map(),
+};
+
 const params = new URLSearchParams(location.search);
 for (const part of parts) {
   const value = params.get(part.id);
@@ -20,7 +29,12 @@ const summaryList = document.querySelector('#summary-list');
 const copyFeedback = document.querySelector('#copy-feedback');
 document.querySelector('#loading-progress').textContent = '모델 구성 중';
 
-const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+  preserveDrawingBuffer: true,
+});
 renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
@@ -30,12 +44,13 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 1000);
-camera.position.set(0, 42, 172);
+camera.position.set(0, 46, 188);
+
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.065;
-controls.minDistance = 95;
-controls.maxDistance = 270;
+controls.minDistance = 100;
+controls.maxDistance = 290;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.5;
 controls.target.set(0, 0, 0);
@@ -52,9 +67,12 @@ const rimLight = new THREE.DirectionalLight(0xffebca, 1.35);
 rimLight.position.set(20, -25, -50);
 scene.add(rimLight);
 
-const ground = new THREE.Mesh(new THREE.CircleGeometry(118, 96), new THREE.ShadowMaterial({ color: 0x263548, opacity: 0.13 }));
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(124, 96),
+  new THREE.ShadowMaterial({ color: 0x263548, opacity: 0.13 }),
+);
 ground.rotation.x = -Math.PI / 2;
-ground.position.y = -20;
+ground.position.y = -24;
 ground.receiveShadow = true;
 scene.add(ground);
 
@@ -63,32 +81,58 @@ const materials = {
   darkMetal: new THREE.MeshStandardMaterial({ color: 0x555b63, metalness: 0.65, roughness: 0.25 }),
   feedMaterial: new THREE.MeshStandardMaterial({ color: 0x16181c, roughness: 0.34 }),
   darkInset: new THREE.MeshStandardMaterial({ color: 0x111318, roughness: 0.42 }),
-  customMaterial: () => new THREE.MeshPhysicalMaterial({ color: 0xdce8ee, roughness: 0.16, metalness: 0, clearcoat: 0.65, clearcoatRoughness: 0.14, transparent: true, opacity: 0.46, transmission: 0.12, thickness: 1.1, side: THREE.DoubleSide }),
+  customMaterial: () => new THREE.MeshPhysicalMaterial({
+    color: 0xdce8ee,
+    roughness: 0.16,
+    metalness: 0,
+    clearcoat: 0.65,
+    clearcoatRoughness: 0.14,
+    transparent: true,
+    opacity: 0.46,
+    transmission: 0.12,
+    thickness: 1.1,
+    side: THREE.DoubleSide,
+  }),
 };
 
 function allColorMeshes() {
   return [...state.partMeshes.values()].flat();
 }
 
+function resetGroupTransforms() {
+  if (!state.groups) return;
+  for (const group of Object.values(state.groups)) {
+    group.position.set(0, 0, 0);
+    group.rotation.set(0, 0, 0);
+  }
+}
+
 function updateModelLayout() {
-  if (!state.capGroup) return;
+  if (!state.groups) return;
+  const { capTopGroup, capBodyGroup, sectionGroup, barrelGroup, tailPlugGroup } = state.groups;
+  resetGroupTransforms();
+
   if (state.viewMode === 'open') {
-    state.capGroup.position.set(16, 29, 0);
-    state.capGroup.rotation.x = 0.012;
-    state.root.position.set(-14, -8, 0);
-    camera.position.set(0, 47, 183);
-    controls.minDistance = 105;
-    controls.maxDistance = 275;
-    ground.position.y = -22;
+    capTopGroup.position.set(-8, 30, 0);
+    capBodyGroup.position.set(8, 30, 0);
+    sectionGroup.position.set(-8, -7, 0);
+    barrelGroup.position.set(8, -7, 0);
+    tailPlugGroup.position.set(21, -7, 0);
+    state.root.position.set(-6, -3, 0);
+    camera.position.set(0, 52, 202);
+    controls.minDistance = 115;
+    controls.maxDistance = 310;
+    ground.position.y = -28;
   } else {
-    state.capGroup.position.set(22.2, 0, 0);
-    state.capGroup.rotation.x = 0;
+    capTopGroup.position.set(22.2, 0, 0);
+    capBodyGroup.position.set(22.2, 0, 0);
     state.root.position.set(-8, 0, 0);
-    camera.position.set(0, 28, 177);
+    camera.position.set(0, 28, 180);
     controls.minDistance = 95;
-    controls.maxDistance = 240;
+    controls.maxDistance = 245;
     ground.position.y = -13;
   }
+
   controls.target.set(0, 0, 0);
   controls.update();
 }
@@ -118,7 +162,9 @@ function applyAllColors() {
   for (const part of parts) {
     const color = getColor(state.selections[part.id]);
     const meshes = state.partMeshes.get(part.id) ?? [];
-    for (const mesh of meshes) applyMaterial(mesh, color, state.activePartId === part.id);
+    for (const mesh of meshes) {
+      applyMaterial(mesh, color, state.activePartId === part.id);
+    }
   }
 }
 
@@ -215,7 +261,7 @@ function showFeedback(message) {
 try {
   const model = buildPenModel(materials);
   state.root = model.root;
-  state.capGroup = model.capGroup;
+  state.groups = model.groups;
   state.partMeshes = model.partMeshes;
   scene.add(state.root);
   updateModelLayout();
