@@ -1,3 +1,5 @@
+import './ui-enhancements.js';
+
 export const parts = [
   { id: 'cap_body', nameKo: '캡', nameEn: 'CAP', description: '클립과 캡 밴드가 장착되는 캡 본체입니다.', colorGroup: 'resin' },
   { id: 'cap_end', nameKo: '캡앤드', nameEn: 'CAP END', description: '캡 끝을 마감하는 독립 파츠입니다.', colorGroup: 'resin' },
@@ -18,7 +20,6 @@ export const colors = [
   { id: 'yellow', code: 'YL', nameKo: '옐로', nameEn: 'Yellow', hex: '#d9b84d', group: 'resin', transparent: true, opacity: 0.7, isNew: false, market: 'KR' },
   { id: 'pink', code: 'PK', nameKo: '핑크', nameEn: 'Pink', hex: '#d89aad', group: 'resin', transparent: true, opacity: 0.66, isNew: false, market: 'KR' },
   { id: 'red', code: 'RD', nameKo: '레드', nameEn: 'Red', hex: '#a64649', group: 'resin', transparent: true, opacity: 0.78, isNew: false, market: 'KR' },
-
   { id: 'skeleton-flower', code: 'SF', nameKo: '스켈레톤 플라워', nameEn: 'Skeleton Flower', hex: '#e1e1ec', group: 'resin', transparent: true, opacity: 0.44, isNew: true, availableFrom: '2026-06-15', market: 'KR' },
   { id: 'rabbit', code: 'RB', nameKo: '래빗', nameEn: 'Rabbit', hex: '#bcafaf', group: 'resin', transparent: true, opacity: 0.62, isNew: true, availableFrom: '2026-06-15', market: 'KR' },
   { id: 'sakuramochi', code: 'SM', nameKo: '사쿠라모찌', nameEn: 'Sakuramochi', hex: '#e5bdc8', group: 'resin', transparent: true, opacity: 0.58, isNew: true, availableFrom: '2026-06-15', market: 'KR' },
@@ -29,7 +30,6 @@ export const colors = [
   { id: 'sapphire', code: 'SP', nameKo: '사파이어', nameEn: 'Sapphire', hex: '#325ca6', group: 'resin', transparent: true, opacity: 0.82, isNew: true, availableFrom: '2026-06-15', market: 'KR' },
   { id: 'akebia', code: 'AK', nameKo: '아케비아', nameEn: 'Akebia', hex: '#6f6581', group: 'resin', transparent: true, opacity: 0.76, isNew: true, availableFrom: '2026-06-15', market: 'KR' },
   { id: 'wolf', code: 'WF', nameKo: '울프', nameEn: 'Wolf', hex: '#68615e', group: 'resin', transparent: true, opacity: 0.8, isNew: true, availableFrom: '2026-06-15', market: 'KR' },
-
   { id: 'silver', code: 'SV', nameKo: '실버', nameEn: 'Silver', hex: '#c8ccd1', group: 'metal', metalness: 0.92, roughness: 0.18, isNew: false, market: 'KR' },
   { id: 'gold', code: 'GD', nameKo: '골드', nameEn: 'Gold', hex: '#d2ae62', group: 'metal', metalness: 0.9, roughness: 0.2, isNew: false, market: 'KR' },
 ];
