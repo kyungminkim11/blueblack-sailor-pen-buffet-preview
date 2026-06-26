@@ -1,57 +1,4 @@
-const style = document.createElement('style');
-style.textContent = `
-  .swatch-grid.is-grouped { display: grid; grid-template-columns: 1fr; gap: 18px; }
-  .color-section { display: grid; gap: 10px; }
-  .color-section + .color-section { padding-top: 4px; }
-  .color-section-title { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 8px; border-bottom: 1px solid #e6e9ee; color: #344055; font-size: 12px; font-weight: 900; }
-  .color-section-title small { color: #7b8798; font-size: 10px; font-weight: 700; }
-  .color-section-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px 8px; }
-  .swatch-button { position: relative; min-height: 72px; }
-  .swatch-button > span:last-of-type { max-width: 68px; line-height: 1.25; text-align: center; word-break: keep-all; }
-  .new-badge { position: absolute; top: -5px; right: 0; padding: 2px 5px; border-radius: 999px; background: #b83d54; color: #fff; font-size: 8px; font-weight: 900; letter-spacing: .05em; box-shadow: 0 2px 6px rgba(184,61,84,.24); }
-  .palette-note { margin: 0; padding: 10px 12px; border: 1px solid #e8dfcf; border-radius: 12px; background: #f7f3eb; color: #6f6250; font-size: 11px; line-height: 1.5; }
-  .converter-notice { margin: 0 0 28px; padding: 14px 16px; border: 1px solid #d8e1ec; border-radius: 14px; background: #f5f8fc; color: #425069; font-size: 13px; line-height: 1.6; }
-  .converter-notice strong { color: #10233f; }
-  .selected-color-bar { position: sticky; bottom: 10px; z-index: 4; background: #fff; box-shadow: 0 8px 24px rgba(16,35,63,.09); }
-  @media (max-width: 640px) {
-    .color-section-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px 5px; }
-    .swatch-button { min-height: 68px; }
-    .converter-notice { margin-bottom: 22px; font-size: 12px; }
-  }
-`;
-document.head.appendChild(style);
-
-function updateStaticCopy() {
-  const header = document.querySelector('.header-copy');
-  if (header) header.textContent = '캡·캡앤드·닙그립·메탈파츠·배럴·배럴앤드 6개 파츠와 총 20가지 수지 색상을 조합해보세요.';
-
-  const status = document.querySelector('.status-pill');
-  if (status?.lastChild) status.lastChild.textContent = ' 한국 매장 상담용';
-
-  const guide = document.querySelector('.guide-grid li span');
-  if (guide) guide.innerHTML = '<b>파츠 선택</b>6개 파츠와 20가지 색상을 선택';
-
-  const footer = document.querySelector('footer span');
-  if (footer) footer.textContent = '블루블랙 펜샵의 실제 6개 파츠 구성과 한국 판매 색상표를 기준으로 한 매장 상담용 중립 3D 모델입니다.';
-
-  const guideSection = document.querySelector('.guide-section');
-  if (guideSection && !document.querySelector('.converter-notice')) {
-    const notice = document.createElement('p');
-    notice.className = 'converter-notice';
-    notice.innerHTML = '<strong>안내</strong> · 잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않으며 별도 구매 상품입니다. 3D 화면의 내부 컨버터는 구조 이해를 돕기 위한 참고 표현입니다.';
-    guideSection.insertAdjacentElement('afterend', notice);
-  }
-}
-
-function addNewBadges(buttons) {
-  buttons.slice(10).forEach((button) => {
-    if (button.querySelector('.new-badge')) return;
-    const badge = document.createElement('small');
-    badge.className = 'new-badge';
-    badge.textContent = 'NEW';
-    button.appendChild(badge);
-  });
-}
+let paletteObserver;
 
 function makeSection(title, caption, buttons) {
   const section = document.createElement('section');
@@ -68,7 +15,20 @@ function makeSection(title, caption, buttons) {
   return section;
 }
 
-function groupPalette() {
+function renderConverterNotice(t) {
+  const guideSection = document.querySelector('.guide-section');
+  if (!guideSection) return;
+
+  let notice = document.querySelector('.converter-notice');
+  if (!notice) {
+    notice = document.createElement('p');
+    notice.className = 'converter-notice';
+    guideSection.insertAdjacentElement('afterend', notice);
+  }
+  notice.innerHTML = `<strong>${t('converter.label')}</strong> · ${t('converter.copy')}`;
+}
+
+function groupPalette(t) {
   const grid = document.querySelector('#swatch-grid');
   if (!grid || grid.dataset.enhancing === 'true') return;
 
@@ -78,15 +38,17 @@ function groupPalette() {
   grid.dataset.enhancing = 'true';
   try {
     if (directButtons.length === 20) {
-      addNewBadges(directButtons);
       const note = document.createElement('p');
       note.className = 'palette-note';
-      note.textContent = '화면 색상은 조명과 디스플레이 환경에 따라 실제 반투명 파츠와 다르게 보일 수 있습니다.';
+      note.textContent = t('palette.note');
       grid.replaceChildren(
-        makeSection('기존 색상', '10가지', directButtons.slice(0, 10)),
-        makeSection('신규 색상', '2026.06.15 · 10가지', directButtons.slice(10)),
+        makeSection(t('palette.existing'), t('palette.ten'), directButtons.slice(0, 10)),
+        makeSection(t('palette.new'), t('palette.newCaption'), directButtons.slice(10)),
         note,
       );
+      grid.classList.add('is-grouped');
+    } else if (directButtons.length === 2) {
+      grid.replaceChildren(makeSection(t('palette.metal'), t('palette.two'), directButtons));
       grid.classList.add('is-grouped');
     } else {
       grid.classList.remove('is-grouped');
@@ -96,8 +58,20 @@ function groupPalette() {
   }
 }
 
-updateStaticCopy();
-const observer = new MutationObserver(() => queueMicrotask(groupPalette));
-const palette = document.querySelector('#swatch-grid');
-if (palette) observer.observe(palette, { childList: true });
-queueMicrotask(groupPalette);
+export function initUiEnhancements(t) {
+  renderConverterNotice(t);
+
+  const palette = document.querySelector('#swatch-grid');
+  if (palette) {
+    paletteObserver?.disconnect();
+    paletteObserver = new MutationObserver(() => queueMicrotask(() => groupPalette(t)));
+    paletteObserver.observe(palette, { childList: true });
+  }
+
+  queueMicrotask(() => groupPalette(t));
+}
+
+export function refreshUiEnhancements(t) {
+  renderConverterNotice(t);
+  queueMicrotask(() => groupPalette(t));
+}
