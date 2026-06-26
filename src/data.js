@@ -1,4 +1,5 @@
 import './ui-enhancements.js';
+import './store-guide.js';
 
 export const parts = [
   { id: 'cap_body', nameKo: '캡', nameEn: 'CAP', description: '클립과 캡 밴드가 장착되는 캡 본체입니다.', colorGroup: 'resin' },
