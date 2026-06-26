@@ -10,10 +10,13 @@ style.textContent = `
   .swatch-button > span:last-of-type { max-width: 68px; line-height: 1.25; text-align: center; word-break: keep-all; }
   .new-badge { position: absolute; top: -5px; right: 0; padding: 2px 5px; border-radius: 999px; background: #b83d54; color: #fff; font-size: 8px; font-weight: 900; letter-spacing: .05em; box-shadow: 0 2px 6px rgba(184,61,84,.24); }
   .palette-note { margin: 0; padding: 10px 12px; border: 1px solid #e8dfcf; border-radius: 12px; background: #f7f3eb; color: #6f6250; font-size: 11px; line-height: 1.5; }
+  .converter-notice { margin: 0 0 28px; padding: 14px 16px; border: 1px solid #d8e1ec; border-radius: 14px; background: #f5f8fc; color: #425069; font-size: 13px; line-height: 1.6; }
+  .converter-notice strong { color: #10233f; }
   .selected-color-bar { position: sticky; bottom: 10px; z-index: 4; background: #fff; box-shadow: 0 8px 24px rgba(16,35,63,.09); }
   @media (max-width: 640px) {
     .color-section-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 13px 5px; }
     .swatch-button { min-height: 68px; }
+    .converter-notice { margin-bottom: 22px; font-size: 12px; }
   }
 `;
 document.head.appendChild(style);
@@ -30,6 +33,14 @@ function updateStaticCopy() {
 
   const footer = document.querySelector('footer span');
   if (footer) footer.textContent = '블루블랙 펜샵의 실제 6개 파츠 구성과 한국 판매 색상표를 기준으로 한 매장 상담용 중립 3D 모델입니다.';
+
+  const guideSection = document.querySelector('.guide-section');
+  if (guideSection && !document.querySelector('.converter-notice')) {
+    const notice = document.createElement('p');
+    notice.className = 'converter-notice';
+    notice.innerHTML = '<strong>안내</strong> · 잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않으며 별도 구매 상품입니다. 3D 화면의 내부 컨버터는 구조 이해를 돕기 위한 참고 표현입니다.';
+    guideSection.insertAdjacentElement('afterend', notice);
+  }
 }
 
 function addNewBadges(buttons) {
