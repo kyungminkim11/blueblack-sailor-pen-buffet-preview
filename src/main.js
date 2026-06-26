@@ -3,38 +3,419 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { parts, colors, defaultSelection } from './data.js';
 import { buildPenModel } from './pen-model.js';
+import {
+  getLanguage,
+  initI18n,
+  localizeColor,
+  localizePart,
+  t,
+} from './i18n.js';
+import { initUiEnhancements, refreshUiEnhancements } from './ui-enhancements.js';
+import { renderStoreGuide } from './store-guide.js';
 
-const state={activePartId:parts[0].id,selections:{...defaultSelection},viewMode:'open',autoRotate:true,root:null,groups:null,partMeshes:new Map()};
-const params=new URLSearchParams(location.search);const legacy={cap_end:'cap_top',nib_grip:'grip_section'};
-for(const part of parts){const value=params.get(part.id)??params.get(legacy[part.id]);if(colors.some(c=>c.id===value&&c.group===part.colorGroup))state.selections[part.id]=value;}
-const $=s=>document.querySelector(s),canvas=$('#pen-canvas'),wrap=$('#canvas-wrap'),loading=$('#loading-panel'),errorPanel=$('#model-error'),tabs=$('#part-tabs'),swatches=$('#swatch-grid'),summary=$('#summary-list'),feedback=$('#copy-feedback');
-$('#loading-progress').textContent='모델 구성 중';
-const renderer=new THREE.WebGLRenderer({canvas,antialias:true,alpha:true,preserveDrawingBuffer:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;renderer.shadowMap.enabled=true;renderer.shadowMap.type=THREE.PCFSoftShadowMap;
-const scene=new THREE.Scene(),camera=new THREE.PerspectiveCamera(31,1,.1,1000);camera.position.set(0,46,188);
-const pmrem=new THREE.PMREMGenerator(renderer);const room=new RoomEnvironment();scene.environment=pmrem.fromScene(room,.04).texture;room.dispose();pmrem.dispose();
-const controls=new OrbitControls(camera,canvas);controls.enableDamping=true;controls.dampingFactor=.065;controls.minDistance=100;controls.maxDistance=290;controls.autoRotate=true;controls.autoRotateSpeed=.5;
-scene.add(new THREE.HemisphereLight(0xffffff,0x8e9aaa,2.05));for(const [color,intensity,pos] of [[0xffffff,3.1,[45,70,85]],[0xc6dbff,1.45,[-55,18,50]],[0xffebca,1.2,[20,-25,-50]]]){const light=new THREE.DirectionalLight(color,intensity);light.position.set(...pos);scene.add(light);}
-const ground=new THREE.Mesh(new THREE.CircleGeometry(124,96),new THREE.ShadowMaterial({color:0x263548,opacity:.11}));ground.rotation.x=-Math.PI/2;ground.position.y=-24;ground.receiveShadow=true;scene.add(ground);
-const materials={fixedMetal:new THREE.MeshStandardMaterial({color:0xc8ccd1,metalness:.92,roughness:.18,envMapIntensity:1.15}),darkMetal:new THREE.MeshStandardMaterial({color:0x555b63,metalness:.65,roughness:.25}),feedMaterial:new THREE.MeshStandardMaterial({color:0x16181c,roughness:.34}),darkInset:new THREE.MeshStandardMaterial({color:0x111318,roughness:.42}),customMaterial:()=>new THREE.MeshPhysicalMaterial({color:0xdce8ee,roughness:.12,metalness:0,clearcoat:.68,clearcoatRoughness:.08,transparent:true,opacity:1,transmission:.45,thickness:1.2,ior:1.47,attenuationDistance:1.2,attenuationColor:new THREE.Color('#dce8ee'),envMapIntensity:1.1,side:THREE.FrontSide})};
-const getColor=id=>colors.find(c=>c.id===id)??colors[0],allMeshes=()=>[...state.partMeshes.values()].flat();
-function resetGroups(){if(!state.groups)return;for(const g of Object.values(state.groups)){g.position.set(0,0,0);g.rotation.set(0,0,0);}}
-function layout(){if(!state.groups)return;const{capEndGroup,capBodyGroup,nibGripGroup,barrelGroup,barrelEndGroup}=state.groups;resetGroups();if(state.viewMode==='open'){capEndGroup.position.set(-8,30,0);capBodyGroup.position.set(8,30,0);nibGripGroup.position.set(-8,-7,0);barrelGroup.position.set(8,-7,0);barrelEndGroup.position.set(21,-7,0);state.root.position.set(-6,-3,0);camera.position.set(0,52,202);ground.position.y=-28;}else{capEndGroup.position.set(22.2,0,0);capBodyGroup.position.set(22.2,0,0);state.root.position.set(-8,0,0);camera.position.set(0,28,180);ground.position.y=-13;}controls.target.set(0,0,0);controls.update();}
-function paint(mesh,color,active,isMetal){const m=mesh.material;if(isMetal){m.color.set(color.hex);m.metalness=color.metalness??.9;m.roughness=color.roughness??.2;m.clearcoat=.18;m.clearcoatRoughness=.2;m.transparent=false;m.opacity=1;m.transmission=0;m.depthWrite=true;m.side=THREE.FrontSide;m.envMapIntensity=1.2;}else{const surfaceColor=new THREE.Color(color.hex);m.color.copy(surfaceColor);m.metalness=0;m.roughness=color.roughness??.12;m.clearcoat=.68;m.clearcoatRoughness=.08;m.transparent=true;m.opacity=1;m.transmission=color.transmission??.45;m.thickness=color.thickness??1.2;m.ior=1.47;m.attenuationColor.copy(surfaceColor);m.attenuationDistance=color.attenuationDistance??1.2;m.specularIntensity=.72;m.envMapIntensity=1.05;m.depthWrite=true;m.side=THREE.FrontSide;}m.emissive=new THREE.Color(active?color.hex:'#000000');m.emissiveIntensity=active?.025:0;m.needsUpdate=true;}
-function applyColors(){for(const part of parts){const color=getColor(state.selections[part.id]);for(const mesh of state.partMeshes.get(part.id)??[])paint(mesh,color,state.activePartId===part.id,part.colorGroup==='metal');}}
-function saveQuery(){const q=new URLSearchParams();for(const p of parts)q.set(p.id,state.selections[p.id]);history.replaceState(null,'',`${location.pathname}?${q}`);}
-const code=()=>`BB-SAILOR-${parts.map(p=>getColor(state.selections[p.id]).code).join('-')}`;
-function selectPart(id){state.activePartId=id;applyColors();render();}
-function renderTabs(){tabs.replaceChildren(...parts.map((p,i)=>{const b=document.createElement('button');b.type='button';b.className='part-tab';b.role='tab';b.textContent=`${i+1}. ${p.nameKo}`;b.setAttribute('aria-selected',String(state.activePartId===p.id));b.onclick=()=>selectPart(p.id);return b;}));}
-function renderSwatches(){const part=parts.find(p=>p.id===state.activePartId),active=state.selections[part.id],list=colors.filter(c=>c.group===part.colorGroup);swatches.replaceChildren(...list.map(c=>{const b=document.createElement('button');b.type='button';b.className='swatch-button';b.role='radio';b.setAttribute('aria-checked',String(active===c.id));b.setAttribute('aria-label',`${c.nameKo} 선택${c.isNew?' 신규 색상':''}`);b.innerHTML=`<span class="swatch-circle${c.transparent?' transparent':''}" style="background:${c.hex}"></span><span>${c.nameKo}</span>${c.isNew?'<small class="new-badge">NEW</small>':''}`;b.onclick=()=>{state.selections[part.id]=c.id;saveQuery();applyColors();render();};return b;}));}
-function renderSummary(){summary.replaceChildren(...parts.map(p=>{const c=getColor(state.selections[p.id]),d=document.createElement('div');d.className='summary-item';d.innerHTML=`<span class="summary-dot" style="background:${c.hex}"></span><div><small>${p.nameKo}</small><b>${c.nameKo}${c.isNew?' · NEW':''}</b></div>`;return d;}));$('#combination-code').textContent=code();}
-function render(){const i=parts.findIndex(p=>p.id===state.activePartId),p=parts[i],c=getColor(state.selections[p.id]);$('#progress-text').textContent=`${i+1} / ${parts.length}`;$('#part-name-en').textContent=p.nameEn;$('#part-name-ko').textContent=p.nameKo;$('#part-description').textContent=p.description;$('#selected-color-name').textContent=`${c.nameKo} · ${c.nameEn}${c.isNew?' · NEW':''}`;$('#selected-color-dot').style.background=c.hex;renderTabs();renderSwatches();renderSummary();}
-function resize(){const w=wrap.clientWidth,h=wrap.clientHeight;renderer.setSize(w,h,false);camera.aspect=w/h;camera.updateProjectionMatrix();}
-function toast(msg){feedback.textContent=msg;setTimeout(()=>{if(feedback.textContent===msg)feedback.textContent='';},2600);}
-try{const model=buildPenModel(materials);state.root=model.root;state.groups=model.groups;state.partMeshes=model.partMeshes;scene.add(state.root);layout();applyColors();loading.hidden=true;}catch(e){console.error(e);loading.hidden=true;errorPanel.hidden=false;}
-new ResizeObserver(resize).observe(wrap);const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();canvas.addEventListener('pointerup',e=>{if(!state.root||e.pointerType==='touch')return;const r=canvas.getBoundingClientRect();pointer.x=(e.clientX-r.left)/r.width*2-1;pointer.y=-(e.clientY-r.top)/r.height*2+1;raycaster.setFromCamera(pointer,camera);const id=raycaster.intersectObjects(allMeshes(),false)[0]?.object?.userData?.partId;if(id)selectPart(id);});
-$('#toggle-rotate').onclick=e=>{state.autoRotate=!state.autoRotate;e.currentTarget.textContent=`자동 회전 ${state.autoRotate?'켬':'끔'}`;};
-$('#toggle-view').onclick=e=>{state.viewMode=state.viewMode==='open'?'closed':'open';e.currentTarget.textContent=state.viewMode==='open'?'완성 상태 보기':'파츠 분리 보기';$('#view-title').textContent=state.viewMode==='open'?'파츠 분리 보기':'완성 상태 보기';layout();};
-$('#copy-link').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);toast('조합 링크를 복사했습니다.');}catch{toast('주소창의 링크를 직접 복사해 주세요.');}};
-$('#save-image').onclick=()=>{renderer.render(scene,camera);canvas.toBlob(blob=>{if(!blob)return;const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`${code()}.png`;a.click();URL.revokeObjectURL(a.href);toast('현재 3D 화면을 이미지로 저장했습니다.');},'image/png');};
-$('#reset-combination').onclick=()=>{state.selections={...defaultSelection};state.activePartId=parts[0].id;saveQuery();applyColors();render();toast('기본 조합으로 초기화했습니다.');};
-render();resize();(function animate(){controls.autoRotate=state.autoRotate;controls.update();renderer.render(scene,camera);requestAnimationFrame(animate);})();
+initI18n();
+
+const state = {
+  activePartId: parts[0].id,
+  selections: { ...defaultSelection },
+  viewMode: 'open',
+  autoRotate: true,
+  root: null,
+  groups: null,
+  partMeshes: new Map(),
+};
+
+const initialParams = new URLSearchParams(location.search);
+const legacyKeys = { cap_end: 'cap_top', nib_grip: 'grip_section' };
+for (const part of parts) {
+  const value = initialParams.get(part.id) ?? initialParams.get(legacyKeys[part.id]);
+  if (colors.some((color) => color.id === value && color.group === part.colorGroup)) {
+    state.selections[part.id] = value;
+  }
+}
+
+const $ = (selector) => document.querySelector(selector);
+const canvas = $('#pen-canvas');
+const canvasWrap = $('#canvas-wrap');
+const loadingPanel = $('#loading-panel');
+const modelError = $('#model-error');
+const partTabs = $('#part-tabs');
+const swatchGrid = $('#swatch-grid');
+const summaryList = $('#summary-list');
+const copyFeedback = $('#copy-feedback');
+
+const renderer = new THREE.WebGLRenderer({
+  canvas,
+  antialias: true,
+  alpha: true,
+  preserveDrawingBuffer: true,
+});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
+renderer.toneMappingExposure = 1;
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 1000);
+camera.position.set(0, 46, 188);
+
+const pmrem = new THREE.PMREMGenerator(renderer);
+const room = new RoomEnvironment();
+scene.environment = pmrem.fromScene(room, 0.04).texture;
+room.dispose();
+pmrem.dispose();
+
+const controls = new OrbitControls(camera, canvas);
+controls.enableDamping = true;
+controls.dampingFactor = 0.065;
+controls.minDistance = 100;
+controls.maxDistance = 290;
+controls.autoRotate = true;
+controls.autoRotateSpeed = 0.5;
+
+scene.add(new THREE.HemisphereLight(0xffffff, 0x8e9aaa, 2.05));
+for (const [color, intensity, position] of [
+  [0xffffff, 3.1, [45, 70, 85]],
+  [0xc6dbff, 1.45, [-55, 18, 50]],
+  [0xffebca, 1.2, [20, -25, -50]],
+]) {
+  const light = new THREE.DirectionalLight(color, intensity);
+  light.position.set(...position);
+  scene.add(light);
+}
+
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(124, 96),
+  new THREE.ShadowMaterial({ color: 0x263548, opacity: 0.11 }),
+);
+ground.rotation.x = -Math.PI / 2;
+ground.position.y = -24;
+ground.receiveShadow = true;
+scene.add(ground);
+
+const materials = {
+  fixedMetal: new THREE.MeshStandardMaterial({
+    color: 0xc8ccd1,
+    metalness: 0.92,
+    roughness: 0.18,
+    envMapIntensity: 1.15,
+  }),
+  darkMetal: new THREE.MeshStandardMaterial({ color: 0x555b63, metalness: 0.65, roughness: 0.25 }),
+  feedMaterial: new THREE.MeshStandardMaterial({ color: 0x16181c, roughness: 0.34 }),
+  darkInset: new THREE.MeshStandardMaterial({ color: 0x111318, roughness: 0.42 }),
+  customMaterial: () => new THREE.MeshPhysicalMaterial({
+    color: 0xdce8ee,
+    roughness: 0.12,
+    metalness: 0,
+    clearcoat: 0.68,
+    clearcoatRoughness: 0.08,
+    transparent: true,
+    opacity: 1,
+    transmission: 0.45,
+    thickness: 1.2,
+    ior: 1.47,
+    attenuationDistance: 1.2,
+    attenuationColor: new THREE.Color('#dce8ee'),
+    envMapIntensity: 1.1,
+    side: THREE.FrontSide,
+  }),
+};
+
+function getColor(colorId) {
+  return colors.find((color) => color.id === colorId) ?? colors[0];
+}
+
+function allSelectableMeshes() {
+  return [...state.partMeshes.values()].flat();
+}
+
+function resetGroupTransforms() {
+  if (!state.groups) return;
+  for (const group of Object.values(state.groups)) {
+    group.position.set(0, 0, 0);
+    group.rotation.set(0, 0, 0);
+  }
+}
+
+function updateModelLayout() {
+  if (!state.groups) return;
+  const { capEndGroup, capBodyGroup, nibGripGroup, barrelGroup, barrelEndGroup } = state.groups;
+  resetGroupTransforms();
+
+  if (state.viewMode === 'open') {
+    capEndGroup.position.set(-8, 30, 0);
+    capBodyGroup.position.set(8, 30, 0);
+    nibGripGroup.position.set(-8, -7, 0);
+    barrelGroup.position.set(8, -7, 0);
+    barrelEndGroup.position.set(21, -7, 0);
+    state.root.position.set(-6, -3, 0);
+    camera.position.set(0, 52, 202);
+    ground.position.y = -28;
+  } else {
+    capEndGroup.position.set(22.2, 0, 0);
+    capBodyGroup.position.set(22.2, 0, 0);
+    state.root.position.set(-8, 0, 0);
+    camera.position.set(0, 28, 180);
+    ground.position.y = -13;
+  }
+
+  controls.target.set(0, 0, 0);
+  controls.update();
+  updateViewerLabels();
+}
+
+function paintMesh(mesh, color, active, isMetal) {
+  const material = mesh.material;
+
+  if (isMetal) {
+    material.color.set(color.hex);
+    material.metalness = color.metalness ?? 0.9;
+    material.roughness = color.roughness ?? 0.2;
+    material.clearcoat = 0.18;
+    material.clearcoatRoughness = 0.2;
+    material.transparent = false;
+    material.opacity = 1;
+    material.transmission = 0;
+    material.depthWrite = true;
+    material.side = THREE.FrontSide;
+    material.envMapIntensity = 1.2;
+  } else {
+    const surfaceColor = new THREE.Color(color.hex);
+    material.color.copy(surfaceColor);
+    material.metalness = 0;
+    material.roughness = color.roughness ?? 0.12;
+    material.clearcoat = 0.68;
+    material.clearcoatRoughness = 0.08;
+    material.transparent = true;
+    material.opacity = 1;
+    material.transmission = color.transmission ?? 0.45;
+    material.thickness = color.thickness ?? 1.2;
+    material.ior = 1.47;
+    material.attenuationColor.copy(surfaceColor);
+    material.attenuationDistance = color.attenuationDistance ?? 1.2;
+    material.specularIntensity = 0.72;
+    material.envMapIntensity = 1.05;
+    material.depthWrite = true;
+    material.side = THREE.FrontSide;
+  }
+
+  material.emissive = new THREE.Color(active ? color.hex : '#000000');
+  material.emissiveIntensity = active ? 0.025 : 0;
+  material.needsUpdate = true;
+}
+
+function applyAllColors() {
+  for (const part of parts) {
+    const color = getColor(state.selections[part.id]);
+    for (const mesh of state.partMeshes.get(part.id) ?? []) {
+      paintMesh(mesh, color, state.activePartId === part.id, part.colorGroup === 'metal');
+    }
+  }
+}
+
+function saveQueryString() {
+  const query = new URLSearchParams(location.search);
+  query.set('lang', getLanguage());
+  for (const part of parts) query.set(part.id, state.selections[part.id]);
+  history.replaceState(null, '', `${location.pathname}?${query.toString()}`);
+}
+
+function combinationCode() {
+  return `BB-SAILOR-${parts.map((part) => getColor(state.selections[part.id]).code).join('-')}`;
+}
+
+function selectPart(partId) {
+  state.activePartId = partId;
+  applyAllColors();
+  renderControls();
+}
+
+function renderPartTabs() {
+  partTabs.replaceChildren(...parts.map((part, index) => {
+    const localized = localizePart(part);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'part-tab';
+    button.role = 'tab';
+    button.textContent = `${index + 1}. ${localized.name}`;
+    button.setAttribute('aria-selected', String(state.activePartId === part.id));
+    button.addEventListener('click', () => selectPart(part.id));
+    return button;
+  }));
+}
+
+function renderSwatches() {
+  const activePart = parts.find((part) => part.id === state.activePartId);
+  const activeColorId = state.selections[activePart.id];
+  const availableColors = colors.filter((color) => color.group === activePart.colorGroup);
+
+  swatchGrid.replaceChildren(...availableColors.map((color) => {
+    const colorName = localizeColor(color);
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'swatch-button';
+    button.role = 'radio';
+    button.setAttribute('aria-checked', String(activeColorId === color.id));
+    button.setAttribute('aria-label', `${colorName}${color.isNew ? ` · ${t('badge.new')}` : ''}`);
+    button.innerHTML = `
+      <span class="swatch-circle${color.transparent ? ' transparent' : ''}" style="background:${color.hex}"></span>
+      <span>${colorName}</span>
+      ${color.isNew ? `<small class="new-badge">${t('badge.new')}</small>` : ''}
+    `;
+    button.addEventListener('click', () => {
+      state.selections[activePart.id] = color.id;
+      saveQueryString();
+      applyAllColors();
+      renderControls();
+    });
+    return button;
+  }));
+}
+
+function renderSummary() {
+  summaryList.replaceChildren(...parts.map((part) => {
+    const localized = localizePart(part);
+    const color = getColor(state.selections[part.id]);
+    const item = document.createElement('div');
+    item.className = 'summary-item';
+    item.innerHTML = `
+      <span class="summary-dot" style="background:${color.hex}"></span>
+      <div><small>${localized.name}</small><b>${localizeColor(color)}${color.isNew ? ` · ${t('badge.new')}` : ''}</b></div>
+    `;
+    return item;
+  }));
+  $('#combination-code').textContent = combinationCode();
+}
+
+function renderControls() {
+  const activeIndex = parts.findIndex((part) => part.id === state.activePartId);
+  const part = parts[activeIndex];
+  const localized = localizePart(part);
+  const color = getColor(state.selections[part.id]);
+
+  $('#progress-text').textContent = `${activeIndex + 1} / ${parts.length}`;
+  $('#part-name-en').textContent = part.nameEn.toUpperCase();
+  $('#part-name-ko').textContent = localized.name;
+  $('#part-description').textContent = localized.description;
+  $('#selected-color-name').textContent = `${localizeColor(color)}${color.isNew ? ` · ${t('badge.new')}` : ''}`;
+  $('#selected-color-dot').style.background = color.hex;
+
+  renderPartTabs();
+  renderSwatches();
+  renderSummary();
+}
+
+function updateViewerLabels() {
+  $('#view-title').textContent = state.viewMode === 'open' ? t('viewer.openTitle') : t('viewer.closedTitle');
+  $('#toggle-rotate').textContent = state.autoRotate ? t('viewer.autoOn') : t('viewer.autoOff');
+  $('#toggle-view').textContent = state.viewMode === 'open' ? t('viewer.showClosed') : t('viewer.showOpen');
+}
+
+function resizeRenderer() {
+  const width = canvasWrap.clientWidth;
+  const height = canvasWrap.clientHeight;
+  renderer.setSize(width, height, false);
+  camera.aspect = width / height;
+  camera.updateProjectionMatrix();
+}
+
+function showFeedback(message) {
+  copyFeedback.textContent = message;
+  window.setTimeout(() => {
+    if (copyFeedback.textContent === message) copyFeedback.textContent = '';
+  }, 2600);
+}
+
+try {
+  const model = buildPenModel(materials);
+  state.root = model.root;
+  state.groups = model.groups;
+  state.partMeshes = model.partMeshes;
+  scene.add(state.root);
+  updateModelLayout();
+  applyAllColors();
+  loadingPanel.hidden = true;
+} catch (error) {
+  console.error(error);
+  loadingPanel.hidden = true;
+  modelError.hidden = false;
+}
+
+renderControls();
+renderStoreGuide(t);
+initUiEnhancements(t);
+updateViewerLabels();
+resizeRenderer();
+
+window.addEventListener('languagechange', () => {
+  renderControls();
+  renderStoreGuide(t);
+  refreshUiEnhancements(t);
+  updateViewerLabels();
+});
+
+new ResizeObserver(resizeRenderer).observe(canvasWrap);
+
+const raycaster = new THREE.Raycaster();
+const pointer = new THREE.Vector2();
+canvas.addEventListener('pointerup', (event) => {
+  if (!state.root || event.pointerType === 'touch') return;
+  const rect = canvas.getBoundingClientRect();
+  pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+  pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+  raycaster.setFromCamera(pointer, camera);
+  const hit = raycaster.intersectObjects(allSelectableMeshes(), false)[0];
+  const partId = hit?.object?.userData?.partId;
+  if (partId) selectPart(partId);
+});
+
+$('#toggle-rotate').addEventListener('click', (event) => {
+  state.autoRotate = !state.autoRotate;
+  event.currentTarget.setAttribute('aria-pressed', String(state.autoRotate));
+  updateViewerLabels();
+});
+
+$('#toggle-view').addEventListener('click', () => {
+  state.viewMode = state.viewMode === 'open' ? 'closed' : 'open';
+  updateModelLayout();
+});
+
+$('#copy-link').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(location.href);
+    showFeedback(t('toast.linkCopied'));
+  } catch {
+    showFeedback(t('toast.linkFailed'));
+  }
+});
+
+$('#save-image').addEventListener('click', () => {
+  renderer.render(scene, camera);
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+    const anchor = document.createElement('a');
+    anchor.href = URL.createObjectURL(blob);
+    anchor.download = `${combinationCode()}.png`;
+    anchor.click();
+    URL.revokeObjectURL(anchor.href);
+    showFeedback(t('toast.imageSaved'));
+  }, 'image/png');
+});
+
+$('#reset-combination').addEventListener('click', () => {
+  state.selections = { ...defaultSelection };
+  state.activePartId = parts[0].id;
+  saveQueryString();
+  applyAllColors();
+  renderControls();
+  showFeedback(t('toast.reset'));
+});
+
+(function animate() {
+  controls.autoRotate = state.autoRotate;
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(animate);
+})();
