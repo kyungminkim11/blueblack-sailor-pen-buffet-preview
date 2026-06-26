@@ -71,27 +71,27 @@ function createClip(fixedMetal) {
     fixedMetal.clone(),
   );
   stem.rotation.z = Math.PI / 2;
-  stem.position.set(-31.2, 0, 7.48);
+  stem.position.set(-31.5, 0, 7.5);
   stem.scale.y = 0.68;
   stem.name = 'clip';
   stem.castShadow = true;
   group.add(stem);
 
   const anchor = new THREE.Mesh(
-    new THREE.SphereGeometry(2.05, 56, 28),
+    new THREE.SphereGeometry(1.95, 56, 28),
     fixedMetal.clone(),
   );
-  anchor.scale.set(1.36, 0.72, 0.5);
-  anchor.position.set(-52.4, 0, 7.1);
+  anchor.scale.set(1.38, 0.7, 0.48);
+  anchor.position.set(-53.2, 0, 7.08);
   anchor.name = 'clip_anchor';
   anchor.castShadow = true;
   group.add(anchor);
 
   const tip = new THREE.Mesh(
-    new THREE.SphereGeometry(1.55, 48, 24),
+    new THREE.SphereGeometry(1.5, 48, 24),
     fixedMetal.clone(),
   );
-  tip.scale.set(1.55, 0.68, 0.48);
+  tip.scale.set(1.5, 0.66, 0.46);
   tip.position.set(-9.4, 0, 7.12);
   tip.name = 'clip_tip';
   tip.castShadow = true;
@@ -107,14 +107,13 @@ function createConverterAssembly() {
   const tubeMaterial = new THREE.MeshPhysicalMaterial({
     color: 0xd4d9de,
     roughness: 0.2,
-    metalness: 0,
     transparent: true,
-    opacity: 0.34,
-    transmission: 0.08,
+    opacity: 0.28,
+    transmission: 0.06,
     depthWrite: false,
   });
-  const tube = cylinderAlongX(3.05, 54, tubeMaterial, 72);
-  tube.position.x = 46;
+  const tube = cylinderAlongX(2.88, 49, tubeMaterial, 72);
+  tube.position.x = 42.5;
   tube.name = 'converter_tube';
   group.add(tube);
 
@@ -123,18 +122,18 @@ function createConverterAssembly() {
     roughness: 0.35,
     metalness: 0.08,
   });
-  const neck = cylinderAlongX(2.05, 8.5, darkMaterial.clone(), 64);
-  neck.position.x = 15.8;
+  const neck = cylinderAlongX(1.95, 7.5, darkMaterial.clone(), 64);
+  neck.position.x = 14.2;
   neck.name = 'converter_neck';
   group.add(neck);
 
-  const piston = cylinderAlongX(3.18, 1.3, darkMaterial.clone(), 72);
-  piston.position.x = 68.6;
+  const piston = cylinderAlongX(2.98, 1.1, darkMaterial.clone(), 72);
+  piston.position.x = 67.3;
   piston.name = 'converter_piston';
   group.add(piston);
 
-  const rearKnob = cylinderAlongX(2.65, 5.2, darkMaterial.clone(), 64);
-  rearKnob.position.x = 76.8;
+  const rearKnob = cylinderAlongX(2.45, 4.6, darkMaterial.clone(), 64);
+  rearKnob.position.x = 74.8;
   rearKnob.name = 'converter_knob';
   group.add(rearKnob);
 
@@ -146,25 +145,25 @@ function createInnerCap() {
   group.name = 'inner_cap_assembly';
 
   const linerMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0x56606a,
-    roughness: 0.26,
+    color: 0x5b636c,
+    roughness: 0.3,
     transparent: true,
-    opacity: 0.18,
+    opacity: 0.15,
     depthWrite: false,
   });
-  const liner = cylinderAlongX(6.18, 42, linerMaterial, 96);
+  const liner = cylinderAlongX(6.05, 39, linerMaterial, 96);
   liner.position.x = -25.5;
   liner.name = 'inner_cap_liner';
   group.add(liner);
 
   const sealMaterial = new THREE.MeshStandardMaterial({
-    color: 0x31363c,
-    roughness: 0.38,
+    color: 0x30343a,
+    roughness: 0.4,
     transparent: true,
-    opacity: 0.55,
+    opacity: 0.5,
   });
-  const seal = cylinderAlongX(5.35, 4.2, sealMaterial, 80);
-  seal.position.x = -45.3;
+  const seal = cylinderAlongX(5.25, 3.7, sealMaterial, 80);
+  seal.position.x = -44.6;
   seal.name = 'inner_cap_seal';
   group.add(seal);
 
@@ -173,202 +172,188 @@ function createInnerCap() {
 
 function registerPart(partMeshes, partId, mesh) {
   mesh.userData.partId = partId;
-  mesh.name = mesh.name || partId;
   if (!partMeshes.has(partId)) partMeshes.set(partId, []);
   partMeshes.get(partId).push(mesh);
   return mesh;
 }
 
 export function buildPenModel(materials) {
-  const { customMaterial, fixedMetal, darkMetal } = materials;
+  const { customMaterial, fixedMetal } = materials;
   const root = new THREE.Group();
-  root.name = 'profit_junior_preview';
+  root.name = 'profit_junior_pen_buffet';
   root.rotation.y = -0.055;
   root.rotation.x = 0.018;
 
   const partMeshes = new Map(parts.map((part) => [part.id, []]));
-  const bodyGroup = new THREE.Group();
-  bodyGroup.name = 'body_group';
 
-  const grip = registerPart(
-    partMeshes,
-    'grip_section',
-    latheMesh(
-      'grip_section',
-      [
-        [-19.2, 4.25],
-        [-18.4, 4.5],
-        [-17.25, 4.42],
-        [-14.8, 3.75],
-        [-10.8, 3.48],
-        [-6.2, 3.72],
-        [-1.2, 4.5],
-        [3.65, 5.38],
-      ],
-      customMaterial(),
-    ),
-  );
-  bodyGroup.add(grip);
-
-  const gripLip = registerPart(
-    partMeshes,
-    'grip_section',
-    addRing(bodyGroup, -18.55, 4.58, 0.78, customMaterial(), 'grip_section_front_lip'),
-  );
-  gripLip.userData.partId = 'grip_section';
-
-  const connector = registerPart(
-    partMeshes,
-    'center_ring_or_connector',
-    latheMesh(
-      'center_ring_or_connector',
-      [
-        [3.65, 5.38],
-        [4.4, 5.92],
-        [5.25, 6.12],
-        [13.2, 6.12],
-        [14.15, 6.35],
-        [15.55, 6.5],
-      ],
-      customMaterial(),
-    ),
-  );
-  bodyGroup.add(connector);
-
-  const connectorThread = registerPart(
-    partMeshes,
-    'center_ring_or_connector',
-    createThreadMesh({
-      name: 'center_connector_thread',
-      startX: 5.05,
-      length: 8.25,
-      radius: 6.2,
-      turns: 9.2,
-      thickness: 0.115,
-      material: customMaterial(),
-    }),
-  );
-  bodyGroup.add(connectorThread);
-
-  const connectorShoulder = registerPart(
-    partMeshes,
-    'center_ring_or_connector',
-    addRing(bodyGroup, 14.45, 6.48, 0.55, customMaterial(), 'center_connector_shoulder'),
-  );
-  connectorShoulder.userData.partId = 'center_ring_or_connector';
-
-  const barrelBody = registerPart(
-    partMeshes,
-    'barrel_body',
-    latheMesh(
-      'barrel_body',
-      [
-        [15.55, 6.5],
-        [18.5, 6.68],
-        [31, 6.9],
-        [48, 7.02],
-        [65, 6.98],
-        [77, 6.72],
-        [83, 6.25],
-      ],
-      customMaterial(),
-    ),
-  );
-  bodyGroup.add(barrelBody);
-
-  const barrelSeam = registerPart(
-    partMeshes,
-    'barrel_body',
-    addRing(bodyGroup, 82.65, 6.3, 0.34, customMaterial(), 'barrel_body_end_seam'),
-  );
-  barrelSeam.userData.partId = 'barrel_body';
-
-  const barrelEnd = registerPart(
-    partMeshes,
-    'barrel_end',
-    latheMesh(
-      'barrel_end',
-      [
-        [83, 6.25],
-        [85.5, 6.02],
-        [88.6, 5.45],
-        [91.8, 4.5],
-        [94.4, 3.28],
-        [96.4, 1.92],
-        [97.5, 0.92],
-        [98.0, 0.36],
-      ],
-      customMaterial(),
-    ),
-  );
-  bodyGroup.add(barrelEnd);
-
-  const barrelEndSeat = registerPart(
-    partMeshes,
-    'barrel_end',
-    addRing(bodyGroup, 83.15, 6.28, 0.3, customMaterial(), 'barrel_end_seat'),
-  );
-  barrelEndSeat.userData.partId = 'barrel_end';
-
-  bodyGroup.add(createFeed(materials));
-  bodyGroup.add(createNib(materials));
-  bodyGroup.add(createConverterAssembly());
-  root.add(bodyGroup);
-
-  const capGroup = new THREE.Group();
-  capGroup.name = 'cap_group';
-
-  const capBody = registerPart(
-    partMeshes,
-    'cap_body',
-    latheMesh(
-      'cap_body',
-      [
-        [-54.2, 6.28],
-        [-51.2, 6.62],
-        [-42.5, 6.98],
-        [-25, 7.22],
-        [-9, 7.28],
-        [-2.5, 7.22],
-        [0, 7.15],
-      ],
-      customMaterial(),
-    ),
-  );
-  capGroup.add(capBody);
-
+  const capTopGroup = new THREE.Group();
+  capTopGroup.name = 'cap_top_group';
   const capTop = registerPart(
     partMeshes,
     'cap_top',
     latheMesh(
       'cap_top',
       [
-        [-67.1, 0.42],
-        [-66.55, 1.3],
-        [-65.25, 2.82],
-        [-62.9, 4.55],
-        [-59.8, 5.75],
-        [-56.5, 6.25],
-        [-54.2, 6.28],
+        [-68.2, 0.34],
+        [-67.75, 1.12],
+        [-66.65, 2.35],
+        [-64.9, 3.72],
+        [-62.75, 4.72],
+        [-61.2, 5.02],
       ],
       customMaterial(),
     ),
   );
-  capGroup.add(capTop);
-
-  const capTopSeat = registerPart(
+  capTopGroup.add(capTop);
+  const capTopStem = registerPart(
     partMeshes,
     'cap_top',
-    addRing(capGroup, -54.15, 6.33, 0.34, customMaterial(), 'cap_top_seat'),
+    cylinderAlongX(2.15, 5.8, customMaterial(), 72),
   );
-  capTopSeat.userData.partId = 'cap_top';
+  capTopStem.name = 'cap_top_stem';
+  capTopStem.position.x = -58.4;
+  capTopGroup.add(capTopStem);
+  root.add(capTopGroup);
 
-  addRing(capGroup, -1.65, 7.38, 1.5, fixedMetal.clone(), 'cap_band_main');
-  addRing(capGroup, -4.05, 7.31, 0.34, fixedMetal.clone(), 'cap_band_hairline');
-  addRing(capGroup, -54.15, 6.48, 0.38, fixedMetal.clone(), 'clip_crown_ring');
-  capGroup.add(createClip(fixedMetal));
-  capGroup.add(createInnerCap());
-  root.add(capGroup);
+  const capBodyGroup = new THREE.Group();
+  capBodyGroup.name = 'cap_body_group';
+  const capBody = registerPart(
+    partMeshes,
+    'cap_body',
+    latheMesh(
+      'cap_body',
+      [
+        [-61.2, 5.02],
+        [-59.6, 5.82],
+        [-56.8, 6.45],
+        [-47, 6.92],
+        [-30, 7.2],
+        [-12, 7.27],
+        [-3.5, 7.22],
+        [0, 7.14],
+      ],
+      customMaterial(),
+    ),
+  );
+  capBodyGroup.add(capBody);
+  addRing(capBodyGroup, -1.7, 7.38, 1.48, fixedMetal.clone(), 'cap_band_main');
+  addRing(capBodyGroup, -4.0, 7.31, 0.34, fixedMetal.clone(), 'cap_band_hairline');
+  capBodyGroup.add(createClip(fixedMetal));
+  capBodyGroup.add(createInnerCap());
+  root.add(capBodyGroup);
 
-  return { root, capGroup, partMeshes };
+  const sectionGroup = new THREE.Group();
+  sectionGroup.name = 'section_group';
+  const section = registerPart(
+    partMeshes,
+    'grip_section',
+    latheMesh(
+      'grip_section',
+      [
+        [-19.3, 4.18],
+        [-18.55, 4.48],
+        [-17.25, 4.38],
+        [-14.8, 3.72],
+        [-10.5, 3.43],
+        [-6.0, 3.7],
+        [-1.2, 4.48],
+        [3.75, 5.36],
+        [4.45, 5.52],
+        [12.2, 5.52],
+      ],
+      customMaterial(),
+    ),
+  );
+  sectionGroup.add(section);
+  const sectionLip = registerPart(
+    partMeshes,
+    'grip_section',
+    addRing(sectionGroup, -18.65, 4.58, 0.72, customMaterial(), 'section_front_lip'),
+  );
+  sectionLip.userData.partId = 'grip_section';
+  const sectionThread = registerPart(
+    partMeshes,
+    'grip_section',
+    createThreadMesh({
+      name: 'section_thread',
+      startX: 4.65,
+      length: 7.1,
+      radius: 5.63,
+      turns: 8.5,
+      thickness: 0.11,
+      material: customMaterial(),
+    }),
+  );
+  sectionGroup.add(sectionThread);
+  addRing(sectionGroup, 3.95, 5.62, 0.48, fixedMetal.clone(), 'section_metal_ring');
+  sectionGroup.add(createFeed(materials));
+  sectionGroup.add(createNib(materials));
+  root.add(sectionGroup);
+
+  const barrelGroup = new THREE.Group();
+  barrelGroup.name = 'barrel_group';
+  const barrel = registerPart(
+    partMeshes,
+    'barrel_body',
+    latheMesh(
+      'barrel_body',
+      [
+        [12.2, 6.02],
+        [14.4, 6.38],
+        [20, 6.65],
+        [36, 6.92],
+        [55, 7.02],
+        [72, 6.94],
+        [84, 6.52],
+        [91.2, 5.82],
+        [94.0, 5.15],
+      ],
+      customMaterial(),
+    ),
+  );
+  barrelGroup.add(barrel);
+  barrelGroup.add(createConverterAssembly());
+  root.add(barrelGroup);
+
+  const tailPlugGroup = new THREE.Group();
+  tailPlugGroup.name = 'tail_plug_group';
+  const tailStem = registerPart(
+    partMeshes,
+    'barrel_end',
+    cylinderAlongX(1.72, 5.3, customMaterial(), 64),
+  );
+  tailStem.name = 'tail_plug_stem';
+  tailStem.position.x = 92.2;
+  tailPlugGroup.add(tailStem);
+  const tailPlug = registerPart(
+    partMeshes,
+    'barrel_end',
+    latheMesh(
+      'barrel_end',
+      [
+        [94.0, 5.15],
+        [95.0, 4.68],
+        [96.1, 3.8],
+        [97.05, 2.72],
+        [97.75, 1.5],
+        [98.15, 0.62],
+        [98.3, 0.28],
+      ],
+      customMaterial(),
+    ),
+  );
+  tailPlugGroup.add(tailPlug);
+  root.add(tailPlugGroup);
+
+  return {
+    root,
+    partMeshes,
+    groups: {
+      capTopGroup,
+      capBodyGroup,
+      sectionGroup,
+      barrelGroup,
+      tailPlugGroup,
+    },
+  };
 }
