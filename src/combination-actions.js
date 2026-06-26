@@ -31,9 +31,21 @@ function language() {
   return 'ko';
 }
 
-function setText(selector, value) {
-  const element = document.querySelector(selector);
+function setElementText(element, value) {
   if (element && element.textContent !== value) element.textContent = value;
+}
+
+function ensureActionCopy(card) {
+  let block = card.querySelector('.combination-actions-copy');
+  if (block) return block;
+
+  block = document.createElement('div');
+  block.className = 'combination-actions-copy';
+  block.innerHTML = '<strong></strong><p></p>';
+
+  const actions = card.querySelector('.result-actions');
+  card.insertBefore(block, actions ?? card.firstChild);
+  return block;
 }
 
 function applyCopy() {
@@ -41,20 +53,26 @@ function applyCopy() {
   applying = true;
 
   const text = COPY[language()];
-  setText('[data-combination-copy="guide"]', text.guide);
-  setText('[data-combination-copy="subtitle"]', text.subtitle);
-  setText('[data-combination-copy="title"]', text.title);
-  setText('[data-combination-copy="description"]', text.description);
-  setText('.store-guide .store-step:first-child span', text.store);
 
-  document.querySelectorAll('[data-i18n="result.code"], [data-i18n="result.codeCopy"]').forEach((element) => {
-    element.hidden = true;
-  });
+  setElementText(document.querySelector('.guide-grid li:nth-child(3) span > span'), text.guide);
+  setElementText(document.querySelector('.result-heading > p'), text.subtitle);
+  setElementText(document.querySelector('.store-guide .store-step:first-child span'), text.store);
 
-  const code = document.querySelector('#combination-code');
-  if (code) {
-    code.hidden = true;
-    code.setAttribute('aria-hidden', 'true');
+  const card = document.querySelector('.code-card');
+  if (card) {
+    const block = ensureActionCopy(card);
+    setElementText(block.querySelector('strong'), text.title);
+    setElementText(block.querySelector('p'), text.description);
+
+    card.querySelector('[data-i18n="result.code"]')?.remove();
+    card.querySelector('[data-i18n="result.codeCopy"]')?.remove();
+
+    const code = card.querySelector('#combination-code');
+    if (code) {
+      code.hidden = true;
+      code.setAttribute('aria-hidden', 'true');
+      code.classList.add('combination-code-internal');
+    }
   }
 
   applying = false;
