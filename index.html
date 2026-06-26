@@ -5,123 +5,136 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
   <meta name="description" content="블루블랙 펜샵 세일러 펜뷔페 3D 조합 미리보기" />
-  <title>BlueBlack Sailor Pen Buffet Preview</title>
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
-  <link rel="stylesheet" href="./styles.css" />
-  <link rel="stylesheet" href="./mobile.css" />
-  <link rel="stylesheet" href="./polish.css" />
-  <link rel="stylesheet" href="./store-info.css" />
-  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/","./src/i18n.js":"./src/i18n-v2.js"}}</script>
+  <title>세일러 펜뷔페 미리보기</title>
+  <link rel="stylesheet" href="./app-v3.css" />
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
 </head>
 <body>
-  <header class="site-header">
+  <header class="app-header">
     <div class="header-inner">
-      <div>
-        <p class="eyebrow">BLUEBLACK PEN SHOP</p>
-        <h1 data-i18n="header.title">세일러 펜뷔페 조합 미리보기</h1>
-        <p class="header-copy" data-i18n="header.copy">원하는 색을 골라 여섯 개 파츠를 조합해보세요. 완성 모습은 3D로 확인하고, 최종 선택은 매장에서 실물 파츠와 함께 도와드릴게요.</p>
+      <div class="brand-row">
+        <span class="brand-name">BLUEBLACK PEN SHOP</span>
+        <span class="status-badge" data-t="storePreview">매장 상담용 미리보기</span>
       </div>
-      <div class="header-actions">
-        <div class="language-switcher" role="group" aria-label="Language">
-          <button type="button" class="language-button" data-language="ko" aria-pressed="true">한국어</button>
-          <button type="button" class="language-button" data-language="en" aria-pressed="false">EN</button>
-          <button type="button" class="language-button" data-language="ja" aria-pressed="false">日本語</button>
-        </div>
-        <span class="status-pill"><i></i><span data-i18n="header.status">매장 상담용 미리보기</span></span>
+      <h1 data-t="title">세일러 펜뷔페 미리보기</h1>
+      <p data-t="intro">여섯 개 파츠의 색상을 직접 조합하고 완성 모습을 3D로 확인해보세요. 최종 선택은 매장에서 실물 파츠와 함께 확인해 드립니다.</p>
+      <div class="language-switcher" role="group" aria-label="Language">
+        <button type="button" data-language="ko" aria-pressed="true">한국어</button>
+        <button type="button" data-language="en" aria-pressed="false">EN</button>
+        <button type="button" data-language="ja" aria-pressed="false">日本語</button>
       </div>
     </div>
   </header>
 
   <main>
-    <section class="guide-section" aria-labelledby="guide-title">
-      <div class="section-heading">
-        <div>
-          <p class="section-kicker" data-i18n="guide.kicker">이용 방법</p>
-          <h2 id="guide-title" data-i18n="guide.title">원하는 조합을 세 단계로 확인해보세요</h2>
+    <details class="howto">
+      <summary data-t="howTo">이용 방법</summary>
+      <div class="howto-body">
+        <p data-t="howToCopy">파츠와 색상을 고른 뒤 3D로 확인하고, 마음에 드는 조합은 링크나 이미지로 저장해 주세요.</p>
+        <div class="howto-grid">
+          <article class="howto-step"><strong>01</strong><div><b data-t="step1">파츠 선택</b><span data-t="step1Copy">캡부터 배럴앤드까지 6개 파츠를 차례로 선택합니다.</span></div></article>
+          <article class="howto-step"><strong>02</strong><div><b data-t="step2">색상 선택</b><span data-t="step2Copy">각 파츠에 원하는 수지 컬러 또는 메탈 컬러를 적용합니다.</span></div></article>
+          <article class="howto-step"><strong>03</strong><div><b data-t="step3">실물 확인</b><span data-t="step3Copy">매장에서 실제 색상과 투명도를 확인한 뒤 조립을 진행합니다.</span></div></article>
         </div>
-        <p data-i18n="guide.subtitle">화면에서 조합한 뒤, 매장에서 실물 색상과 투명도를 최종 확인해 주세요.</p>
       </div>
-      <ol class="guide-grid">
-        <li><strong>01</strong><span><b data-i18n="guide.step1.title">파츠와 색상 고르기</b><span data-i18n="guide.step1.copy">6개 파츠를 차례로 선택하고 원하는 색상을 골라주세요.</span></span></li>
-        <li><strong>02</strong><span><b data-i18n="guide.step2.title">완성 모습 확인하기</b><span data-i18n="guide.step2.copy">3D 화면을 돌리거나 확대해 전체 색상 균형을 살펴보세요.</span></span></li>
-        <li><strong>03</strong><span><b data-i18n="guide.step3.title">매장에서 최종 확인하기</b><span data-i18n="guide.step3.copy">저장한 링크 또는 조합 코드를 직원에게 보여주세요.</span></span></li>
-      </ol>
+    </details>
+
+    <section class="customizer">
+      <div class="viewer-card" id="viewer-card">
+        <div class="viewer-head">
+          <div class="viewer-title"><small data-t="preview">3D 미리보기</small><strong id="viewer-mode">완성 모습</strong></div>
+          <div class="viewer-actions">
+            <button type="button" id="toggle-view">파츠 분리</button>
+            <button type="button" id="toggle-fullscreen">크게 보기</button>
+          </div>
+        </div>
+        <div class="viewer-stage" id="viewer-stage">
+          <canvas id="pen-canvas" aria-label="3D fountain pen preview"></canvas>
+          <div class="viewer-status" id="viewer-loading" data-t="loading">3D 미리보기를 준비하고 있습니다.</div>
+          <div class="viewer-status" id="viewer-error" hidden data-t="error">3D 미리보기를 불러오지 못했습니다. 페이지를 새로고침해 주세요.</div>
+          <div class="viewer-hint" data-t="viewerHint">한 손가락으로 회전 · 두 손가락으로 확대·축소</div>
+          <div class="fullscreen-controls">
+            <button type="button" id="zoom-in" aria-label="Zoom in">＋</button>
+            <button type="button" id="zoom-out" aria-label="Zoom out">−</button>
+            <button type="button" id="reset-view" aria-label="Reset view">↺</button>
+            <button type="button" id="fullscreen-close" aria-label="Close">×</button>
+          </div>
+        </div>
+      </div>
+
+      <section class="control-card">
+        <div class="control-title">
+          <div><small>CUSTOMIZE</small><h2 data-t="customize">파츠별 색상을 골라주세요</h2></div>
+          <span class="progress-pill" id="progress-pill">1 / 6</span>
+        </div>
+        <div class="part-grid" id="part-grid" role="tablist"></div>
+        <div class="part-description">
+          <small id="part-name-en">CAP</small>
+          <h3 id="part-name">캡</h3>
+          <p id="part-description"></p>
+        </div>
+        <div class="palette" id="palette"></div>
+        <div class="selected-bar">
+          <span class="swatch-dot" id="selected-dot"></span>
+          <div><small data-t="selectedColor">선택한 색상</small><strong id="selected-color"></strong></div>
+        </div>
+        <div class="part-navigation">
+          <button type="button" class="secondary" id="previous-part" data-t="previousPart">이전 파츠</button>
+          <button type="button" class="primary" id="next-part">다음 파츠</button>
+        </div>
+        <p class="notice" data-t="colorNotice">화면 색상은 조명과 디스플레이 환경에 따라 실제 파츠와 다르게 보일 수 있습니다. 최종 선택 전 매장 실물을 확인해 주세요.</p>
+        <p class="converter"><b data-t="converterTitle">컨버터 안내</b><br><span data-t="converterCopy">잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않는 별도 구매 상품입니다.</span></p>
+      </section>
     </section>
 
-    <section class="customizer-shell" aria-label="Fountain pen customizer">
-      <div class="viewer-card">
-        <div class="viewer-toolbar">
-          <div><span class="viewer-label">3D PREVIEW</span><strong id="view-title">완성된 모습 보기</strong></div>
-          <div class="toolbar-actions">
-            <button type="button" class="icon-button" id="toggle-rotate" aria-pressed="true">자동 회전 켜짐</button>
-            <button type="button" class="icon-button" id="toggle-view">파츠 나누어 보기</button>
-            <button type="button" class="icon-button" id="toggle-fullscreen">크게 보기</button>
-            <button type="button" class="icon-button" id="reset-camera">시점 초기화</button>
-          </div>
-        </div>
-        <div class="canvas-wrap" id="canvas-wrap">
-          <canvas id="pen-canvas" aria-label="Sailor Pen Buffet 3D preview"></canvas>
-          <div class="loading-panel" id="loading-panel">
-            <div class="spinner"></div>
-            <strong data-i18n="viewer.loading">선택 화면을 준비하고 있습니다</strong>
-            <span id="loading-progress" data-i18n="viewer.preparing">잠시만 기다려 주세요</span>
-          </div>
-          <div class="model-error" id="model-error" hidden>
-            <strong data-i18n="viewer.errorTitle">3D 미리보기를 불러오지 못했습니다.</strong>
-            <span data-i18n="viewer.errorCopy">페이지를 새로고침하거나 다른 브라우저에서 다시 확인해 주세요.</span>
-          </div>
-          <div class="viewer-hint" data-i18n="viewer.hint">손가락으로 돌려보기 · 두 손가락으로 확대·축소</div>
-        </div>
-      </div>
-
-      <aside class="control-card">
-        <div class="control-heading">
-          <div><p class="section-kicker">CUSTOMIZE</p><h2 data-i18n="customize.title">파츠별 색상을 골라주세요</h2></div>
-          <span id="progress-text">1 / 6</span>
-        </div>
-        <div class="part-tabs" id="part-tabs" role="tablist" aria-label="Parts"></div>
-        <div class="current-part">
-          <div><span id="part-name-en">CAP</span><h3 id="part-name-ko">캡</h3></div>
-          <p id="part-description">펜을 닫았을 때 닙을 보호하는 상단 파츠입니다. 면적이 넓어 배럴과 함께 완성된 펜의 첫인상을 결정합니다.</p>
-        </div>
-        <div class="swatch-grid" id="swatch-grid" role="radiogroup" aria-label="Colors"></div>
-        <div class="selected-color-bar">
-          <span class="selected-color-dot" id="selected-color-dot"></span>
-          <div><small data-i18n="customize.selected">선택한 색상</small><strong id="selected-color-name">세피아</strong></div>
-        </div>
-      </aside>
-    </section>
-
-    <section class="result-section" aria-labelledby="result-title">
-      <div class="result-heading">
-        <div><p class="section-kicker">COMBINATION</p><h2 id="result-title" data-i18n="result.title">선택한 조합을 확인해 주세요</h2></div>
-        <p data-i18n="result.subtitle">현재 선택은 링크와 조합 코드에 자동으로 저장됩니다.</p>
-      </div>
-      <div class="result-grid">
+    <section class="result-section" id="result-section">
+      <div class="section-head"><small>COMBINATION</small><h2 data-t="resultTitle">선택한 조합</h2><p data-t="resultCopy">아래 목록을 매장 실물 파츠와 비교해 주세요.</p></div>
+      <div class="result-layout">
         <div class="summary-card"><div class="summary-list" id="summary-list"></div></div>
-        <div class="code-card">
-          <span data-i18n="result.code">매장 확인용 조합 코드</span>
-          <strong id="combination-code">BB-SAILOR-SE-SE-SE-SV-SE-SE</strong>
-          <p data-i18n="result.codeCopy">매장 직원에게 이 코드를 보여주시면 선택한 파츠와 색상을 빠르게 확인할 수 있습니다.</p>
-          <div class="result-actions">
-            <button type="button" class="primary-button" id="copy-link" data-i18n="result.copyLink">이 조합 링크 복사</button>
-            <button type="button" class="secondary-button" id="save-image" data-i18n="result.saveImage">3D 이미지 저장</button>
-            <button type="button" class="text-button" id="reset-combination" data-i18n="result.reset">새 조합 만들기</button>
+        <div class="action-card">
+          <h3 data-t="resultTitle">선택한 조합</h3>
+          <p data-t="resultCopy">아래 목록을 매장 실물 파츠와 비교해 주세요.</p>
+          <div class="action-grid">
+            <button type="button" class="primary wide" id="share-combination" data-t="share">조합 공유하기</button>
+            <button type="button" class="secondary" id="save-image" data-t="saveImage">3D 이미지 저장</button>
+            <button type="button" class="secondary" id="staff-view" data-t="staffView">직원과 함께 확인</button>
+            <button type="button" class="ghost wide" id="reset-combination" data-t="reset">새 조합 만들기</button>
           </div>
-          <p class="copy-feedback" id="copy-feedback" aria-live="polite"></p>
+          <p class="toast" id="toast" aria-live="polite"></p>
         </div>
       </div>
     </section>
 
-    <p class="display-notice" data-i18n="notice.display">화면 색상은 디스플레이 환경에 따라 실제 색상과 다를 수 있습니다. 최종 선택 전 매장 실물 파츠를 함께 확인해 주세요.</p>
+    <section class="visit-section">
+      <div class="visit-card">
+        <h2 data-t="visitTitle">블루블랙 펜샵 방문 안내</h2>
+        <p data-t="visitCopy">특정 색상을 찾으신다면 방문 전 재고 문의를 권장드립니다.</p>
+        <div class="visit-info">
+          <article><small data-t="address">매장 주소</small><strong id="store-address"></strong></article>
+          <article><small data-t="hours">영업시간</small><span data-t="weekday">월–금 10:00–18:00</span><span data-t="saturday">토요일 12:00–18:00</span><span data-t="closed">일요일·공휴일 휴무</span></article>
+          <article><small data-t="phone">전화 문의</small><strong id="store-phone"></strong></article>
+        </div>
+        <div class="visit-actions">
+          <a href="https://map.naver.com/p/search/%EB%B8%94%EB%A3%A8%EB%B8%94%EB%9E%99%20%ED%8E%9C%EC%83%B5" target="_blank" rel="noopener noreferrer" data-t="map">네이버지도</a>
+          <a href="tel:027658868" data-t="call">전화하기</a>
+          <a href="https://blueblack.co.kr/" target="_blank" rel="noopener noreferrer" data-t="website">공식 홈페이지</a>
+          <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener noreferrer" data-t="instagram">인스타그램</a>
+        </div>
+        <p class="visit-note" data-t="visitNote">영업시간·휴무일·재고는 변경될 수 있습니다. 방문 전 공식 채널에서 최신 안내를 확인해 주세요.</p>
+      </div>
+    </section>
   </main>
 
-  <footer>
-    <strong>BlueBlack Sailor Pen Buffet Preview</strong>
-    <span data-i18n="footer.copy">본 페이지는 블루블랙 펜샵 매장 상담을 위한 조합 미리보기 도구입니다. 화면에 표시된 색상은 실제 파츠와 차이가 있을 수 있습니다.</span>
-  </footer>
+  <footer class="app-footer" data-t="footer">본 페이지는 블루블랙 펜샵 매장 상담을 위한 조합 미리보기 도구입니다.</footer>
 
-  <script type="module" src="./src/main.js"></script>
-  <script type="module" src="./src/store-info.js"></script>
+  <dialog class="staff-dialog" id="staff-dialog">
+    <div class="staff-dialog-body">
+      <div class="staff-dialog-head"><div><h2 data-t="staffTitle">선택 파츠 확인</h2><p data-t="staffCopy">고객님이 선택한 색상입니다. 실물 파츠와 하나씩 비교해 주세요.</p></div><button type="button" class="dialog-close" id="staff-close">×</button></div>
+      <div class="summary-list" id="staff-summary"></div>
+      <p class="converter"><b data-t="converterTitle">컨버터 안내</b><br><span data-t="converterCopy">잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않는 별도 구매 상품입니다.</span></p>
+    </div>
+  </dialog>
+
+  <script type="module" src="./src/app-v3.js"></script>
 </body>
 </html>
