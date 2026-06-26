@@ -1,3 +1,5 @@
+import './remove-combination-code.js';
+
 const COPY = {
   ko: {
     guide: '저장한 조합 링크를 직원에게 보여주세요.',
@@ -63,16 +65,6 @@ function applyCopy() {
     const block = ensureActionCopy(card);
     setElementText(block.querySelector('strong'), text.title);
     setElementText(block.querySelector('p'), text.description);
-
-    card.querySelector('[data-i18n="result.code"]')?.remove();
-    card.querySelector('[data-i18n="result.codeCopy"]')?.remove();
-
-    const code = card.querySelector('#combination-code');
-    if (code) {
-      code.hidden = true;
-      code.setAttribute('aria-hidden', 'true');
-      code.classList.add('combination-code-internal');
-    }
   }
 
   applying = false;
