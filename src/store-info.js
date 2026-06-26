@@ -1,4 +1,5 @@
 import { getLanguage } from './i18n.js';
+import './combination-actions.js';
 
 const STORE = {
   addressKo: '서울특별시 종로구 사직로 109 (내자동)',
