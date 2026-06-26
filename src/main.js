@@ -3,7 +3,7 @@ import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 import { parts, colors, defaultSelection } from './data.js';
 import { buildPenModel } from './pen-model.js';
 
-const state = { activePartId: parts[0].id, selections: { ...defaultSelection }, viewMode: 'open', autoRotate: true, root: null, capGroup: null, meshByPart: new Map() };
+const state = { activePartId: parts[0].id, selections: { ...defaultSelection }, viewMode: 'open', autoRotate: true, root: null, capGroup: null, partMeshes: new Map() };
 const params = new URLSearchParams(location.search);
 for (const part of parts) {
   const value = params.get(part.id);
@@ -30,12 +30,12 @@ renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 1000);
-camera.position.set(0, 42, 165);
+camera.position.set(0, 42, 172);
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.065;
 controls.minDistance = 95;
-controls.maxDistance = 260;
+controls.maxDistance = 270;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.5;
 controls.target.set(0, 0, 0);
@@ -52,7 +52,7 @@ const rimLight = new THREE.DirectionalLight(0xffebca, 1.35);
 rimLight.position.set(20, -25, -50);
 scene.add(rimLight);
 
-const ground = new THREE.Mesh(new THREE.CircleGeometry(112, 96), new THREE.ShadowMaterial({ color: 0x263548, opacity: 0.13 }));
+const ground = new THREE.Mesh(new THREE.CircleGeometry(118, 96), new THREE.ShadowMaterial({ color: 0x263548, opacity: 0.13 }));
 ground.rotation.x = -Math.PI / 2;
 ground.position.y = -20;
 ground.receiveShadow = true;
@@ -66,58 +66,78 @@ const materials = {
   customMaterial: () => new THREE.MeshPhysicalMaterial({ color: 0xdce8ee, roughness: 0.16, metalness: 0, clearcoat: 0.65, clearcoatRoughness: 0.14, transparent: true, opacity: 0.46, transmission: 0.12, thickness: 1.1, side: THREE.DoubleSide }),
 };
 
+function allColorMeshes() {
+  return [...state.partMeshes.values()].flat();
+}
+
 function updateModelLayout() {
   if (!state.capGroup) return;
   if (state.viewMode === 'open') {
-    state.capGroup.position.set(14, 28, 0);
-    state.capGroup.rotation.x = 0.015;
-    state.root.position.set(-12, -8, 0);
-    camera.position.set(0, 46, 176);
-    controls.minDistance = 100;
-    controls.maxDistance = 260;
+    state.capGroup.position.set(16, 29, 0);
+    state.capGroup.rotation.x = 0.012;
+    state.root.position.set(-14, -8, 0);
+    camera.position.set(0, 47, 183);
+    controls.minDistance = 105;
+    controls.maxDistance = 275;
     ground.position.y = -22;
   } else {
-    state.capGroup.position.set(29.4, 0, 0);
+    state.capGroup.position.set(22.2, 0, 0);
     state.capGroup.rotation.x = 0;
-    state.root.position.set(-10, 0, 0);
-    camera.position.set(0, 28, 170);
-    controls.minDistance = 90;
-    controls.maxDistance = 230;
+    state.root.position.set(-8, 0, 0);
+    camera.position.set(0, 28, 177);
+    controls.minDistance = 95;
+    controls.maxDistance = 240;
     ground.position.y = -13;
   }
   controls.target.set(0, 0, 0);
   controls.update();
 }
-function getColor(id) { return colors.find((color) => color.id === id) ?? colors[0]; }
-function applyMaterial(mesh, color) {
+
+function getColor(id) {
+  return colors.find((color) => color.id === id) ?? colors[0];
+}
+
+function applyMaterial(mesh, color, active) {
   const material = mesh.material;
   material.color.set(color.hex);
   material.metalness = 0;
-  material.roughness = color.transparent ? 0.09 : 0.17;
-  material.clearcoat = 0.72;
-  material.clearcoatRoughness = 0.12;
+  material.roughness = color.transparent ? 0.08 : 0.17;
+  material.clearcoat = 0.74;
+  material.clearcoatRoughness = 0.11;
   material.transparent = Boolean(color.transparent);
-  material.opacity = color.transparent ? 0.45 : 1;
-  material.transmission = color.transparent ? 0.12 : 0;
+  material.opacity = color.transparent ? 0.43 : 1;
+  material.transmission = color.transparent ? 0.13 : 0;
   material.depthWrite = !color.transparent;
   material.side = color.transparent ? THREE.DoubleSide : THREE.FrontSide;
-  material.emissive = new THREE.Color(state.activePartId === mesh.name ? color.hex : '#000000');
-  material.emissiveIntensity = state.activePartId === mesh.name ? 0.035 : 0;
+  material.emissive = new THREE.Color(active ? color.hex : '#000000');
+  material.emissiveIntensity = active ? 0.035 : 0;
   material.needsUpdate = true;
 }
+
 function applyAllColors() {
   for (const part of parts) {
-    const mesh = state.meshByPart.get(part.id);
-    if (mesh) applyMaterial(mesh, getColor(state.selections[part.id]));
+    const color = getColor(state.selections[part.id]);
+    const meshes = state.partMeshes.get(part.id) ?? [];
+    for (const mesh of meshes) applyMaterial(mesh, color, state.activePartId === part.id);
   }
 }
+
 function setQueryString() {
   const query = new URLSearchParams();
   for (const part of parts) query.set(part.id, state.selections[part.id]);
   history.replaceState(null, '', `${location.pathname}?${query.toString()}`);
 }
-function combinationCode() { return `BB-SAILOR-${parts.map((part) => getColor(state.selections[part.id]).code).join('-')}`; }
-function selectPart(id) { state.activePartId = id; applyAllColors(); renderControls(); }
+
+function combinationCode() {
+  return `BB-SAILOR-${parts.map((part) => getColor(state.selections[part.id]).code).join('-')}`;
+}
+
+function selectPart(id) {
+  state.activePartId = id;
+  applyAllColors();
+  renderControls();
+}
+
 function renderPartTabs() {
   partTabs.replaceChildren(...parts.map((part, index) => {
     const button = document.createElement('button');
@@ -130,6 +150,7 @@ function renderPartTabs() {
     return button;
   }));
 }
+
 function renderSwatches() {
   const activeColorId = state.selections[state.activePartId];
   swatchGrid.replaceChildren(...colors.map((color) => {
@@ -149,6 +170,7 @@ function renderSwatches() {
     return button;
   }));
 }
+
 function renderSummary() {
   summaryList.replaceChildren(...parts.map((part) => {
     const color = getColor(state.selections[part.id]);
@@ -159,6 +181,7 @@ function renderSummary() {
   }));
   document.querySelector('#combination-code').textContent = combinationCode();
 }
+
 function renderControls() {
   const activeIndex = parts.findIndex((part) => part.id === state.activePartId);
   const part = parts[activeIndex];
@@ -173,6 +196,7 @@ function renderControls() {
   renderSwatches();
   renderSummary();
 }
+
 function resizeRenderer() {
   const width = canvasWrap.clientWidth;
   const height = canvasWrap.clientHeight;
@@ -180,16 +204,19 @@ function resizeRenderer() {
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
 }
+
 function showFeedback(message) {
   copyFeedback.textContent = message;
-  setTimeout(() => { if (copyFeedback.textContent === message) copyFeedback.textContent = ''; }, 2600);
+  setTimeout(() => {
+    if (copyFeedback.textContent === message) copyFeedback.textContent = '';
+  }, 2600);
 }
 
 try {
   const model = buildPenModel(materials);
   state.root = model.root;
   state.capGroup = model.capGroup;
-  state.meshByPart = model.meshByPart;
+  state.partMeshes = model.partMeshes;
   scene.add(state.root);
   updateModelLayout();
   applyAllColors();
@@ -209,24 +236,33 @@ canvas.addEventListener('pointerup', (event) => {
   pointer.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
   pointer.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
   raycaster.setFromCamera(pointer, camera);
-  const hit = raycaster.intersectObjects([...state.meshByPart.values()], false)[0];
-  if (hit?.object?.name) selectPart(hit.object.name);
+  const hit = raycaster.intersectObjects(allColorMeshes(), false)[0];
+  const partId = hit?.object?.userData?.partId;
+  if (partId) selectPart(partId);
 });
+
 document.querySelector('#toggle-rotate').addEventListener('click', (event) => {
   state.autoRotate = !state.autoRotate;
   event.currentTarget.textContent = `자동 회전 ${state.autoRotate ? '켬' : '끔'}`;
   event.currentTarget.setAttribute('aria-pressed', String(state.autoRotate));
 });
+
 document.querySelector('#toggle-view').addEventListener('click', (event) => {
   state.viewMode = state.viewMode === 'open' ? 'closed' : 'open';
   event.currentTarget.textContent = state.viewMode === 'open' ? '완성 상태 보기' : '파츠 분리 보기';
   document.querySelector('#view-title').textContent = state.viewMode === 'open' ? '파츠 분리 보기' : '완성 상태 보기';
   updateModelLayout();
 });
+
 document.querySelector('#copy-link').addEventListener('click', async () => {
-  try { await navigator.clipboard.writeText(location.href); showFeedback('조합 링크를 복사했습니다.'); }
-  catch { showFeedback('주소창의 링크를 직접 복사해 주세요.'); }
+  try {
+    await navigator.clipboard.writeText(location.href);
+    showFeedback('조합 링크를 복사했습니다.');
+  } catch {
+    showFeedback('주소창의 링크를 직접 복사해 주세요.');
+  }
 });
+
 document.querySelector('#save-image').addEventListener('click', () => {
   renderer.render(scene, camera);
   canvas.toBlob((blob) => {
@@ -239,6 +275,7 @@ document.querySelector('#save-image').addEventListener('click', () => {
     showFeedback('현재 3D 화면을 이미지로 저장했습니다.');
   }, 'image/png');
 });
+
 document.querySelector('#reset-combination').addEventListener('click', () => {
   state.selections = { ...defaultSelection };
   state.activePartId = parts[0].id;
