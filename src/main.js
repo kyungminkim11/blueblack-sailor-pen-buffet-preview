@@ -15,11 +15,13 @@ import { renderStoreGuide } from './store-guide.js';
 
 initI18n();
 
+const mobileMedia = window.matchMedia('(max-width: 640px)');
 const state = {
   activePartId: parts[0].id,
   selections: { ...defaultSelection },
-  viewMode: 'open',
+  viewMode: mobileMedia.matches ? 'closed' : 'open',
   autoRotate: true,
+  fullscreen: false,
   root: null,
   groups: null,
   partMeshes: new Map(),
@@ -37,12 +39,25 @@ for (const part of parts) {
 const $ = (selector) => document.querySelector(selector);
 const canvas = $('#pen-canvas');
 const canvasWrap = $('#canvas-wrap');
+const viewerCard = $('.viewer-card');
 const loadingPanel = $('#loading-panel');
 const modelError = $('#model-error');
 const partTabs = $('#part-tabs');
 const swatchGrid = $('#swatch-grid');
 const summaryList = $('#summary-list');
 const copyFeedback = $('#copy-feedback');
+const fullscreenButton = $('#toggle-fullscreen');
+const resetCameraButton = $('#reset-camera');
+
+const viewerButtonText = {
+  ko: { enlarge: '크게 보기', close: '크게 보기 닫기', reset: '시점 초기화' },
+  en: { enlarge: 'Open large view', close: 'Close large view', reset: 'Reset view' },
+  ja: { enlarge: '大きく見る', close: '拡大表示を閉じる', reset: '視点をリセット' },
+};
+
+function currentViewerText() {
+  return viewerButtonText[getLanguage()] ?? viewerButtonText.ko;
+}
 
 const renderer = new THREE.WebGLRenderer({
   canvas,
@@ -58,8 +73,7 @@ renderer.shadowMap.enabled = true;
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 1000);
-camera.position.set(0, 46, 188);
+const camera = new THREE.PerspectiveCamera(31, 1, 0.1, 2000);
 
 const pmrem = new THREE.PMREMGenerator(renderer);
 const room = new RoomEnvironment();
@@ -70,8 +84,9 @@ pmrem.dispose();
 const controls = new OrbitControls(camera, canvas);
 controls.enableDamping = true;
 controls.dampingFactor = 0.065;
-controls.minDistance = 100;
-controls.maxDistance = 290;
+controls.enablePan = false;
+controls.minDistance = 80;
+controls.maxDistance = 360;
 controls.autoRotate = true;
 controls.autoRotateSpeed = 0.5;
 
@@ -139,10 +154,44 @@ function resetGroupTransforms() {
   }
 }
 
+function applyResponsiveOrientation() {
+  if (!state.root) return;
+  state.root.rotation.z = mobileMedia.matches ? Math.PI / 2 : 0;
+}
+
+function fitCameraToModel() {
+  if (!state.root) return;
+
+  scene.updateMatrixWorld(true);
+  const box = new THREE.Box3().setFromObject(state.root);
+  if (box.isEmpty()) return;
+
+  const size = box.getSize(new THREE.Vector3());
+  const center = box.getCenter(new THREE.Vector3());
+  const verticalFov = THREE.MathUtils.degToRad(camera.fov);
+  const horizontalFov = 2 * Math.atan(Math.tan(verticalFov / 2) * camera.aspect);
+  const distanceForHeight = size.y / (2 * Math.tan(verticalFov / 2));
+  const distanceForWidth = size.x / (2 * Math.tan(horizontalFov / 2));
+  const padding = state.fullscreen ? 1.12 : mobileMedia.matches ? 1.18 : 1.25;
+  const distance = Math.max(distanceForHeight, distanceForWidth, size.z * 2.4) * padding;
+  const elevation = mobileMedia.matches ? 0.04 : 0.12;
+
+  camera.position.set(center.x, center.y + distance * elevation, center.z + distance);
+  camera.near = Math.max(0.1, distance / 150);
+  camera.far = Math.max(1000, distance * 8);
+  camera.updateProjectionMatrix();
+
+  controls.target.copy(center);
+  controls.minDistance = Math.max(45, distance * 0.48);
+  controls.maxDistance = Math.max(280, distance * 2.4);
+  controls.update();
+}
+
 function updateModelLayout() {
   if (!state.groups) return;
   const { capEndGroup, capBodyGroup, nibGripGroup, barrelGroup, barrelEndGroup } = state.groups;
   resetGroupTransforms();
+  applyResponsiveOrientation();
 
   if (state.viewMode === 'open') {
     capEndGroup.position.set(-8, 30, 0);
@@ -151,18 +200,18 @@ function updateModelLayout() {
     barrelGroup.position.set(8, -7, 0);
     barrelEndGroup.position.set(21, -7, 0);
     state.root.position.set(-6, -3, 0);
-    camera.position.set(0, 52, 202);
     ground.position.y = -28;
   } else {
     capEndGroup.position.set(22.2, 0, 0);
     capBodyGroup.position.set(22.2, 0, 0);
     state.root.position.set(-8, 0, 0);
-    camera.position.set(0, 28, 180);
     ground.position.y = -13;
   }
 
-  controls.target.set(0, 0, 0);
-  controls.update();
+  requestAnimationFrame(() => {
+    resizeRenderer();
+    fitCameraToModel();
+  });
   updateViewerLabels();
 }
 
@@ -308,17 +357,41 @@ function renderControls() {
 }
 
 function updateViewerLabels() {
+  const extraText = currentViewerText();
   $('#view-title').textContent = state.viewMode === 'open' ? t('viewer.openTitle') : t('viewer.closedTitle');
   $('#toggle-rotate').textContent = state.autoRotate ? t('viewer.autoOn') : t('viewer.autoOff');
   $('#toggle-view').textContent = state.viewMode === 'open' ? t('viewer.showClosed') : t('viewer.showOpen');
+  fullscreenButton.textContent = state.fullscreen ? extraText.close : extraText.enlarge;
+  resetCameraButton.textContent = extraText.reset;
 }
 
 function resizeRenderer() {
   const width = canvasWrap.clientWidth;
   const height = canvasWrap.clientHeight;
+  if (!width || !height) return;
   renderer.setSize(width, height, false);
   camera.aspect = width / height;
   camera.updateProjectionMatrix();
+}
+
+function resetCameraView() {
+  applyResponsiveOrientation();
+  requestAnimationFrame(() => {
+    resizeRenderer();
+    fitCameraToModel();
+  });
+}
+
+function setViewerFullscreen(enabled) {
+  state.fullscreen = enabled;
+  viewerCard.classList.toggle('is-fullscreen', enabled);
+  document.body.classList.toggle('viewer-fullscreen-open', enabled);
+  fullscreenButton.setAttribute('aria-pressed', String(enabled));
+  updateViewerLabels();
+  requestAnimationFrame(() => {
+    resizeRenderer();
+    fitCameraToModel();
+  });
 }
 
 function showFeedback(message) {
@@ -356,7 +429,19 @@ window.addEventListener('languagechange', () => {
   updateViewerLabels();
 });
 
-new ResizeObserver(resizeRenderer).observe(canvasWrap);
+new ResizeObserver(() => {
+  resizeRenderer();
+}).observe(canvasWrap);
+
+mobileMedia.addEventListener('change', () => {
+  if (!state.root) return;
+  state.viewMode = mobileMedia.matches ? 'closed' : state.viewMode;
+  updateModelLayout();
+});
+
+window.addEventListener('orientationchange', () => {
+  window.setTimeout(resetCameraView, 220);
+});
 
 const raycaster = new THREE.Raycaster();
 const pointer = new THREE.Vector2();
@@ -371,6 +456,20 @@ canvas.addEventListener('pointerup', (event) => {
   if (partId) selectPart(partId);
 });
 
+canvas.addEventListener('pointerdown', () => {
+  if (!state.autoRotate) return;
+  state.autoRotate = false;
+  $('#toggle-rotate').setAttribute('aria-pressed', 'false');
+  updateViewerLabels();
+});
+
+let lastTouchAt = 0;
+canvas.addEventListener('touchend', () => {
+  const now = Date.now();
+  if (now - lastTouchAt < 320) resetCameraView();
+  lastTouchAt = now;
+}, { passive: true });
+
 $('#toggle-rotate').addEventListener('click', (event) => {
   state.autoRotate = !state.autoRotate;
   event.currentTarget.setAttribute('aria-pressed', String(state.autoRotate));
@@ -380,6 +479,16 @@ $('#toggle-rotate').addEventListener('click', (event) => {
 $('#toggle-view').addEventListener('click', () => {
   state.viewMode = state.viewMode === 'open' ? 'closed' : 'open';
   updateModelLayout();
+});
+
+fullscreenButton.addEventListener('click', () => {
+  setViewerFullscreen(!state.fullscreen);
+});
+
+resetCameraButton.addEventListener('click', resetCameraView);
+
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && state.fullscreen) setViewerFullscreen(false);
 });
 
 $('#copy-link').addEventListener('click', async () => {
