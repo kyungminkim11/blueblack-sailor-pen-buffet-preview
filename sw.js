@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v9b-20260627';
+const CACHE_NAME = 'blueblack-pen-v10-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -9,16 +9,22 @@ const CORE_PATHS = [
   './store-experience-v6.css',
   './part-guide-v8.css',
   './mobile-share-v9.css',
+  './ui-v10.css',
   './pwa-v6.css',
   './manifest.webmanifest',
   './app-icon.svg',
+  './social-card.svg',
+  './social-card.png',
+  './robots.txt',
+  './sitemap.xml',
   './src/app-v6.js',
   './src/data.js',
   './src/pen-model.js',
   './src/nib-feed.js',
   './src/i18n-v3.js',
   './src/i18n-v9.js',
-  './src/restore-combination.js',
+  './src/restore-combination-v9.js',
+  './src/pwa-v9.js',
   './src/customer-flow-v6.js',
   './src/share-image-v9.js',
   './src/mobile-actions-v9.js',
@@ -27,7 +33,7 @@ const CORE_PATHS = [
   './src/session-v9.js',
   './src/store-experience-v6.js',
   './src/part-guide-v8.js',
-  './src/pwa-v6.js'
+  './src/locale-ui-v10.js'
 ].map((path) => new URL(path, BASE).href);
 
 self.addEventListener('install', (event) => {
