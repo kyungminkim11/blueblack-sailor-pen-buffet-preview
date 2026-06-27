@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v12b-20260627';
+const CACHE_NAME = 'blueblack-pen-v12c-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -40,7 +40,11 @@ const CORE_PATHS = [
   './src/locale-ui-v10.js',
   './src/store-session-v12.js',
   './src/store-actions-v12.js',
-  './src/store-recovery-v12.js'
+  './src/store-recovery-v12.js',
+  'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js',
+  'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js',
+  'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/environments/RoomEnvironment.js',
+  'https://cdn.jsdelivr.net/npm/qrcode@1.5.4/+esm'
 ].map((path) => new URL(path, BASE).href);
 
 self.addEventListener('install', (event) => {
