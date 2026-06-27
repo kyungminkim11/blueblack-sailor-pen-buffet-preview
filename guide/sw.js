@@ -1,5 +1,5 @@
-const CACHE='blueblack-guide-v4.0.0';
-const CORE=['./','./index.html','./app.css','./extended.css','./app.js','./extensions.js','./offline.html','./manifest.webmanifest','./data/catalog.js','./data/premium.js','./modules/search.js','./modules/recommendation.js','./modules/sanitize.js','../app-icon.svg'];
+const CACHE='blueblack-guide-v4.1.0';
+const CORE=['./','./index.html','./app.css','./extended.css','./collection-tools.css','./app.js','./extensions.js','./additional-situations.js','./collection-tools.js','./offline.html','./manifest.webmanifest','./data/catalog.js','./data/premium.js','./modules/search.js','./modules/recommendation.js','./modules/sanitize.js','../app-icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE))));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
