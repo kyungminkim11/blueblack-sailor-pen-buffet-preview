@@ -1,14 +1,16 @@
 {
+  "id": "./?mode=store",
   "name": "BlueBlack Sailor Pen Buffet Preview",
   "short_name": "Pen Buffet",
   "description": "블루블랙 펜샵 세일러 펜뷔페 3D 조합 미리보기",
   "lang": "ko",
-  "start_url": "./",
+  "start_url": "./?mode=store",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",
   "background_color": "#f4f6f9",
   "theme_color": "#10233f",
+  "categories": ["shopping", "lifestyle"],
   "icons": [
     {
       "src": "./app-icon.svg",
