@@ -1,3 +1,8 @@
+const exportButton = document.querySelector('#export-log');
+if (exportButton) {
+  exportButton.hidden = new URLSearchParams(location.search).get('admin') !== '1';
+}
+
 export function escapeHtml(value='') {
   return String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 }
