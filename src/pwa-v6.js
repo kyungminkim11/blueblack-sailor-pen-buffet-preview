@@ -42,6 +42,14 @@ function isStoreMode() {
 }
 
 function ensureMetadata() {
+  if (!document.querySelector('link[data-pwa-v6-style]')) {
+    const style = document.createElement('link');
+    style.rel = 'stylesheet';
+    style.href = './pwa-v6.css';
+    style.dataset.pwaV6Style = 'true';
+    document.head.append(style);
+  }
+
   if (!document.querySelector('link[rel="manifest"]')) {
     const link = document.createElement('link');
     link.rel = 'manifest';
