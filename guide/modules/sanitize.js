@@ -2,12 +2,37 @@ const exportButton = document.querySelector('#export-log');
 if (exportButton) {
   exportButton.hidden = new URLSearchParams(location.search).get('admin') !== '1';
 }
-const storeHourItems = document.querySelectorAll('.store-card li');
-if (storeHourItems.length >= 3) {
-  storeHourItems[2].textContent = '일요일 정기휴무 · 공휴일 운영 별도 확인';
-}
 const internalFooterLink = document.querySelector('footer a[href*="app.notion.com"]');
 if (internalFooterLink) internalFooterLink.hidden = true;
+
+const topbar = document.querySelector('.topbar');
+const syncTopbar = () => topbar?.classList.toggle('scrolled', window.scrollY > 12);
+window.addEventListener('scroll', syncTopbar, { passive: true });
+syncTopbar();
+
+setTimeout(() => {
+  const version = document.querySelector('#app-version');
+  if (version) version.textContent = 'Guide v3.0.0 · 디자인 개편 2026-06-28';
+
+  const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card');
+  if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    targets.forEach((el) => el.classList.add('is-visible'));
+    return;
+  }
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.08, rootMargin: '0px 0px -30px' });
+  targets.forEach((el, index) => {
+    el.classList.add('reveal');
+    el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 45}ms`);
+    observer.observe(el);
+  });
+}, 80);
 
 export function escapeHtml(value='') {
   return String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
