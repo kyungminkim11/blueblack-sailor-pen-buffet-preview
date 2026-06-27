@@ -4,11 +4,36 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
-  <meta name="description" content="블루블랙 펜샵 세일러 펜뷔페 3D 조합 미리보기" />
+  <meta name="color-scheme" content="light" />
+  <meta name="application-name" content="BlueBlack Pen Buffet Preview" />
+  <meta name="description" content="블루블랙 펜샵 매장 상담용 세일러 펜뷔페 미리보기. 여섯 개 파츠의 색상을 조합하고 완성된 만년필을 3D로 확인해보세요." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/" />
+  <link rel="alternate" hreflang="ko" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/?lang=ko" />
+  <link rel="alternate" hreflang="en" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/?lang=en" />
+  <link rel="alternate" hreflang="ja" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/?lang=ja" />
+  <link rel="alternate" hreflang="zh-Hans" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/?lang=zh-Hans" />
+  <link rel="alternate" hreflang="zh-Hant" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/?lang=zh-Hant" />
+  <link rel="alternate" hreflang="x-default" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/" />
   <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="BlueBlack Pen Shop" />
   <meta property="og:title" content="BlueBlack Sailor Pen Buffet Preview" />
-  <meta property="og:description" content="Choose six pen parts and preview your color combination in 3D." />
-  <title>세일러 펜뷔페 미리보기</title>
+  <meta property="og:description" content="Choose six pen parts, mix your colors and preview the finished fountain pen in 3D." />
+  <meta property="og:url" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/" />
+  <meta property="og:image" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="BlueBlack Pen Buffet fountain pen color combination preview" />
+  <meta property="og:locale" content="ko_KR" />
+  <meta property="og:locale:alternate" content="en_US" />
+  <meta property="og:locale:alternate" content="ja_JP" />
+  <meta property="og:locale:alternate" content="zh_CN" />
+  <meta property="og:locale:alternate" content="zh_TW" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BlueBlack Sailor Pen Buffet Preview" />
+  <meta name="twitter:description" content="Build a six-part fountain pen color combination and preview it in 3D." />
+  <meta name="twitter:image" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png" />
+  <title>블루블랙 펜샵 세일러 펜뷔페 미리보기</title>
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="icon" href="./app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./app-v3.css" />
@@ -17,7 +42,56 @@
   <link rel="stylesheet" href="./store-experience-v6.css" />
   <link rel="stylesheet" href="./part-guide-v8.css" />
   <link rel="stylesheet" href="./mobile-share-v9.css" />
+  <link rel="stylesheet" href="./ui-v10.css" />
+  <script>
+    (function(){
+      var query=new URLSearchParams(location.search);
+      if(query.has('lang')||localStorage.getItem('blueblack-language'))return;
+      var locales=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en'];
+      var value='en';
+      for(var i=0;i<locales.length;i++){
+        var locale=String(locales[i]||'').toLowerCase();
+        if(locale.indexOf('ko')===0){value='ko';break;}
+        if(locale.indexOf('ja')===0){value='ja';break;}
+        if(locale.indexOf('zh-tw')===0||locale.indexOf('zh-hk')===0||locale.indexOf('zh-mo')===0||locale.indexOf('hant')>-1){value='zh-Hant';break;}
+        if(locale.indexOf('zh')===0){value='zh-Hans';break;}
+        if(locale.indexOf('en')===0){value='en';break;}
+      }
+      query.set('lang',value);
+      document.documentElement.lang=value;
+      history.replaceState(null,'',location.pathname+'?'+query.toString());
+    })();
+  </script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@graph":[
+      {
+        "@type":"WebApplication",
+        "@id":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/#app",
+        "name":"BlueBlack Sailor Pen Buffet Preview",
+        "alternateName":"블루블랙 펜샵 세일러 펜뷔페 미리보기",
+        "url":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/",
+        "applicationCategory":"DesignApplication",
+        "operatingSystem":"Any",
+        "isAccessibleForFree":true,
+        "inLanguage":["ko","en","ja","zh-Hans","zh-Hant"],
+        "description":"A mobile-friendly in-store consultation tool for previewing a six-part fountain pen color combination in 3D.",
+        "image":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png"
+      },
+      {
+        "@type":"Store",
+        "@id":"https://blueblack.co.kr/#store",
+        "name":"BlueBlack Pen Shop",
+        "url":"https://blueblack.co.kr/",
+        "telephone":"+82-2-765-8868",
+        "address":{"@type":"PostalAddress","streetAddress":"사직로 109","addressLocality":"종로구","addressRegion":"서울특별시","addressCountry":"KR"},
+        "sameAs":["https://www.instagram.com/blueblack_korea/"]
+      }
+    ]
+  }
+  </script>
 </head>
 <body>
   <header class="app-header">
@@ -25,7 +99,16 @@
       <div class="brand-row"><span class="brand-name">BLUEBLACK PEN SHOP</span><span class="status-badge" data-t="storePreview">매장 상담용 미리보기</span></div>
       <h1 data-t="title">세일러 펜뷔페 미리보기</h1>
       <p data-t="intro">여섯 개 파츠의 색상을 직접 조합하고 완성 모습을 3D로 확인해보세요. 최종 선택은 매장에서 실물 파츠와 함께 확인해 드립니다.</p>
-      <div class="language-switcher" role="group" aria-label="Language"><button type="button" data-language="ko" aria-pressed="true">한국어</button><button type="button" data-language="en" aria-pressed="false">EN</button><button type="button" data-language="ja" aria-pressed="false">日本語</button><button type="button" data-language="zh-Hans" aria-pressed="false">简体</button><button type="button" data-language="zh-Hant" aria-pressed="false">繁體</button></div>
+      <details class="language-menu">
+        <summary aria-label="Choose language"><span class="language-current"><span class="language-current-flag">🇰🇷</span><span class="language-current-label">한국어</span></span><span class="language-chevron">⌄</span></summary>
+        <div class="language-switcher" role="group" aria-label="Language">
+          <button type="button" data-language="ko" aria-pressed="true"><span class="language-flag">🇰🇷</span><span class="language-label">한국어</span></button>
+          <button type="button" data-language="en" aria-pressed="false"><span class="language-flag">🇺🇸</span><span class="language-label">English</span></button>
+          <button type="button" data-language="ja" aria-pressed="false"><span class="language-flag">🇯🇵</span><span class="language-label">日本語</span></button>
+          <button type="button" data-language="zh-Hans" aria-pressed="false"><span class="language-flag">🇨🇳</span><span class="language-label">简体中文</span></button>
+          <button type="button" data-language="zh-Hant" aria-pressed="false"><span class="language-flag">🇹🇼</span><span class="language-label">繁體中文</span></button>
+        </div>
+      </details>
     </div>
   </header>
   <main>
@@ -41,7 +124,7 @@
   <dialog class="staff-dialog" id="staff-dialog"><div class="staff-dialog-body"><div class="staff-dialog-head"><div><h2 data-t="staffTitle">선택 파츠 확인</h2><p data-t="staffCopy">고객님이 선택한 색상입니다. 실물 파츠와 하나씩 비교해 주세요.</p></div><button type="button" class="dialog-close" id="staff-close">×</button></div><div class="summary-list" id="staff-summary"></div><p class="converter"><b data-t="converterTitle">컨버터 안내</b><br><span data-t="converterCopy">잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않는 별도 구매 상품입니다.</span></p></div></dialog>
   <script>(function(){var ids=['cap_body','cap_end','nib_grip','metal_parts','barrel_body','barrel_end'];var q=new URLSearchParams(location.search);var compact=q.get('c');if(compact&&!ids.some(function(id){return q.has(id);})){var values=compact.split('.');if(values.length===ids.length){ids.forEach(function(id,index){q.set(id,values[index]);});q.delete('c');history.replaceState(null,'',location.pathname+'?'+q.toString());}}})();</script>
   <script>window.__bbViewerTimeout=setTimeout(function(){var loading=document.getElementById('viewer-loading');var error=document.getElementById('viewer-error');if(loading&&!loading.hidden){loading.hidden=true;if(error)error.hidden=false;}},10000);window.addEventListener('penviewerready',function(){clearTimeout(window.__bbViewerTimeout);});</script>
-  <script type="module" src="./src/restore-combination.js"></script>
+  <script type="module" src="./src/restore-combination-v9.js"></script>
   <script type="module" src="./src/app-v6.js"></script>
   <script type="module" src="./src/part-guide-v8.js"></script>
   <script type="module" src="./src/customer-flow-v6.js"></script>
@@ -49,5 +132,6 @@
   <script type="module" src="./src/preset-chinese-v9.js"></script>
   <script type="module" src="./src/mobile-actions-v9.js"></script>
   <script type="module" src="./src/session-v9.js"></script>
+  <script type="module" src="./src/locale-ui-v10.js"></script>
 </body>
 </html>
