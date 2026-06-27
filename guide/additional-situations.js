@@ -1,20 +1,21 @@
 import { products as entryProducts } from './data/catalog.js';
 import { premiumProducts } from './data/premium.js';
+import { expandedProducts } from './data/expanded-products.js';
 
 const $=(selector,root=document)=>root.querySelector(selector);
 const $$=(selector,root=document)=>[...root.querySelectorAll(selector)];
-const productMap=new Map([...entryProducts,...premiumProducts].map(product=>[product.id,product]));
+const productMap=new Map([...entryProducts,...premiumProducts,...expandedProducts].map(product=>[product.id,product]));
 const formatPrice=value=>new Intl.NumberFormat('ko-KR').format(value)+'원';
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
 export const additionalSituations=[
 {id:'korean-small',icon:'한',title:'한글 작은 글씨',summary:'받침과 획이 많은 한글을 또렷하게 쓰는 방향입니다.',tips:['EF·F를 같은 종이에서 비교','획 뭉침과 번짐 확인','너무 건조한 조합은 끊김 여부 확인'],productIds:['pilot-lightive','pilot-custom74','platinum-3776-kasumi']},
-{id:'strong-pressure',icon:'↘️',title:'필압이 강한 사용자',summary:'굵은 촉보다 힘을 빼는 습관과 안정적인 그립을 먼저 봅니다.',tips:['스틸닙 입문 모델부터 비교','삼각·가이드 그립 적응 확인','닙을 눌러 벌리는 시필은 금지'],productIds:['lamy-safari','sailor-tuzu','parker-jotter']},
-{id:'small-hands',icon:'🤏',title:'손이 작은 사용자',summary:'짧고 가벼운 바디와 좁은 그립을 우선합니다.',tips:['캡을 뒤에 꽂지 않은 상태도 비교','그립 지름과 단차 확인','포켓형 모델은 사용 길이 확인'],productIds:['kaweco-sport-luna','pilot-decimo','pelikan-m205']},
+{id:'strong-pressure',icon:'↘️',title:'필압이 강한 사용자',summary:'굵은 촉보다 힘을 빼는 습관과 안정적인 그립을 먼저 봅니다.',tips:['스틸닙 입문 모델부터 비교','삼각·가이드 그립 적응 확인','닙을 눌러 벌리는 시필은 금지'],productIds:['lamy-safari','lamy-alstar-pine','sailor-tuzu']},
+{id:'small-hands',icon:'🤏',title:'손이 작은 사용자',summary:'짧고 가벼운 바디와 좁은 그립을 우선합니다.',tips:['캡을 뒤에 꽂지 않은 상태도 비교','그립 지름과 단차 확인','포켓형 모델은 사용 길이 확인'],productIds:['kaweco-sport-luna','esterbrook-jr-pocket','pilot-decimo']},
 {id:'large-hands',icon:'🖐️',title:'손이 큰 사용자',summary:'그립 지름과 전체 길이, 캡 게시 시 균형을 확인합니다.',tips:['바디가 짧아 손 안에 숨지 않는지 확인','굵은 그립과 긴 바디 비교','10분 이상 연속 필기'],productIds:['pilot-custom742','pilot-custom743','twsbi-vac700r']},
-{id:'easy-care',icon:'🧼',title:'관리 쉬운 구성',summary:'세척 부담과 소모품 구입 난이도를 낮추는 방향입니다.',tips:['카트리지로 먼저 시작','쉬머·안료 잉크는 뒤로 미루기','분해가 필요한 구조보다 단순한 구조 우선'],productIds:['pilot-lightive','lamy-safari','parker-jotter']},
+{id:'easy-care',icon:'🧼',title:'관리 쉬운 구성',summary:'세척 부담과 소모품 구입 난이도를 낮추는 방향입니다.',tips:['카트리지로 먼저 시작','쉬머·안료 잉크는 뒤로 미루기','분해가 필요한 구조보다 단순한 구조 우선'],productIds:['pilot-lightive','lamy-safari','cross-foundry']},
 {id:'first-gold',icon:'✨',title:'첫 금닙·상위 닙',summary:'가격보다 현재 펜과 어떤 차이를 원하는지 먼저 확인합니다.',tips:['현재 펜과 같은 닙 굵기로 비교','부드러움과 탄성을 따로 확인','금 함량만으로 필기감을 단정하지 않기'],productIds:['pilot-custom74','pilot-decimo','sailor-profit14k']},
-{id:'mentor-gift',icon:'🎓',title:'부모님·은사 선물',summary:'격식, 읽기 쉬운 닙과 사후 서비스를 함께 고려합니다.',tips:['받는 분의 필기 습관 확인','F·M 중심으로 비교','각인·포장·AS 안내를 함께 준비'],productIds:['parker-sonnet-essential','parker-sonnet-matte','pelikan-m400']},
+{id:'mentor-gift',icon:'🎓',title:'부모님·은사 선물',summary:'격식, 읽기 쉬운 닙과 사후 서비스를 함께 고려합니다.',tips:['받는 분의 필기 습관 확인','F·M 중심으로 비교','각인·포장·AS 안내를 함께 준비'],productIds:['faber-ambition-walnut','parker-sonnet-matte','pelikan-m400']},
 {id:'frequent-ink-change',icon:'🔄',title:'잉크를 자주 바꾸는 사용자',summary:'세척 시간과 잔량, 색상 전환 편의성을 우선합니다.',tips:['컨버터식과 피스톤식 세척 시간 비교','쉬머 사용 후 세척 주기 확인','투명 바디의 잔색 여부 확인'],productIds:['sailor-tuzu','twsbi-eco-white','twsbi-580alr']}
 ];
 
@@ -36,7 +37,7 @@ function openProduct(id){
       <div><span>${escapeHtml(productLabel(product))}</span><h3>${formatPrice(product.price)}</h3><p>${escapeHtml(product.note)}</p></div><i class="premium-pen large"></i>
     </div>
     <div class="metric-grid"><div class="metric"><small>닙 방향</small><strong>${escapeHtml(nibLabel(product))}</strong></div><div class="metric"><small>충전 방식</small><strong>${escapeHtml(product.filling)}</strong></div><div class="metric"><small>무게</small><strong>${escapeHtml(product.weight||'확인 필요')}</strong></div></div>
-    <div class="premium-purpose-list">${(product.purposes||[]).map(item=>`<span>${escapeHtml(item)}</span>`).join('')}</div>
+    <div class="premium-purpose-list">${[...(product.families||[]),...(product.purposes||[])].slice(0,7).map(item=>`<span>${escapeHtml(item)}</span>`).join('')}</div>
     <div class="info-box"><strong>구매 전 확인:</strong> ${escapeHtml(product.stock)}<br>가격·옵션·시필 가능 여부는 직원에게 최종 확인해 주세요.</div>
     <div class="dialog-actions"><a class="button navy" href="${product.url}" target="_blank" rel="noopener">공식 상품 페이지</a></div>`);
   document.dispatchEvent(new CustomEvent('bb:product-open',{detail:{id}}));
