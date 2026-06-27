@@ -1,42 +1,198 @@
-const NOTION_MAIN='https://app.notion.com/p/38c5f865c253812da750e72d5607f81c';
-const STAFF_FORM='https://www.notion.so/113be9cf69104815b44f079311b5f39b?v=38c5f865c25381ddac4b000c71f1345d';
-const pages=[
- {id:'structure',icon:'🖋️',title:'만년필 기본 구조',desc:'닙, 피드, 그립, 배럴과 캡의 역할을 이해합니다.',keywords:'만년필 구조 닙 피드 그립 배럴 캡 펜촉',url:'https://app.notion.com/p/38c5f865c25381109eb3ea4a2d8f1688'},
- {id:'fill',icon:'🔹',title:'카트리지·컨버터 비교',desc:'간편한 카트리지와 다양한 병 잉크를 쓰는 컨버터를 비교합니다.',keywords:'카트리지 컨버터 병잉크 충전 호환',url:'https://app.notion.com/p/38c5f865c2538192a742e8a45fe44878'},
- {id:'nib',icon:'✒️',title:'필압·글씨체별 닙 선택',desc:'EF·F·M·B 중 내 글씨와 종이에 맞는 굵기를 찾습니다.',keywords:'닙 촉 펜촉 EF F M B 작은 글씨 큰 글씨 필압 굵기 세필',url:'https://app.notion.com/p/38c5f865c253819bb004f41ea9099941'},
- {id:'ink',icon:'🎨',title:'만년필 잉크 선택',desc:'염료, 안료, 쉬머, 쉰과 셰이딩 잉크를 목적별로 비교합니다.',keywords:'잉크 염료 안료 쉬머 쉰 셰이딩 블루블랙',url:'https://app.notion.com/p/38c5f865c25381069eb7ff2121d0eb3c'},
- {id:'clean',icon:'🧼',title:'세척·관리 표준 가이드',desc:'색상 변경과 장기 보관 전에 필요한 안전한 세척 순서입니다.',keywords:'세척 관리 청소 물 건조 색상 변경',url:'https://app.notion.com/p/38c5f865c25381728e59f41bb9dcbc70'},
- {id:'starter',icon:'✨',title:'입문자 추천 구성',desc:'첫 구매에 필요한 펜, 잉크, 컨버터와 노트 구성입니다.',keywords:'입문 추천 첫 만년필 스타터 세트 초보',url:'https://app.notion.com/p/38c5f865c25381eebfadd8a0a0dae54b'},
- {id:'budget',icon:'💰',title:'예산별 만년필 선택',desc:'3만원 이하부터 30만원 이상까지 기대 수준과 선택 기준입니다.',keywords:'예산 가격 가격대 3만원 5만원 10만원 15만원 30만원 선물',url:'https://app.notion.com/p/38c5f865c25381f2adfce6f4c4833b4e'},
- {id:'brand',icon:'🔍',title:'주요 브랜드 특징 비교',desc:'LAMY, Pilot, Platinum, Sailor, Pelikan 등 대표 경향을 비교합니다.',keywords:'브랜드 라미 LAMY 파일럿 Pilot 플래티넘 Sailor 세일러 펠리칸 Parker Waterman Kaweco',url:'https://app.notion.com/p/38c5f865c25381a0af8ee266699b2aae'},
- {id:'noink',icon:'⚠️',title:'잉크가 나오지 않을 때',desc:'장착, 잔량, 필기 각도, 세척 순서로 안전하게 점검합니다.',keywords:'잉크 안 나옴 안나와요 끊김 무출수 마름 막힘',url:'https://app.notion.com/p/38c5f865c253819da710ef3a8605bc75'},
- {id:'flow',icon:'💧',title:'잉크 흐름 문제 체크',desc:'첫 획 끊김, 과다 흐름, 번짐, 특정 방향 긁힘을 진단합니다.',keywords:'잉크 흐름 끊김 번짐 누출 긁힘 헛발',url:'https://app.notion.com/p/38c5f865c253818f88bbc2ac963ef0ec'},
- {id:'mistakes',icon:'⚠️',title:'입문자가 자주 하는 실수',desc:'강한 필압, 캡 방치, 비호환 부품, 세척 생략을 예방합니다.',keywords:'실수 초보 필압 캡 방치 호환',url:'https://app.notion.com/p/38c5f865c25381e9b4cfebfa4e480490'},
- {id:'storage',icon:'🏷️',title:'보관·휴대 시 주의사항',desc:'책상, 가방, 비행기, 장기 미사용 상황별 보관법입니다.',keywords:'보관 휴대 비행기 누출 케이스 장기',url:'https://app.notion.com/p/38c5f865c2538199b814ea25122dc60e'},
- {id:'faq',icon:'❓',title:'자주 묻는 질문',desc:'제품 선택, 잉크, 세척, 비행기 휴대와 AS 질문을 모았습니다.',keywords:'FAQ 질문 자주 묻는',url:'https://app.notion.com/p/38c5f865c25381298b68f41330e0bc79'},
- {id:'engrave',icon:'✨',title:'각인 서비스 안내',desc:'레이저·조각 각인 방식, 문구 제한, 비용과 출고 기준입니다.',keywords:'각인 레이저 조각 이름 이니셜 선물 문구 서체',url:'https://app.notion.com/p/38c5f865c253815f866dfd035f2b7870'},
- {id:'as',icon:'🔧',title:'AS·교환 접수 안내',desc:'접수 전 자가 점검과 준비 자료, 처리 절차를 안내합니다.',keywords:'AS 수리 교환 반품 고장 보증서 닙 손상',url:'https://app.notion.com/p/38c5f865c2538193ac0ceb5e91e42d5f'},
- {id:'visit',icon:'📍',title:'매장 위치·방문 안내',desc:'경복궁역에서 오는 길, 영업시간과 방문 전 준비 정보입니다.',keywords:'매장 위치 주소 경복궁 영업시간 방문 지도',url:'https://app.notion.com/p/38c5f865c253817186a7c2e2c55bb351'}
-];
-const i18n={ko:{call:'직원 전화',eyebrow:'매장 고객용 셀프 가이드',heroTitle:'내게 맞는 만년필을<br />3분 안에 찾아보세요.',heroBody:'검색, 닙 추천, 잉크 선택, 문제 해결까지. 답을 찾기 어렵다면 직원 상담으로 바로 연결됩니다.',searchLabel:'무엇이 궁금한가요?',searchButton:'검색',quickRecommend:'내 첫 만년필 찾기',quickRecommendSub:'5문항 추천',quickNib:'나에게 맞는 닙',quickNibSub:'EF·F·M·B 비교',quickInk:'잉크 추천',quickInkSub:'목적별 선택',quickTrouble:'잉크가 안 나와요',quickTroubleSub:'안전한 점검',quickService:'각인·AS 안내',quickServiceSub:'접수 준비',quickStaff:'직원에게 문의',quickStaffSub:'상담 요청 만들기',searchResults:'검색 결과',close:'닫기',browseTitle:'필요한 정보를 바로 찾아보세요',allGuide:'전체 가이드',storeTitle:'실물 테스트가 가장 정확합니다.',storeBody:'경복궁역 1번 출구에서 도보 약 2분. 닙 굵기와 무게, 그립을 직접 비교해 보세요.',map:'지도 보기',shop:'공식몰',chatLabel:'가이드 챗봇',chatTitle:'블루블랙 가이드 챗봇',chatSub:'승인된 매장 가이드만 검색합니다.',send:'전송'},en:{call:'Call staff',eyebrow:'In-store self guide',heroTitle:'Find your fountain pen<br />in about 3 minutes.',heroBody:'Search, nib guidance, ink selection and troubleshooting. Ask a staff member whenever you need help.',searchLabel:'What would you like to know?',searchButton:'Search',quickRecommend:'Find my first pen',quickRecommendSub:'5-question guide',quickNib:'Choose a nib',quickNibSub:'Compare EF·F·M·B',quickInk:'Choose an ink',quickInkSub:'By purpose',quickTrouble:'Ink is not flowing',quickTroubleSub:'Safe checks',quickService:'Engraving & service',quickServiceSub:'Prepare a request',quickStaff:'Ask staff',quickStaffSub:'Create a request',searchResults:'Search results',close:'Close',browseTitle:'Browse the store guide',allGuide:'All guides',storeTitle:'Trying the pen in person is best.',storeBody:'About two minutes from Gyeongbokgung Station Exit 1. Compare nib width, weight and grip in store.',map:'Map',shop:'Official store',chatLabel:'Guide chatbot',chatTitle:'BlueBlack guide chatbot',chatSub:'Searches approved store guidance only.',send:'Send'},ja:{call:'スタッフに電話',eyebrow:'店舗用セルフガイド',heroTitle:'自分に合う万年筆を<br />約3分で見つけましょう。',heroBody:'検索、ペン先選び、インク、トラブル確認まで。必要な時はスタッフ相談へつながります。',searchLabel:'何をお探しですか？',searchButton:'検索',quickRecommend:'最初の万年筆を探す',quickRecommendSub:'5つの質問',quickNib:'ペン先を選ぶ',quickNibSub:'EF・F・M・B比較',quickInk:'インクを選ぶ',quickInkSub:'用途別',quickTrouble:'インクが出ない',quickTroubleSub:'安全な確認',quickService:'名入れ・修理',quickServiceSub:'受付準備',quickStaff:'スタッフ相談',quickStaffSub:'相談内容を作成',searchResults:'検索結果',close:'閉じる',browseTitle:'必要な情報を探す',allGuide:'全ガイド',storeTitle:'実物での試筆が最も確実です。',storeBody:'景福宮駅1番出口から徒歩約2分。ペン先、重さ、グリップを比較できます。',map:'地図',shop:'公式ストア',chatLabel:'ガイドチャット',chatTitle:'BlueBlack ガイドチャット',chatSub:'店舗で承認されたガイドのみ検索します。',send:'送信'}};
-const guideGrid=document.querySelector('#guide-grid'),dialog=document.querySelector('#flow-dialog'),dialogTitle=document.querySelector('#dialog-title'),dialogBody=document.querySelector('#dialog-body');let lang=localStorage.getItem('bb-guide-language')||'ko';
-function applyLanguage(){document.documentElement.lang=lang;document.querySelector('#language').value=lang;document.querySelectorAll('[data-i18n]').forEach(el=>{const key=el.dataset.i18n;if(i18n[lang][key])el.innerHTML=i18n[lang][key]})}
-function renderGuides(){guideGrid.innerHTML=pages.slice(0,12).map(p=>`<a class="guide-card" href="${p.url}" target="_blank" rel="noopener"><span>${p.icon}</span><h3>${p.title}</h3><p>${p.desc}</p></a>`).join('')}
-function norm(v){return String(v||'').toLowerCase().replace(/\s+/g,' ').trim()}
-function search(query){const q=norm(query);if(!q)return[];const tokens=q.split(' ').filter(Boolean);return pages.map(p=>{const hay=norm(`${p.title} ${p.desc} ${p.keywords}`);let score=0;tokens.forEach(t=>{if(hay.includes(t))score+=3;if(norm(p.title).includes(t))score+=4});return{...p,score}}).filter(p=>p.score>0).sort((a,b)=>b.score-a.score)}
-function showSearch(query){const results=search(query),section=document.querySelector('#search-results');document.querySelector('#search-title').textContent=`“${query}”`;document.querySelector('#result-list').innerHTML=results.length?results.slice(0,8).map(p=>`<a class="result-card" href="${p.url}" target="_blank" rel="noopener"><div><h3>${p.icon} ${p.title}</h3><p>${p.desc}</p></div><em>열기 →</em></a>`).join(''):`<div class="info-box">검색 결과가 없습니다. 가이드 챗봇에 질문하거나 직원 상담을 요청해 주세요.</div>`;section.hidden=false;section.scrollIntoView({behavior:'smooth',block:'start'})}
-function openDialog(title,html){dialogTitle.textContent=title;dialogBody.innerHTML=html;dialog.showModal()}
-const recommendQuestions=[{key:'purpose',title:'주로 어디에 사용하나요?',options:[['study','공부·필기','작은 글씨와 장문 필기'],['work','업무','회의와 문서 작성'],['diary','다이어리','컬러와 필기 감성'],['gift','선물','디자인과 완성도']]},{key:'size',title:'평소 글씨 크기는 어떤가요?',options:[['small','작은 편','촘촘하게 쓰는 편'],['medium','보통','일반적인 노트 필기'],['large','큰 편','굵고 시원한 글씨']]},{key:'pressure',title:'필압은 어떤 편인가요?',options:[['light','약한 편','힘을 거의 주지 않음'],['normal','보통','일반적인 필압'],['strong','강한 편','종이에 힘이 많이 들어감']]},{key:'budget',title:'예산 범위를 선택해 주세요.',options:[['under3','3만원 이하','가볍게 시작'],['3to7','3–7만원','입문용 선택 폭'],['7to15','7–15만원','마감과 디자인 강화'],['15plus','15만원 이상','상위 모델·선물']]},{key:'style',title:'어떤 스타일을 선호하나요?',options:[['light','가볍고 실용적','매일 휴대'],['classic','클래식','전통적인 디자인'],['color','컬러풀','색과 개성'],['premium','고급스러움','선물과 기념']]}];
-function startRecommend(){const answers={};let step=0;const render=()=>{const q=recommendQuestions[step];openDialog('내 첫 만년필 찾기',`<div class="flow-progress"><span style="width:${(step/recommendQuestions.length)*100}%"></span></div><div class="question"><h3>${q.title}</h3><div class="option-grid">${q.options.map(o=>`<button class="option-button ${answers[q.key]===o[0]?'selected':''}" data-value="${o[0]}"><strong>${o[1]}</strong><small>${o[2]}</small></button>`).join('')}</div></div><div class="dialog-actions">${step?'<button class="back" id="flow-back">이전</button>':''}<button class="next" id="flow-next" ${answers[q.key]?'':'disabled'}>${step===recommendQuestions.length-1?'결과 보기':'다음'}</button></div>`);dialogBody.querySelectorAll('.option-button').forEach(btn=>btn.onclick=()=>{answers[q.key]=btn.dataset.value;render()});dialogBody.querySelector('#flow-back')?.addEventListener('click',()=>{step--;render()});dialogBody.querySelector('#flow-next').onclick=()=>{if(step<recommendQuestions.length-1){step++;render()}else showRecommendation(answers)}};render()}
-function showRecommendation(a){let nib='F';if(a.size==='small')nib='EF 또는 F';if(a.size==='large'||a.purpose==='diary')nib='M';if(a.purpose==='gift'&&a.size!=='small')nib='M';let filling=a.style==='light'?'카트리지 중심':'카트리지 + 컨버터';let budget={'under3':'3만원 이하 입문 모델','3to7':'3–7만원대 입문 모델','7to15':'7–15만원대 중급 입문 모델','15plus':'15만원 이상 상위 모델'}[a.budget];let note=a.pressure==='strong'?'필압이 강하면 닙 굵기보다 먼저 힘을 빼는 연습이 필요합니다.':'평소 사용하는 종이에서 실제 선 굵기를 확인해 주세요.';dialogTitle.textContent='추천 결과';dialogBody.innerHTML=`<div class="recommend-result"><div class="result-hero"><span class="eyebrow">YOUR GUIDE</span><h3>${nib} 닙부터 비교해 보세요.</h3><p>${note}</p></div><div class="result-metrics"><div class="metric"><small>추천 닙</small><strong>${nib}</strong></div><div class="metric"><small>잉크 방식</small><strong>${filling}</strong></div><div class="metric"><small>예산 방향</small><strong>${budget}</strong></div></div><div class="info-box">이 결과는 제품을 단정하지 않고 매장 상담 범위를 좁히는 가이드입니다. 실제 펜의 무게, 그립, 브랜드별 선 굵기를 시필로 확인하세요.</div><div class="dialog-actions"><a class="back" href="https://app.notion.com/p/38c5f865c253819bb004f41ea9099941" target="_blank">닙 가이드</a><button class="next" id="result-staff">직원 상담 요청</button></div></div>`;dialogBody.querySelector('#result-staff').onclick=()=>startStaff(`추천 결과: ${nib} / ${filling} / ${budget}`)}
-function showNib(){openDialog('나에게 맞는 닙 고르기',`<div class="service-grid"><div class="service-card"><h3>EF</h3><p>작은 글씨, 다이어리, 일반 복사용지. 브랜드에 따라 거칠게 느껴질 수 있습니다.</p></div><div class="service-card"><h3>F</h3><p>공부와 업무에 가장 범용적입니다. 첫 만년필로 우선 비교하기 좋습니다.</p></div><div class="service-card"><h3>M</h3><p>부드러운 필기와 잉크 색 표현에 유리합니다. 건조 시간은 길어질 수 있습니다.</p></div><div class="service-card"><h3>B · Stub</h3><p>서명, 큰 글씨, 캘리그래피에 적합합니다. 종이와 잉크 궁합이 중요합니다.</p></div></div><div class="info-box" style="margin-top:14px">같은 F라도 브랜드마다 실제 선 굵기가 다릅니다. 매장에서 평소 글씨로 시필해 보세요.</div><div class="dialog-actions"><a class="next" href="https://app.notion.com/p/38c5f865c253819bb004f41ea9099941" target="_blank">상세 가이드</a></div>`)}
-function showInk(){openDialog('목적별 잉크 추천',`<div class="service-grid"><div class="service-card"><h3>업무·공부</h3><p>중간 농도의 블루, 블루블랙, 블랙 염료 잉크가 가장 무난합니다.</p></div><div class="service-card"><h3>다이어리·취미</h3><p>셰이딩과 쉰을 즐기되, 먼저 종이와 닙 조합을 확인하세요.</p></div><div class="service-card"><h3>기록 보존</h3><p>안료 잉크를 검토할 수 있지만 세척 주기를 짧게 관리해야 합니다.</p></div><div class="service-card"><h3>처음 피할 것</h3><p>쉬머, 철갈, 딥펜 전용 잉크는 관리 난이도가 높거나 사용이 불가합니다.</p></div></div><div class="dialog-actions"><a class="next" href="https://app.notion.com/p/38c5f865c25381069eb7ff2121d0eb3c" target="_blank">상세 가이드</a></div>`)}
-const troubleSteps=[{q:'펜을 떨어뜨렸거나 닙이 휘어 보이나요?',yes:'stop',no:1},{q:'카트리지 또는 컨버터에 잉크가 남아 있나요?',yes:2,no:'refill'},{q:'잉크 저장부가 끝까지 정확히 장착되어 있나요?',yes:3,no:'attach'},{q:'오랫동안 사용하지 않았거나 캡을 열어둔 적이 있나요?',yes:'clean',no:4},{q:'다른 종이에서도 같은 증상이 반복되나요?',yes:'clean',no:'paper'}];
-function startTrouble(){let idx=0;const render=()=>{const s=troubleSteps[idx];openDialog('잉크가 안 나올 때 안전 점검',`<div class="flow-progress"><span style="width:${((idx+1)/troubleSteps.length)*100}%"></span></div><div class="question"><h3>${s.q}</h3><div class="option-grid"><button class="option-button" id="yes"><strong>예</strong><small>해당합니다</small></button><button class="option-button" id="no"><strong>아니요</strong><small>해당하지 않습니다</small></button></div></div>`);dialogBody.querySelector('#yes').onclick=()=>handle(s.yes);dialogBody.querySelector('#no').onclick=()=>handle(s.no)};const handle=v=>{if(typeof v==='number'){idx=v;render()}else troubleResult(v)};render()}
-function troubleResult(type){const data={stop:['즉시 사용을 중단하세요.','닙을 누르거나 펴지 말고 제품, 구매 정보, 닙 사진을 준비해 직원 또는 AS에 문의하세요.',true],refill:['잉크를 보충해 주세요.','호환 카트리지로 교체하거나 컨버터에 만년필 전용 잉크를 충전한 뒤 잠시 기다립니다.',false],attach:['장착 상태를 다시 확인하세요.','규격이 맞는 카트리지·컨버터를 수직으로 끝까지 장착합니다. 억지로 비틀지 마세요.',false],clean:['기본 세척 후 다시 확인하세요.','깨끗한 물로 닙과 피드를 헹구고 컨버터 펌핑 세척 후 충분히 자연 건조합니다.',false],paper:['종이와 잉크 궁합을 확인하세요.','흡수력이 높은 종이는 번짐과 흐름 저하처럼 느껴질 수 있습니다. 다른 노트에서 비교하세요.',false]}[type];dialogTitle.textContent='점검 결과';dialogBody.innerHTML=`<div class="result-hero"><span class="eyebrow">SAFE CHECK</span><h3>${data[0]}</h3><p>${data[1]}</p></div>${data[2]?'<div class="safety-box" style="margin-top:14px"><strong>금지:</strong> 닙 벌리기, 금속 도구 사용, 뜨거운 물·세제·알코올 사용</div>':'<div class="info-box" style="margin-top:14px">세척 후에도 문제가 계속되면 무리하게 분해하지 말고 직원에게 보여주세요.</div>'}<div class="dialog-actions"><a class="back" href="https://app.notion.com/p/38c5f865c253819da710ef3a8605bc75" target="_blank">상세 점검 가이드</a><button class="next" id="trouble-staff">직원에게 문의</button></div>`;dialogBody.querySelector('#trouble-staff').onclick=()=>startStaff(`문제 진단 결과: ${data[0]}`)}
-function showService(){openDialog('각인·AS 안내',`<div class="service-grid"><div class="service-card"><h3>✨ 각인 서비스</h3><p>레이저·조각 방식, 문구 제한, 비용과 출고 기준을 확인합니다.</p><a href="https://app.notion.com/p/38c5f865c253815f866dfd035f2b7870" target="_blank">각인 안내 열기 →</a></div><div class="service-card"><h3>🔧 AS·교환</h3><p>제품명, 구매 정보, 보증서, 닙 사진과 증상 영상을 준비해 주세요.</p><a href="https://app.notion.com/p/38c5f865c2538193ac0ceb5e91e42d5f" target="_blank">AS 안내 열기 →</a></div></div><div class="dialog-actions"><button class="next" id="service-staff">직원 상담 요청</button></div>`);dialogBody.querySelector('#service-staff').onclick=()=>startStaff('각인 또는 AS 상담 요청')}
-function startStaff(prefill=''){openDialog('직원 상담 요청',`<form class="staff-form" id="staff-request"><label>현재 위치<select name="location"><option>1층</option><option>2층</option><option>시필대</option><option>카운터</option><option>기타</option></select></label><label>문의 유형<select name="type"><option>제품 추천</option><option>재고 확인</option><option>잉크 추천</option><option>각인</option><option>AS</option><option>기타</option></select></label><label>예산<select name="budget"><option>미정</option><option>3만원 이하</option><option>3–7만원</option><option>7–15만원</option><option>15–30만원</option><option>30만원 이상</option></select></label><label>상세 내용<textarea name="detail" placeholder="찾는 제품, 용도, 증상 등을 적어주세요.">${prefill}</textarea></label><button class="copy-button" type="submit">상담 요청 내용 만들기</button></form><div id="ticket-area"></div>`);dialogBody.querySelector('#staff-request').onsubmit=e=>{e.preventDefault();const f=new FormData(e.currentTarget);const text=`[블루블랙 매장 상담 요청]\n위치: ${f.get('location')}\n유형: ${f.get('type')}\n예산: ${f.get('budget')}\n내용: ${f.get('detail')||'없음'}`;dialogBody.querySelector('#ticket-area').innerHTML=`<div class="ticket" id="ticket">${text}</div><div class="dialog-actions"><button class="back" id="copy-ticket">내용 복사</button><a class="back" href="tel:027658868">전화하기</a><a class="next" href="${STAFF_FORM}" target="_blank" rel="noopener">Notion 접수 폼</a></div><p style="color:var(--muted);font-size:13px">폼이 열리지 않으면 내용을 복사해 직원에게 보여주시거나 02-765-8868로 연락해 주세요.</p>`;dialogBody.querySelector('#copy-ticket').onclick=async()=>{await navigator.clipboard.writeText(text);dialogBody.querySelector('#copy-ticket').textContent='복사 완료'}}}
-function chatbotReply(q){const query=norm(q),results=search(query);if(/가격|재고|있어|품절/.test(query))return`가격과 재고는 실시간으로 달라질 수 있어요. 공식몰 또는 직원 확인이 필요합니다. <a href="https://blueblack.co.kr/" target="_blank">공식몰 보기</a>`;if(/직원|상담|문의/.test(query)){setTimeout(()=>startStaff(q),50);return'상담 요청 창을 열어드릴게요.'}if(!results.length)return`관련 안내를 찾지 못했습니다. 표현을 짧게 바꿔 검색하거나 직원 상담을 요청해 주세요. 예: “F촉”, “잉크 안 나옴”, “각인”`;const top=results.slice(0,3);return`${top[0].desc}<br><br>${top.map(p=>`<a href="${p.url}" target="_blank">${p.icon} ${p.title}</a>`).join('<br>')}<br><br><small>가이드 내용을 기반으로 안내했습니다. 제품별 재고와 실제 필기감은 직원에게 확인해 주세요.</small>`}
-document.querySelector('#language').addEventListener('change',e=>{lang=e.target.value;localStorage.setItem('bb-guide-language',lang);applyLanguage()});document.querySelector('#search-button').onclick=()=>showSearch(document.querySelector('#global-search').value);document.querySelector('#global-search').addEventListener('keydown',e=>{if(e.key==='Enter')showSearch(e.currentTarget.value)});document.querySelectorAll('[data-query]').forEach(b=>b.onclick=()=>{document.querySelector('#global-search').value=b.dataset.query;showSearch(b.dataset.query)});document.querySelector('#clear-search').onclick=()=>document.querySelector('#search-results').hidden=true;document.querySelectorAll('[data-open]').forEach(b=>b.onclick=()=>({recommend:startRecommend,nib:showNib,ink:showInk,trouble:startTrouble,service:showService,staff:()=>startStaff()})[b.dataset.open]());document.querySelector('#dialog-close').onclick=()=>dialog.close();dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
-const chatPanel=document.querySelector('#chat-panel'),chatLog=document.querySelector('#chat-log');function addMessage(text,type='bot'){const d=document.createElement('div');d.className=`message ${type}`;d.innerHTML=text;chatLog.appendChild(d);chatLog.scrollTop=chatLog.scrollHeight}document.querySelector('#chat-launcher').onclick=()=>{chatPanel.hidden=false;document.querySelector('#chat-launcher').setAttribute('aria-expanded','true');if(!chatLog.children.length)addMessage('안녕하세요. 만년필 선택, 닙, 잉크, 세척, 각인과 AS를 물어보세요.')};document.querySelector('#chat-close').onclick=()=>{chatPanel.hidden=true;document.querySelector('#chat-launcher').setAttribute('aria-expanded','false')};document.querySelector('#chat-form').onsubmit=e=>{e.preventDefault();const input=document.querySelector('#chat-input'),q=input.value.trim();if(!q)return;addMessage(q,'user');input.value='';setTimeout(()=>addMessage(chatbotReply(q)),180)};
-renderGuides();applyLanguage();if('serviceWorker'in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+import { APP_VERSION, VERIFIED_AT, store, guides, products, troubleTree, troubleResults } from './data/catalog.js';
+import { buildIndex, searchIndex, normalize } from './modules/search.js';
+import { questions, recommend } from './modules/recommendation.js';
+import { escapeHtml, safeText } from './modules/sanitize.js';
+
+const $ = (selector, root=document) => root.querySelector(selector);
+const $$ = (selector, root=document) => [...root.querySelectorAll(selector)];
+const guideIndex = buildIndex(guides);
+const state = { category:'전체', productFilter:'all', dialogTrigger:null, recommendation:null };
+const isKiosk = new URLSearchParams(location.search).get('mode') === 'kiosk';
+const source = new URLSearchParams(location.search).get('source') || 'direct';
+
+function track(event, detail={}) {
+  const logs = JSON.parse(localStorage.getItem('bb-guide-events') || '[]');
+  logs.push({event, detail, source, at:new Date().toISOString(), version:APP_VERSION});
+  localStorage.setItem('bb-guide-events', JSON.stringify(logs.slice(-500)));
+}
+function formatPrice(value) { return new Intl.NumberFormat('ko-KR').format(value) + '원'; }
+function setTrustedHtml(el, html) { el.innerHTML = html; }
+
+function renderProducts(list=products) {
+  const grid = $('#product-grid');
+  if (!list.length) { grid.innerHTML='<div class="info-box">조건에 맞는 상품이 없습니다. 다른 필터를 선택해 주세요.</div>'; return; }
+  setTrustedHtml(grid, list.map(p=>`
+    <article class="product-card">
+      <div class="product-visual" style="background:linear-gradient(145deg,${p.accent}22,#f4f6f8)"><div class="pen-art" style="--accent:${p.accent}"></div></div>
+      <span class="product-brand">${escapeHtml(p.brand)}</span>
+      <h3>${escapeHtml(p.name)}</h3>
+      <div class="product-price">${formatPrice(p.price)}</div>
+      <div class="product-meta"><div><small>닙</small><strong>${escapeHtml(p.nibs.join(' · '))}</strong></div><div><small>충전</small><strong>${escapeHtml(p.filling)}</strong></div></div>
+      <p class="product-note">${escapeHtml(p.note)}</p>
+      <p class="product-note">${escapeHtml(p.priceNote)} · ${p.verifiedAt} 확인<br><strong>${escapeHtml(p.stock)}</strong></p>
+      <div class="product-actions"><button class="button soft" type="button" data-product="${p.id}">상세</button><a class="button navy" href="${p.url}" target="_blank" rel="noopener">공식몰</a></div>
+    </article>`).join(''));
+  $$('[data-product]', grid).forEach(btn=>btn.addEventListener('click',()=>openProduct(products.find(p=>p.id===btn.dataset.product))));
+}
+function filterProducts(filter) {
+  const filtered=products.filter(p=>{
+    if(filter==='all')return true;
+    if(filter==='under3')return p.price<30000;
+    if(filter==='3to7')return p.price>=30000&&p.price<70000;
+    if(filter==='bottle')return p.filling.includes('피스톤')||p.filling.includes('컨버터');
+    if(filter==='portable')return p.weight.includes('가벼운')||p.purposes.includes('휴대');
+    return true;
+  });
+  renderProducts(filtered); track('product_filter',{filter,count:filtered.length});
+}
+function renderCategories() {
+  const cats=['전체',...new Set(guides.map(g=>g.category))];
+  setTrustedHtml($('#category-tabs'), cats.map(c=>`<button class="category-tab ${c==='전체'?'active':''}" role="tab" aria-selected="${c==='전체'}" data-category="${escapeHtml(c)}">${escapeHtml(c)}</button>`).join(''));
+  $$('[data-category]').forEach(btn=>btn.addEventListener('click',()=>{
+    state.category=btn.dataset.category;
+    $$('[data-category]').forEach(x=>{x.classList.toggle('active',x===btn);x.setAttribute('aria-selected',x===btn?'true':'false')});
+    renderGuides(); track('guide_category',{category:state.category});
+  }));
+}
+function renderGuides() {
+  const list=state.category==='전체'?guides:guides.filter(g=>g.category===state.category);
+  setTrustedHtml($('#guide-grid'), list.map(g=>`<button class="guide-card" type="button" data-guide="${g.id}"><span class="guide-icon">${g.icon}</span><h3>${escapeHtml(g.title)}</h3><p>${escapeHtml(g.summary)}</p><small>${escapeHtml(g.category)} · 읽기 →</small></button>`).join(''));
+  $$('[data-guide]').forEach(btn=>btn.addEventListener('click',()=>openGuide(btn.dataset.guide)));
+}
+function openDialog(title, subtitle='', trigger=document.activeElement) {
+  state.dialogTrigger=trigger;
+  $('#dialog-title').textContent=title;
+  $('#dialog-subtitle').textContent=subtitle;
+  if (!$('#flow-dialog').open) $('#flow-dialog').showModal();
+  $('#dialog-close').focus();
+}
+function closeDialog() { $('#flow-dialog').close(); state.dialogTrigger?.focus?.(); }
+function openGuide(id) {
+  const g=guides.find(x=>x.id===id); if(!g)return;
+  openDialog(g.title,g.summary);
+  setTrustedHtml($('#dialog-body'), `<article class="guide-detail">${g.sections.map(([title,items])=>`<h3>${escapeHtml(title)}</h3><ul>${items.map(item=>`<li>${escapeHtml(item)}</li>`).join('')}</ul>`).join('')}<div class="related-row">${(g.related||[]).map(r=>{const item=guides.find(x=>x.id===r);return item?`<button type="button" data-related="${item.id}">${item.icon} ${escapeHtml(item.title)}</button>`:''}).join('')}</div><div class="dialog-actions"><button class="button soft" type="button" data-action="staff">상담 요청서 만들기</button><button class="button navy" type="button" id="guide-close">확인</button></div></article>`);
+  $$('[data-related]',$('#dialog-body')).forEach(btn=>btn.addEventListener('click',()=>openGuide(btn.dataset.related)));
+  $('[data-action="staff"]',$('#dialog-body')).addEventListener('click',()=>openStaff(`관심 가이드: ${g.title}`));
+  $('#guide-close').addEventListener('click',closeDialog); track('guide_open',{id:g.id,title:g.title});
+}
+function openProduct(p) {
+  openDialog(p.name,`${p.brand} · ${p.priceNote}`);
+  setTrustedHtml($('#dialog-body'),`<div class="result-hero"><span class="eyebrow">PRODUCT CHECK</span><h3>${formatPrice(p.price)}</h3><p>${escapeHtml(p.note)}</p></div><div class="metric-grid"><div class="metric"><small>닙 옵션</small><strong>${escapeHtml(p.nibs.join(' · '))}</strong></div><div class="metric"><small>충전 방식</small><strong>${escapeHtml(p.filling)}</strong></div><div class="metric"><small>재고</small><strong>${escapeHtml(p.stock)}</strong></div></div><div class="info-box">가격은 ${p.verifiedAt} 공식몰 확인 기준입니다. 옵션별 판매 여부와 매장 재고는 실시간으로 달라질 수 있습니다.</div><div class="dialog-actions"><button class="button soft" type="button" id="product-staff">직원에게 보여줄 요청서</button><a class="button navy" href="${p.url}" target="_blank" rel="noopener">공식 상품 페이지</a></div>`);
+  $('#product-staff').addEventListener('click',()=>openStaff(`관심 제품: ${p.name} / 확인 가격: ${formatPrice(p.price)}`));
+  track('product_open',{id:p.id,name:p.name});
+}
+function showSearch(query) {
+  const safe=safeText(query,80); if(!safe)return;
+  const results=searchIndex(guideIndex,safe);
+  $('#search-title').textContent=`“${safe}” 검색 결과`;
+  const list=$('#result-list');
+  if(results.length){
+    setTrustedHtml(list,results.slice(0,8).map(g=>`<article class="result-card"><div><h3>${g.icon} ${escapeHtml(g.title)}</h3><p>${escapeHtml(g.summary)}</p></div><button type="button" data-result="${g.id}">열기 →</button></article>`).join(''));
+    $$('[data-result]',list).forEach(btn=>btn.addEventListener('click',()=>openGuide(btn.dataset.result)));
+  } else {
+    setTrustedHtml(list,`<div class="info-box">관련 안내를 찾지 못했습니다. “촉”, “잉크 안 나옴”, “각인”처럼 짧게 검색하거나 상담 요청서를 만들어 주세요.<div class="dialog-actions"><button class="button navy" type="button" id="search-staff">상담 요청서</button></div></div>`);
+    $('#search-staff').addEventListener('click',()=>openStaff(`검색어: ${safe}`));
+  }
+  $('#search-results').hidden=false; $('#search-results').scrollIntoView({behavior:'smooth',block:'start'});
+  track('search',{query:safe,count:results.length});
+}
+function startRecommendation() {
+  const answers={}; let step=0;
+  const render=()=>{
+    const q=questions[step]; openDialog('내 첫 만년필 찾기',`${step+1} / ${questions.length} · 답변은 기기에 저장되지 않습니다.`);
+    setTrustedHtml($('#dialog-body'),`<div class="progress"><span style="width:${((step+1)/questions.length)*100}%"></span></div><div class="question"><h3>${escapeHtml(q.title)}</h3>${q.help?`<p>${escapeHtml(q.help)}</p>`:''}<div class="option-grid">${q.options.map(([value,label,desc])=>`<button class="option-button ${answers[q.key]===value?'selected':''}" type="button" data-answer="${value}"><strong>${escapeHtml(label)}</strong><small>${escapeHtml(desc)}</small></button>`).join('')}</div></div><div class="dialog-actions">${step?'<button class="button soft" type="button" id="rec-back">이전</button>':''}<button class="button navy next" type="button" id="rec-next" ${answers[q.key]?'':'disabled'}>${step===questions.length-1?'결과 보기':'다음'}</button></div>`);
+    $$('[data-answer]',$('#dialog-body')).forEach(btn=>btn.addEventListener('click',()=>{answers[q.key]=btn.dataset.answer;render()}));
+    $('#rec-back')?.addEventListener('click',()=>{step--;render()});
+    $('#rec-next').addEventListener('click',()=>{if(!answers[q.key])return;if(step<questions.length-1){step++;render()}else showRecommendation(answers)});
+  }; render(); track('recommend_start');
+}
+function showRecommendation(answers) {
+  const result=recommend(products,answers); state.recommendation={answers,result};
+  openDialog('맞춤 추천 결과','제품을 단정하기보다 시필 후보를 좁히는 결과입니다.');
+  setTrustedHtml($('#dialog-body'),`<div class="result-hero"><span class="eyebrow">YOUR PEN PROFILE</span><h3>${escapeHtml(result.nib)}부터 비교해 보세요.</h3><p>${escapeHtml(result.caution)}</p></div><div class="metric-grid"><div class="metric"><small>추천 닙</small><strong>${escapeHtml(result.nib)}</strong></div><div class="metric"><small>추천 상품 수</small><strong>${result.products.length}개</strong></div><div class="metric"><small>가격 기준일</small><strong>${VERIFIED_AT}</strong></div></div><div class="recommend-products">${result.products.map((p,i)=>`<article class="recommend-row"><span class="rank">${i+1}</span><div><h4>${escapeHtml(p.name)} · ${formatPrice(p.price)}</h4><p>${escapeHtml(p.reasons.join(' · ')||p.note)}<br>${escapeHtml(p.stock)}</p></div><a href="${p.url}" target="_blank" rel="noopener">공식몰 →</a></article>`).join('')}</div><div class="info-box">화면 가격은 공식몰 확인 기준이며 할인·옵션·재고는 달라질 수 있습니다. 결과를 직원에게 보여주고 실제 무게와 그립을 시필하세요.</div><div class="dialog-actions"><button class="button soft" type="button" id="rec-restart">다시 하기</button><button class="button navy" type="button" id="rec-staff">상담 요청서 만들기</button></div>`);
+  $('#rec-restart').addEventListener('click',startRecommendation);
+  $('#rec-staff').addEventListener('click',()=>openStaff(`추천 닙: ${result.nib}\n추천 후보: ${result.products.map(p=>p.name).join(', ')}`));
+  track('recommend_complete',{nib:result.nib,products:result.products.map(p=>p.id)});
+}
+function startTrouble() {
+  let node='start';
+  const render=()=>{
+    const item=troubleTree[node]; openDialog('만년필 안전 점검','자가수리가 아니라 안전한 분기 확인입니다.');
+    setTrustedHtml($('#dialog-body'),`<div class="question"><h3>${escapeHtml(item.question)}</h3><p>상태를 눈으로 확인한 뒤 선택해 주세요.</p><div class="option-grid"><button class="option-button" type="button" data-trouble="yes"><strong>예</strong><small>해당합니다</small></button><button class="option-button" type="button" data-trouble="no"><strong>아니요</strong><small>해당하지 않습니다</small></button></div></div><div class="danger-box"><strong>항상 금지:</strong> 닙을 손으로 벌리기, 바늘·칼날 사용, 뜨거운 물·세제·알코올 사용</div>`);
+    $$('[data-trouble]',$('#dialog-body')).forEach(btn=>btn.addEventListener('click',()=>{const next=item[btn.dataset.trouble];if(troubleTree[next]){node=next;render()}else showTroubleResult(next)}));
+  }; render(); track('trouble_start');
+}
+function showTroubleResult(key) {
+  const r=troubleResults[key]; const guide=guides.find(g=>g.id===r.guide);
+  openDialog('점검 결과',r.level==='danger'?'추가 사용 전에 직원 확인이 필요합니다.':'안전한 기본 조치부터 진행하세요.');
+  setTrustedHtml($('#dialog-body'),`<div class="result-hero"><span class="eyebrow">SAFE CHECK</span><h3>${escapeHtml(r.title)}</h3><p>${escapeHtml(r.body)}</p></div>${r.level==='danger'?'<div class="danger-box"><strong>즉시 중단 기준:</strong> 낙하 후 닙 변형, 균열, 비정상 누출, 갑작스러운 금속성 긁힘</div>':'<div class="info-box">조치 후에도 증상이 반복되면 임의 분해하지 말고 직원에게 보여주세요.</div>'}<div class="dialog-actions"><button class="button soft" type="button" id="trouble-guide">${guide.icon} 상세 가이드</button><button class="button navy" type="button" id="trouble-staff">상담 요청서</button></div>`);
+  $('#trouble-guide').addEventListener('click',()=>openGuide(guide.id));
+  $('#trouble-staff').addEventListener('click',()=>openStaff(`문제 점검 결과: ${r.title}`)); track('trouble_complete',{result:key});
+}
+function openService() {
+  openDialog('각인·AS·매장 서비스','최신 비용·일정·보증 여부는 접수 전 확인해 주세요.');
+  setTrustedHtml($('#dialog-body'),`<div class="guide-grid"><button class="guide-card" type="button" data-service-guide="engrave"><span class="guide-icon">✨</span><h3>각인 안내</h3><p>방식, 문구, 일정과 주문제작 주의사항</p><small>열기 →</small></button><button class="guide-card" type="button" data-service-guide="as"><span class="guide-icon">🔧</span><h3>AS·교환</h3><p>접수 자료와 자가 조정 금지 기준</p><small>열기 →</small></button><button class="guide-card" type="button" data-service-guide="storage"><span class="guide-icon">🏷️</span><h3>보관·휴대</h3><p>가방과 비행기, 장기 보관 기준</p><small>열기 →</small></button></div><div class="dialog-actions"><a class="button soft" href="${store.mapUrl}" target="_blank" rel="noopener">지도 보기</a><button class="button navy" type="button" id="service-staff">상담 요청서</button></div>`);
+  $$('[data-service-guide]',$('#dialog-body')).forEach(btn=>btn.addEventListener('click',()=>openGuide(btn.dataset.serviceGuide)));
+  $('#service-staff').addEventListener('click',()=>openStaff('각인·AS·매장 서비스 문의'));
+}
+function createTicketId() { return `BB-${new Date().toISOString().slice(2,10).replaceAll('-','')}-${String(Math.floor(Math.random()*900)+100)}`; }
+function openStaff(prefill='') {
+  openDialog('상담 요청서 만들기','요청서는 직원에게 보여주거나 전화·문의 게시판으로 전달할 수 있습니다. 자동 호출 기능은 아닙니다.');
+  const form=document.createElement('form'); form.className='staff-form'; form.id='staff-form';
+  form.innerHTML=`<label>현재 위치<select name="location"><option>1층</option><option>2층</option><option>시필대</option><option>카운터</option><option>기타</option></select></label><label>문의 유형<select name="type"><option>제품 추천</option><option>재고 확인</option><option>잉크 추천</option><option>각인</option><option>AS</option><option>기타</option></select></label><label>예산<select name="budget"><option>미정</option><option>3만원 이하</option><option>3–7만원</option><option>7–15만원</option><option>15–30만원</option><option>30만원 이상</option></select></label><label>연락처 <small>(선택, 문의 게시판 전달 시에만)</small><input name="contact" maxlength="60" autocomplete="tel" placeholder="전화번호 또는 이메일"></label><label>상세 내용<textarea name="detail" maxlength="500" placeholder="찾는 제품, 용도, 증상을 적어주세요."></textarea></label><label><span><input type="checkbox" name="privacy"> 연락처를 입력한 경우 상담 목적의 이용에 동의합니다.</span></label><button class="button navy" type="submit">요청서 생성</button><div id="staff-output"></div>`;
+  $('#dialog-body').replaceChildren(form); form.elements.detail.value=safeText(prefill,500);
+  form.addEventListener('submit',e=>{
+    e.preventDefault(); const fd=new FormData(form); const contact=safeText(fd.get('contact'),60);
+    if(contact && !fd.get('privacy')){alert('연락처를 입력했다면 상담 목적 이용 동의를 확인해 주세요.');return;}
+    const ticket={id:createTicketId(),location:safeText(fd.get('location'),30),type:safeText(fd.get('type'),30),budget:safeText(fd.get('budget'),30),contact,detail:safeText(fd.get('detail'),500),createdAt:new Date().toISOString()};
+    const text=`[블루블랙 매장 상담 요청]\n접수번호: ${ticket.id}\n위치: ${ticket.location}\n유형: ${ticket.type}\n예산: ${ticket.budget}\n내용: ${ticket.detail||'없음'}${ticket.contact?`\n연락처: ${ticket.contact}`:''}`;
+    const output=$('#staff-output'); output.replaceChildren(); const box=document.createElement('div'); box.className='ticket'; box.textContent=text; output.append(box);
+    const actions=document.createElement('div'); actions.className='dialog-actions'; const copy=document.createElement('button'); copy.type='button'; copy.className='button soft'; copy.textContent='내용 복사';
+    copy.addEventListener('click',async()=>{try{await navigator.clipboard.writeText(text);copy.textContent='복사 완료'}catch{alert('복사할 수 없습니다. 화면을 직원에게 보여주세요.')}});
+    const call=document.createElement('a'); call.className='button soft'; call.href=`tel:${store.tel}`; call.textContent='전화하기';
+    const inquiry=document.createElement('a'); inquiry.className='button navy'; inquiry.href=store.inquiryUrl; inquiry.target='_blank'; inquiry.rel='noopener'; inquiry.textContent='공식 문의 게시판';
+    actions.append(copy,call,inquiry); output.append(actions);
+    if(navigator.share){const share=document.createElement('button');share.type='button';share.className='button soft';share.textContent='공유';share.addEventListener('click',()=>navigator.share({title:'블루블랙 상담 요청',text}).catch(()=>{}));actions.prepend(share)}
+    track('staff_ticket_created',{id:ticket.id,type:ticket.type,location:ticket.location,hasContact:Boolean(ticket.contact)});
+  });
+  if(!sessionStorage.getItem('privacy-seen')){$('#privacy-toast').hidden=false;} track('staff_form_open');
+}
+function assistantReply(query) {
+  const q=safeText(query,160); const n=normalize(q);
+  if(/가격|재고|품절|있나요|있어/.test(n)) return {text:'가격과 재고는 실시간으로 바뀔 수 있어요. 공식몰 상품 페이지 또는 직원 확인이 필요합니다.',actions:[['공식몰',store.shopUrl,'link'],['상담 요청서','staff','action']]};
+  if(/직원|상담|문의/.test(n)) return {text:'자동 호출이 아니라 직원에게 보여줄 상담 요청서를 만들어 드립니다.',actions:[['요청서 만들기','staff','action']]};
+  const results=searchIndex(guideIndex,q).slice(0,3);
+  if(!results.length)return {text:'관련 가이드를 찾지 못했습니다. “촉”, “잉크 안 나옴”, “각인”처럼 짧게 표현하거나 상담 요청서를 만들어 주세요.',actions:[['상담 요청서','staff','action']]};
+  return {text:results[0].summary,actions:results.map(r=>[`${r.icon} ${r.title}`,r.id,'guide'])};
+}
+function addMessage(text,type='bot',actions=[]) {
+  const msg=document.createElement('div'); msg.className=`message ${type}`; msg.textContent=text; $('#assistant-log').append(msg);
+  if(actions.length){const wrap=document.createElement('div');wrap.className=`message ${type}`;actions.forEach(([label,target,kind])=>{const b=document.createElement('button');b.type='button';b.textContent=label;b.addEventListener('click',()=>{if(kind==='guide')openGuide(target);else if(kind==='action')openStaff('가이드 도우미에서 요청');else window.open(target,'_blank','noopener')});wrap.append(b,document.createElement('br'))});$('#assistant-log').append(wrap)}
+  $('#assistant-log').scrollTop=$('#assistant-log').scrollHeight;
+}
+function updateNetwork() {const online=navigator.onLine;$('#network-status').textContent=online?'온라인':'오프라인';$('#network-status').classList.toggle('offline',!online)}
+function setupKiosk() {
+  if(!isKiosk)return; document.body.classList.add('kiosk'); let timer;
+  const reset=()=>{clearTimeout(timer);timer=setTimeout(()=>{if($('#flow-dialog').open)closeDialog();$('#assistant-panel').hidden=true;location.hash='#home';window.scrollTo({top:0,behavior:'smooth'});track('kiosk_idle_reset')},120000)};
+  ['pointerdown','keydown','touchstart'].forEach(e=>addEventListener(e,reset,{passive:true})); reset();
+  $$('a[target="_blank"]').forEach(a=>a.addEventListener('click',e=>{if(!confirm('외부 페이지를 열까요? 키오스크로 돌아오려면 뒤로 가기를 눌러주세요.'))e.preventDefault()}));
+}
+function exportLogs() {const data=localStorage.getItem('bb-guide-events')||'[]';const blob=new Blob([data],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`blueblack-guide-events-${new Date().toISOString().slice(0,10)}.json`;a.click();URL.revokeObjectURL(a.href)}
+function init() {
+  $('#app-version').textContent=`Guide v${APP_VERSION} · 콘텐츠 확인 ${VERIFIED_AT}`;
+  renderProducts(); renderCategories(); renderGuides(); updateNetwork(); setupKiosk(); track('page_view',{kiosk:isKiosk});
+  $$('[data-action]').forEach(btn=>btn.addEventListener('click',()=>({recommend:startRecommendation,trouble:startTrouble,service:openService,staff:()=>openStaff()}[btn.dataset.action]?.())));
+  $$('.filter-chip').forEach(btn=>btn.addEventListener('click',()=>{$$('.filter-chip').forEach(x=>x.classList.toggle('active',x===btn));filterProducts(btn.dataset.filter)}));
+  $('#search-button').addEventListener('click',()=>showSearch($('#global-search').value)); $('#global-search').addEventListener('keydown',e=>{if(e.key==='Enter')showSearch(e.currentTarget.value)});
+  $$('[data-query]').forEach(btn=>btn.addEventListener('click',()=>{$('#global-search').value=btn.dataset.query;showSearch(btn.dataset.query)})); $('#clear-search').addEventListener('click',()=>$('#search-results').hidden=true);
+  $('#dialog-close').addEventListener('click',closeDialog); $('#flow-dialog').addEventListener('click',e=>{if(e.target===$('#flow-dialog'))closeDialog()});
+  $('#assistant-launcher').addEventListener('click',()=>{$('#assistant-panel').hidden=false;$('#assistant-launcher').setAttribute('aria-expanded','true');if(!$('#assistant-log').children.length)addMessage('안녕하세요. 만년필 선택, 닙, 잉크, 세척, 각인과 AS를 물어보세요.')});
+  $('#assistant-close').addEventListener('click',()=>{$('#assistant-panel').hidden=true;$('#assistant-launcher').setAttribute('aria-expanded','false');$('#assistant-launcher').focus()});
+  $('#assistant-form').addEventListener('submit',e=>{e.preventDefault();const input=$('#assistant-input'),q=safeText(input.value,160);if(!q)return;addMessage(q,'user');input.value='';const reply=assistantReply(q);setTimeout(()=>addMessage(reply.text,'bot',reply.actions),120);track('assistant_query',{query:q})});
+  $('#text-size').addEventListener('click',()=>{document.body.classList.toggle('large-text');localStorage.setItem('bb-large-text',document.body.classList.contains('large-text')?'1':'0')});
+  $('#contrast').addEventListener('click',()=>{document.body.classList.toggle('high-contrast');localStorage.setItem('bb-contrast',document.body.classList.contains('high-contrast')?'1':'0')});
+  if(localStorage.getItem('bb-large-text')==='1')document.body.classList.add('large-text');if(localStorage.getItem('bb-contrast')==='1')document.body.classList.add('high-contrast');
+  $('#privacy-ok').addEventListener('click',()=>{$('#privacy-toast').hidden=true;sessionStorage.setItem('privacy-seen','1')}); $('#export-log').addEventListener('click',exportLogs); addEventListener('online',updateNetwork);addEventListener('offline',updateNetwork);
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('./sw.js').then(reg=>{reg.addEventListener('updatefound',()=>{const worker=reg.installing;worker?.addEventListener('statechange',()=>{if(worker.state==='installed'&&navigator.serviceWorker.controller)$('#update-banner').hidden=false})});$('#update-now').addEventListener('click',()=>{reg.waiting?.postMessage({type:'SKIP_WAITING'});location.reload()})}).catch(()=>{});
+}
+init();
