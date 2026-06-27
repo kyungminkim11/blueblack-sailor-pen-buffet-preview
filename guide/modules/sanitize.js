@@ -1,6 +1,8 @@
+import '../advanced-search.js';
 import '../extensions.js';
 import '../additional-situations.js';
 import '../collection-tools.js';
+import '../result-tools.js';
 
 const visualStyle = document.createElement('style');
 visualStyle.textContent = `
@@ -26,7 +28,7 @@ syncTopbar();
 
 setTimeout(() => {
   const version = document.querySelector('#app-version');
-  if (version) version.textContent = 'Guide v4.1.0 · 비교함·관심 저장·24개 상황 2026-06-28';
+  if (version) version.textContent = 'Guide v4.2.0 · 비교·저장·공유·인쇄·24개 상황 2026-06-28';
 
   const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card, .situation-card, .premium-card');
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -46,7 +48,7 @@ setTimeout(() => {
     el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 45}ms`);
     observer.observe(el);
   });
-}, 180);
+}, 220);
 
 export function escapeHtml(value='') {
   return String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
