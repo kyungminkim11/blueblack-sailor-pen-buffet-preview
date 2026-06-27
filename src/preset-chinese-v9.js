@@ -1,0 +1,9 @@
+import { getLanguage } from './i18n-v3.js';
+const copy={
+'zh-Hans':{summary:'\u4ece\u63a8\u8350\u914d\u8272\u5f00\u59cb',title:'\u63a8\u8350\u914d\u8272\u793a\u4f8b',subtitle:'\u9009\u62e9\u793a\u4f8b\u540e\uff0c\u53ef\u4ee5\u81ea\u7531\u8c03\u6574\u6bcf\u4e2a\u90e8\u4ef6\u7684\u989c\u8272\u3002',names:[['\u900f\u660e\u7ecf\u5178','\u900f\u660e\u6811\u8102\u4e0e\u94f6\u8272\u91d1\u5c5e'],['\u6df1\u84dd\u914d\u8272','\u6df1\u84dd\u4e0e\u70ad\u7070\u8272\u7684\u6c89\u7a33\u7ec4\u5408'],['\u6a31\u82b1\u91d1','\u67d4\u548c\u7c89\u8272\u4e0e\u91d1\u8272\u91d1\u5c5e'],['\u7fe1\u7fe0\u94f6','\u7fe1\u7fe0\u8272\u4e0e\u9ec4\u8272\u70b9\u7f00']]},
+'zh-Hant':{summary:'\u5f9e\u63a8\u85a6\u914d\u8272\u958b\u59cb',title:'\u63a8\u85a6\u914d\u8272\u7bc4\u4f8b',subtitle:'\u9078\u64c7\u7bc4\u4f8b\u5f8c\uff0c\u53ef\u4ee5\u81ea\u7531\u8abf\u6574\u6bcf\u500b\u90e8\u4ef6\u7684\u984f\u8272\u3002',names:[['\u900f\u660e\u7d93\u5178','\u900f\u660e\u6a39\u8102\u8207\u9280\u8272\u91d1\u5c6c'],['\u6df1\u85cd\u914d\u8272','\u6df1\u85cd\u8207\u70ad\u7070\u8272\u7684\u6c89\u7a69\u7d44\u5408'],['\u6afb\u82b1\u91d1','\u67d4\u548c\u7c89\u8272\u8207\u91d1\u8272\u91d1\u5c6c'],['\u7fe1\u7fe0\u9280','\u7fe1\u7fe0\u8272\u8207\u9ec3\u8272\u9ede\u7db4']]}
+};
+function set(node,value){if(node&&value&&node.textContent!==value)node.textContent=value;}
+function patch(){const v=copy[getLanguage()],root=document.querySelector('.preset-details');if(!v||!root)return;set(root.querySelector('summary'),v.summary);set(root.querySelector('.preset-heading h3'),v.title);set(root.querySelector('.preset-heading p'),v.subtitle);root.querySelectorAll('.preset-card').forEach((card,index)=>{set(card.querySelector('b'),v.names[index]?.[0]);set(card.querySelector('p'),v.names[index]?.[1]);});}
+function later(){setTimeout(patch,80);}
+setTimeout(()=>{patch();document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',later));},130);
