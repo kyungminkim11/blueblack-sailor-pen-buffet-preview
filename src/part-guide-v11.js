@@ -1,0 +1,22 @@
+import { parts } from './data.js';
+import { getLanguage, localizePart } from './i18n-v3.js';
+
+const ORDER=['cap_end','cap_body','nib_grip','metal_parts','barrel_body','barrel_end'];
+const copy={
+  ko:{title:'1~6 전체 파츠',specLabel:'펜촉 사양',specValue:'MF 단일촉',locations:{cap_end:'캡 맨 끝의 둥근 마감 파츠',cap_body:'펜촉을 덮는 큰 캡 본체',nib_grip:'펜촉 바로 뒤, 손가락으로 잡는 그립 파츠',metal_parts:'MF 단일촉·클립·캡 링·연결 링 등 금속 부분 전체',barrel_body:'손에 쥐는 길고 넓은 몸통',barrel_end:'배럴 맨 끝의 작은 마감 파츠'}},
+  en:{title:'All six parts',specLabel:'Nib specification',specValue:'MF only',locations:{cap_end:'Rounded finishing piece at the end of the cap',cap_body:'Main cap body that covers the nib',nib_grip:'Grip section directly behind the nib',metal_parts:'MF nib, clip, cap bands and connecting rings',barrel_body:'Long main body held in the hand',barrel_end:'Small finishing piece at the end of the barrel'}},
+  ja:{title:'1〜6 全パーツ',specLabel:'ペン先仕様',specValue:'MFのみ',locations:{cap_end:'キャップ末端の丸い仕上げパーツ',cap_body:'ペン先を覆う大きなキャップ本体',nib_grip:'ペン先のすぐ後ろにあるグリップ部分',metal_parts:'MFペン先・クリップ・キャップリング・接続リング',barrel_body:'手に持つ長く広い胴軸部分',barrel_end:'胴軸末端の小さな仕上げパーツ'}},
+  'zh-Hans':{title:'1～6 全部部件',specLabel:'笔尖规格',specValue:'仅 MF',locations:{cap_end:'笔帽末端的圆形收尾部件',cap_body:'覆盖笔尖的主笔帽',nib_grip:'笔尖后方、手指接触的握位',metal_parts:'MF 笔尖、笔夹、笔帽环和连接环',barrel_body:'手持的长笔杆',barrel_end:'笔杆末端的小型收尾部件'}},
+  'zh-Hant':{title:'1～6 全部部件',specLabel:'筆尖規格',specValue:'僅 MF',locations:{cap_end:'筆帽末端的圓形收尾部件',cap_body:'覆蓋筆尖的主筆帽',nib_grip:'筆尖後方、手指接觸的握位',metal_parts:'MF 筆尖、筆夾、筆帽環和連接環',barrel_body:'手持的長筆桿',barrel_end:'筆桿末端的小型收尾部件'}}
+};
+
+function text(){return copy[getLanguage()]||copy.ko;}
+function partById(id){return parts.find(part=>part.id===id);}
+function activeId(){return window.blueblackPenApp?.activePartId||'cap_body';}
+function style(){if(document.querySelector('link[data-part-guide-v11]'))return;const link=document.createElement('link');link.rel='stylesheet';link.href='./part-guide-v11.css';link.dataset.partGuideV11='true';document.head.append(link);}
+function select(id){window.blueblackPenApp?.selectPart?.(id,true);setTimeout(()=>{render();document.querySelector('.control-card')?.scrollIntoView({behavior:'smooth',block:'start'});},60);}
+function card(id,index){const part=partById(id);const button=document.createElement('button');button.type='button';button.className='guide-card';button.dataset.partId=id;button.setAttribute('aria-pressed',String(activeId()===id));if(activeId()===id)button.classList.add('is-active');button.innerHTML=`<span class="guide-card-no">${index+1}</span><span class="guide-card-copy"><b>${localizePart(part).name}</b><small>${text().locations[id]}</small></span>`;button.addEventListener('click',()=>select(id));return button;}
+function render(){const guide=document.querySelector('.part-real-guide');if(!guide)return false;let overview=guide.querySelector('.part-real-overview');if(!overview){overview=document.createElement('section');overview.className='part-real-overview';const subtitle=guide.querySelector('.part-real-subtitle');subtitle?.insertAdjacentElement('afterend',overview);}const value=text();overview.replaceChildren();const title=document.createElement('div');title.className='part-real-all-title';title.textContent=value.title;const grid=document.createElement('div');grid.className='part-real-all-parts';grid.append(...ORDER.map(card));const spec=document.createElement('div');spec.className='part-real-nib-spec';spec.innerHTML=`<div class="part-real-nib-spec-copy"><span>${value.specLabel}</span><strong>${value.specValue}</strong></div>`;overview.append(title,grid,spec);const current=guide.querySelector('.part-real-current p');if(current&&value.locations[activeId()])current.textContent=value.locations[activeId()];return true;}
+function schedule(){clearTimeout(schedule.timer);schedule.timer=setTimeout(render,110);}
+function init(){style();if(!render()){setTimeout(init,100);return;}document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',schedule));['#palette','#part-grid','#previous-part','#next-part'].forEach(selector=>document.querySelector(selector)?.addEventListener('click',schedule,true));window.addEventListener('combinationchange',schedule);const control=document.querySelector('.control-card');if(control){const observer=new MutationObserver(()=>{if(!document.querySelector('.part-real-overview'))schedule();});observer.observe(control,{childList:true,subtree:true});}}
+setTimeout(init,0);
