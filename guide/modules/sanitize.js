@@ -1,3 +1,5 @@
+import '../extensions.js';
+
 const visualStyle = document.createElement('style');
 visualStyle.textContent = `
   .topbar { transition: background .25s ease, box-shadow .25s ease; }
@@ -22,9 +24,9 @@ syncTopbar();
 
 setTimeout(() => {
   const version = document.querySelector('#app-version');
-  if (version) version.textContent = 'Guide v3.0.0 · 디자인 개편 2026-06-28';
+  if (version) version.textContent = 'Guide v4.0.0 · 가격대·상황 추천 확장 2026-06-28';
 
-  const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card');
+  const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card, .situation-card, .premium-card');
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     targets.forEach((el) => el.classList.add('is-visible'));
     return;
@@ -42,7 +44,7 @@ setTimeout(() => {
     el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 45}ms`);
     observer.observe(el);
   });
-}, 80);
+}, 120);
 
 export function escapeHtml(value='') {
   return String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
