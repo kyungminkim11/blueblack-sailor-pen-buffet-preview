@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v11-20260627';
+const CACHE_NAME = 'blueblack-pen-v11b-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
