@@ -1,9 +1,10 @@
 import { products as entryProducts } from './data/catalog.js';
 import { premiumProducts } from './data/premium.js';
+import { expandedProducts } from './data/expanded-products.js';
 
 const $=(selector,root=document)=>root.querySelector(selector);
 const $$=(selector,root=document)=>[...root.querySelectorAll(selector)];
-const allProducts=[...entryProducts,...premiumProducts];
+const allProducts=[...entryProducts,...premiumProducts,...expandedProducts];
 const productMap=new Map(allProducts.map(product=>[product.id,product]));
 const compareIds=new Set(JSON.parse(localStorage.getItem('bb-compare-products')||'[]').filter(id=>productMap.has(id)).slice(0,3));
 const favoriteIds=new Set(JSON.parse(localStorage.getItem('bb-favorite-products')||'[]').filter(id=>productMap.has(id)));
@@ -12,7 +13,12 @@ let activeProductId='';
 const formatPrice=value=>new Intl.NumberFormat('ko-KR').format(value)+'원';
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 const nibLabel=product=>product.nibClass||product.nibs?.join(' · ')||'옵션 확인';
-const tierLabel=product=>product.tier?`${product.tier.replace('s','')}만원대`:'입문 가격대';
+const tierLabel=product=>{
+  if(product.tier==='entry'||product.price<100000)return '10만원 이하';
+  if(product.tier==='100plus')return '100만원 이상';
+  if(product.tier?.endsWith('s'))return `${product.tier.replace('s','')}만원대`;
+  return `${Math.floor(product.price/100000)*10}만원대`;
+};
 
 function persist(){
   localStorage.setItem('bb-compare-products',JSON.stringify([...compareIds]));
@@ -27,7 +33,7 @@ function openDialog(title,subtitle,html){
 }
 
 function compareText(products){
-  return `[블루블랙 제품 비교]\n${products.map((product,index)=>`${index+1}. ${product.name}\n- 가격: ${formatPrice(product.price)}\n- 닙: ${nibLabel(product)}\n- 충전: ${product.filling}\n- 무게: ${product.weight||'확인 필요'}\n- 용도: ${(product.purposes||[]).join(', ')}\n- 재고: ${product.stock}`).join('\n\n')}\n\n최종 가격·옵션·시필 가능 여부는 직원 확인이 필요합니다.`;
+  return `[블루블랙 제품 비교]\n${products.map((product,index)=>`${index+1}. ${product.name}\n- 가격: ${formatPrice(product.price)}\n- 닙: ${nibLabel(product)}\n- 충전: ${product.filling}\n- 무게: ${product.weight||'확인 필요'}\n- 용도: ${(product.purposes||[]).join(', ')}\n- 제품군: ${(product.families||[]).join(', ')||'기본 제품군'}\n- 재고: ${product.stock}`).join('\n\n')}\n\n최종 가격·옵션·시필 가능 여부는 직원 확인이 필요합니다.`;
 }
 
 function renderDock(){
@@ -60,7 +66,8 @@ function syncButtons(){
 function enhanceActions(){
   $$('.premium-actions').forEach(actions=>{
     if(actions.dataset.collectionReady)return;
-    const card=actions.closest('[data-premium-card]');const id=card?.dataset.premiumCard;if(!id)return;
+    const card=actions.closest('[data-premium-card],[data-media-card]');
+    const id=card?.dataset.premiumCard||card?.dataset.mediaCard;if(!id||!productMap.has(id))return;
     actions.dataset.collectionReady='1';
     const compare=document.createElement('button');compare.type='button';compare.className='collection-action';compare.dataset.compareToggle=id;
     const favorite=document.createElement('button');favorite.type='button';favorite.className='collection-action';favorite.dataset.favoriteToggle=id;
@@ -79,7 +86,7 @@ function enhanceActions(){
 
 function enhanceDialog(){
   const body=$('#dialog-body');if(!body||!activeProductId||body.dataset.collectionProduct===activeProductId)return;
-  if(!body.querySelector('.premium-dialog-hero,.result-hero'))return;
+  if(!body.querySelector('.premium-dialog-hero,.result-hero,.media-product-dialog'))return;
   const actions=body.querySelector('.dialog-actions');if(!actions)return;
   body.dataset.collectionProduct=activeProductId;
   const tools=document.createElement('div');tools.className='collection-detail-actions';
@@ -109,7 +116,7 @@ function openFavorites(){
 
 function comparisonTable(products){
   const rows=[
-    ['가격',product=>formatPrice(product.price)],['가격대',tierLabel],['닙',nibLabel],['충전 방식',product=>product.filling],['무게',product=>product.weight||'확인 필요'],['추천 용도',product=>(product.purposes||[]).join(' · ')||'확인 필요'],['재고',product=>product.stock]
+    ['가격',product=>formatPrice(product.price)],['가격대',tierLabel],['닙',nibLabel],['충전 방식',product=>product.filling],['무게',product=>product.weight||'확인 필요'],['추천 용도',product=>(product.purposes||[]).join(' · ')||'확인 필요'],['제품군',product=>(product.families||[]).join(' · ')||'기본 제품군'],['재고',product=>product.stock]
   ];
   return `<div class="compare-table-wrap"><table class="compare-table"><thead><tr><th>비교 항목</th>${products.map(product=>`<th>${escapeHtml(product.name)}</th>`).join('')}</tr></thead><tbody>${rows.map(([label,getValue])=>`<tr><th>${label}</th>${products.map(product=>`<td>${escapeHtml(getValue(product))}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
@@ -135,8 +142,8 @@ function printComparison(products){
 
 function bindClicks(){
   document.addEventListener('click',event=>{
-    const source=event.target.closest('[data-product],[data-premium-detail],[data-scenario-product],[data-extra-product]');
-    if(source)activeProductId=source.dataset.product||source.dataset.premiumDetail||source.dataset.scenarioProduct||source.dataset.extraProduct||'';
+    const source=event.target.closest('[data-product],[data-premium-detail],[data-scenario-product],[data-extra-product],[data-media-product]');
+    if(source)activeProductId=source.dataset.product||source.dataset.premiumDetail||source.dataset.scenarioProduct||source.dataset.extraProduct||source.dataset.mediaProduct||'';
     const compare=event.target.closest('[data-compare-toggle]');if(compare){event.preventDefault();event.stopPropagation();toggleCompare(compare.dataset.compareToggle);return}
     const favorite=event.target.closest('[data-favorite-toggle]');if(favorite){event.preventDefault();event.stopPropagation();toggleFavorite(favorite.dataset.favoriteToggle);if($('#dialog-title')?.textContent==='관심 제품')openFavorites();return}
   },true);
