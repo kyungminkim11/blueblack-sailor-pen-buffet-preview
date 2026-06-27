@@ -1,19 +1,31 @@
 import { products as entryProducts } from './data/catalog.js';
 import { premiumProducts, priceBands, scenarios, PREMIUM_VERIFIED_AT } from './data/premium.js';
+import { expandedProducts } from './data/expanded-products.js';
 
 const $=(selector,root=document)=>root.querySelector(selector);
 const $$=(selector,root=document)=>[...root.querySelectorAll(selector)];
-const allProducts=[...entryProducts,...premiumProducts];
+const allProducts=[...entryProducts,...premiumProducts,...expandedProducts];
+const priceProducts=[...premiumProducts,...expandedProducts];
 const productMap=new Map(allProducts.map(product=>[product.id,product]));
+const extendedPriceBands=[...priceBands,
+  {key:'80s',label:'80만원대',range:'800,000–899,999원',summary:'대형 소버란과 한정 아트 컬렉션처럼 브랜드 상위 라인과 소장성을 함께 보는 구간.'},
+  {key:'100plus',label:'100만원 이상',range:'1,000,000원 이상',summary:'우루시·이탈리아 플래그십처럼 소재, 대형 닙과 브랜드 대표성을 우선하는 구간.'}
+];
 const formatPrice=value=>new Intl.NumberFormat('ko-KR').format(value)+'원';
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
 function getTier(product){
   if(product.tier)return product.tier;
   if(product.price<100000)return 'entry';
-  return `${Math.min(6,Math.max(1,Math.floor(product.price/100000)))}0s`;
+  if(product.price>=1000000)return '100plus';
+  return `${Math.floor(product.price/100000)*10}s`;
 }
-function tierLabel(product){const tier=getTier(product);return tier==='entry'?'입문 가격대':`${tier.replace('s','')}만원대`}
+function tierLabel(product){
+  const tier=getTier(product);
+  if(tier==='entry')return '10만원 이하';
+  if(tier==='100plus')return '100만원 이상';
+  return `${tier.replace('s','')}만원대`;
+}
 function highlight(product){return product.highlight||product.purposes?.[0]||'입문 추천'}
 function nibDirection(product){return product.nibClass||product.nibs?.join(' · ')||'옵션 확인'}
 function verifiedAt(product){return product.verifiedAt||PREMIUM_VERIFIED_AT}
@@ -65,6 +77,7 @@ function openPremiumProduct(id){
     <div class="info-box"><strong>구매 전 확인:</strong> ${escapeHtml(product.stock)}<br>가격은 ${verifiedAt(product)} 공식몰 표시 기준이며 옵션·행사·재고에 따라 달라질 수 있습니다.</div>
     <div class="dialog-actions"><button class="button soft" type="button" id="premium-staff">직원에게 보여줄 내용</button><a class="button navy" href="${product.url}" target="_blank" rel="noopener">공식 상품 페이지</a></div>`);
   $('#premium-staff').addEventListener('click',()=>openRequestSheet(`${label} 관심 제품: ${product.name} / 확인 가격 ${formatPrice(product.price)}`));
+  document.dispatchEvent(new CustomEvent('bb:product-open',{detail:{id}}));
 }
 
 function openRequestSheet(prefill){
@@ -97,18 +110,18 @@ function renderScenarios(){
 }
 
 function renderPriceBand(key='10s'){
-  const band=priceBands.find(item=>item.key===key)||priceBands[0];
-  const selected=premiumProducts.filter(product=>product.tier===band.key);
+  const band=extendedPriceBands.find(item=>item.key===key)||extendedPriceBands[0];
+  const selected=priceProducts.filter(product=>getTier(product)===band.key);
   $('#price-band-title').textContent=`${band.label} 추천`;
   $('#price-band-range').textContent=band.range;
   $('#price-band-summary').textContent=band.summary;
-  $('#price-product-grid').innerHTML=selected.map(product=>premiumCard(product,true)).join('');
+  $('#price-product-grid').innerHTML=selected.map(product=>premiumCard(product,true)).join('')||'<div class="info-box">해당 가격대의 등록 상품을 준비하고 있습니다.</div>';
   $$('[data-premium-detail]',$('#price-product-grid')).forEach(button=>button.addEventListener('click',()=>openPremiumProduct(button.dataset.premiumDetail)));
   $$('[data-price-band]').forEach(button=>{const active=button.dataset.priceBand===band.key;button.classList.toggle('active',active);button.setAttribute('aria-selected',String(active))});
 }
 
 function renderPriceBands(){
-  $('#price-tier-tabs').innerHTML=priceBands.map((band,index)=>`<button type="button" role="tab" aria-selected="${index===0}" class="price-tier-tab ${index===0?'active':''}" data-price-band="${band.key}"><strong>${band.label}</strong><small>${band.range}</small></button>`).join('');
+  $('#price-tier-tabs').innerHTML=extendedPriceBands.map((band,index)=>`<button type="button" role="tab" aria-selected="${index===0}" class="price-tier-tab ${index===0?'active':''}" data-price-band="${band.key}"><strong>${band.label}</strong><small>${band.range}</small></button>`).join('');
   $$('[data-price-band]').forEach(button=>button.addEventListener('click',()=>renderPriceBand(button.dataset.priceBand)));
   renderPriceBand();
 }
@@ -116,7 +129,7 @@ function renderPriceBands(){
 function insertSections(){
   const productSection=$('#products-section');if(!productSection||$('#situations'))return;
   const scenarioSection=document.createElement('section');scenarioSection.className='situation-section';scenarioSection.id='situations';scenarioSection.innerHTML=`<div class="shell section-block"><div class="section-intro compact"><span class="section-index">03</span><div><span class="eyebrow">SITUATION RECOMMENDATION</span><h2>가격보다 먼저, 쓰는 상황을 골라보세요.</h2><p>입문, 학생 필기, 업무, 왼손잡이, 선물과 업그레이드까지 실제 매장에서 자주 만나는 상황을 준비했습니다.</p></div></div><div class="situation-grid" id="scenario-grid"></div></div>`;
-  const priceSection=document.createElement('section');priceSection.className='price-guide-section';priceSection.id='price-guide';priceSection.innerHTML=`<div class="shell section-block"><div class="section-intro compact"><span class="section-index light">04</span><div><span class="eyebrow gold-text">PRICE GUIDE</span><h2>10만원대부터 60만원대까지.</h2><p>각 구간에서 무엇이 달라지고 어떤 제품부터 비교할지 한눈에 확인하세요.</p></div></div><div class="price-tier-tabs" id="price-tier-tabs" role="tablist" aria-label="가격대 선택"></div><div class="price-band-panel"><div class="price-band-copy"><span id="price-band-range"></span><h3 id="price-band-title"></h3><p id="price-band-summary"></p><small>가격 확인 기준 ${PREMIUM_VERIFIED_AT} · 재고와 옵션은 별도 확인</small></div><div class="premium-grid" id="price-product-grid"></div></div></div>`;
+  const priceSection=document.createElement('section');priceSection.className='price-guide-section';priceSection.id='price-guide';priceSection.innerHTML=`<div class="shell section-block"><div class="section-intro compact"><span class="section-index light">04</span><div><span class="eyebrow gold-text">PRICE GUIDE</span><h2>10만원대부터 100만원 이상까지.</h2><p>각 구간에서 무엇이 달라지고 어떤 제품부터 비교할지 한눈에 확인하세요.</p></div></div><div class="price-tier-tabs" id="price-tier-tabs" role="tablist" aria-label="가격대 선택"></div><div class="price-band-panel"><div class="price-band-copy"><span id="price-band-range"></span><h3 id="price-band-title"></h3><p id="price-band-summary"></p><small>가격 확인 기준 ${PREMIUM_VERIFIED_AT} · 재고와 옵션은 별도 확인</small></div><div class="premium-grid" id="price-product-grid"></div></div></div>`;
   productSection.before(scenarioSection,priceSection);
   const productIndex=$('.products-section .section-index');if(productIndex)productIndex.textContent='05';
   const guideIndex=$('.guide-section .section-index');if(guideIndex)guideIndex.textContent='06';
@@ -128,8 +141,9 @@ function insertSections(){
 
 function handleExtendedSearch(query){
   const normalized=String(query||'').replace(/\s+/g,'').toLowerCase();
-  const priceMatch=normalized.match(/([1-6]0)만원/);
-  if(priceMatch){const bandKey=`${priceMatch[1][0]}0s`;renderPriceBand(bandKey);$('#price-guide').scrollIntoView({behavior:'smooth'});return true}
+  const priceMatch=normalized.match(/(10|20|30|40|50|60|80|100)만원/);
+  if(priceMatch){const value=priceMatch[1];const bandKey=value==='100'?'100plus':`${value}s`;renderPriceBand(bandKey);$('#price-guide').scrollIntoView({behavior:'smooth'});return true}
+  if(normalized.includes('백만원')||normalized.includes('100만이상')){renderPriceBand('100plus');$('#price-guide').scrollIntoView({behavior:'smooth'});return true}
   const scenario=scenarios.find(item=>normalized.includes(item.title.replace(/\s+/g,'').toLowerCase())||item.title.split(/[· ]/).some(token=>token.length>1&&normalized.includes(token.toLowerCase())));
   if(scenario){openScenario(scenario.id);return true}
   if(normalized.includes('입문용')||normalized==='입문'){openScenario('first-pen');return true}
