@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v11b-20260627';
+const CACHE_NAME = 'blueblack-pen-v12-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -11,6 +11,10 @@ const CORE_PATHS = [
   './part-guide-v11.css',
   './mobile-share-v9.css',
   './ui-v10.css',
+  './store-console-v12.css',
+  './store-progress-v12.css',
+  './store-dialogs-v12.css',
+  './staff-handoff-v12.css',
   './pwa-v6.css',
   './manifest.webmanifest',
   './app-icon.svg',
@@ -18,7 +22,7 @@ const CORE_PATHS = [
   './social-card.png',
   './robots.txt',
   './sitemap.xml',
-  './src/app-v6.js',
+  './src/app-v12.js',
   './src/data.js',
   './src/pen-model.js',
   './src/nib-feed.js',
@@ -26,16 +30,15 @@ const CORE_PATHS = [
   './src/i18n-v9.js',
   './src/restore-combination-v9.js',
   './src/pwa-v9.js',
-  './src/customer-flow-v6.js',
   './src/share-image-v9.js',
-  './src/mobile-actions-v9.js',
   './src/part-guide-chinese-v9.js',
   './src/preset-chinese-v9.js',
-  './src/session-v9.js',
   './src/store-experience-v6.js',
   './src/part-guide-v8.js',
   './src/part-guide-v11.js',
-  './src/locale-ui-v10.js'
+  './src/locale-ui-v10.js',
+  './src/store-session-v12.js',
+  './src/store-actions-v12.js'
 ].map((path) => new URL(path, BASE).href);
 
 self.addEventListener('install', (event) => {
