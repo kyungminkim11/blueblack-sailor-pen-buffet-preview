@@ -1,22 +1,24 @@
-const CACHE_NAME = 'blueblack-pen-v5-20260627';
+const CACHE_NAME = 'blueblack-pen-v6-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
   './index.html',
   './app-v3.css',
   './ux-upgrades-v4.css',
-  './store-experience-v5.css',
+  './customer-flow-v6.css',
+  './store-experience-v6.css',
   './manifest.webmanifest',
   './app-icon.svg',
-  './src/app-v3.js',
+  './src/app-v6.js',
   './src/data.js',
   './src/pen-model.js',
   './src/nib-feed.js',
   './src/i18n-v3.js',
   './src/restore-combination.js',
-  './src/ux-upgrades-v4.js',
-  './src/store-experience-v5.js',
-  './src/pwa-v5.js'
+  './src/customer-flow-v6.js',
+  './src/session-v6.js',
+  './src/store-experience-v6.js',
+  './src/pwa-v6.js'
 ].map((path) => new URL(path, BASE).href);
 
 self.addEventListener('install', (event) => {
@@ -26,7 +28,6 @@ self.addEventListener('install', (event) => {
       const response = await fetch(url, { cache: 'reload' });
       if (response.ok || response.type === 'opaque') await cache.put(url, response);
     }));
-    await self.skipWaiting();
   })());
 });
 
