@@ -1,24 +1,39 @@
-# BlueBlack Fountain Pen Guide v4.2
+# BlueBlack Fountain Pen Guide v5
 
-블루블랙 펜샵 고객이 매장에서 직접 사용하는 만년필 검색·추천·문제 해결 웹앱입니다.
+블루블랙 펜샵 고객이 매장에서 직접 사용하는 만년필 검색·추천·비교·문제 해결 웹앱입니다.
 
 ## 고객 기능
 
-- 10문항 점수식 첫 만년필 추천
-- 28개 비교 후보
-- 10·20·30·40·50·60만원대별 추천
+- 공식 상품 사진과 상세 갤러리
+- 40개 비교 후보
+- 10만원 이하·10·20·30·40·50·60·80만원대·100만원 이상 추천
 - 24개 사용 상황별 추천
+- 입문용, 업무용, 선물용, 포켓형, 병 잉크, 피스톤 필러, 우드·레진, 한정판, 플래그십 제품군 탐색
+- 10문항 점수식 첫 만년필 추천
 - 제품 최대 3개 비교
 - 관심 제품 브라우저 저장
 - 추천·상황·비교 결과 복사, 공유, 인쇄
 - 공식몰 확인 가격과 기준일 표시
-- 오타·유사어·상황 검색어 대응
+- 오타·유사어·상황·브랜드·제품군 검색어 대응
 - 앱 내부 상세 가이드
 - 안전 중심 문제 해결 분기
 - 상담 메모와 임시 접수번호 생성
 - 글자 확대, 고대비, 키보드 접근성
 - 키오스크 자동 초기화
 - 오프라인 기본 가이드와 업데이트 알림
+
+## 공식 이미지 자동화
+
+`.github/workflows/sync-guide-product-images.yml`이 공식 블루블랙 상품 페이지의 대표 이미지와 추가 상품 이미지를 최대 4장까지 수집합니다.
+
+- 저장 위치: `guide/assets/products/`
+- 이미지 형식: WebP
+- 최대 크기: 1200×1200
+- 브라우저 매핑: `guide/data/product-images.js`
+- 실행: 상품 데이터 변경 시, 수동 실행, 매주 월요일
+- 실패 시: 기존 로컬 이미지 유지 또는 펜 플레이스홀더 표시
+
+상품 이미지를 수정하려면 이미지 주소를 코드에 직접 붙이지 않고 해당 제품의 공식몰 URL을 수정한 뒤 이미지 동기화 워크플로를 다시 실행합니다.
 
 ## 상황별 추천
 
@@ -49,12 +64,15 @@
 
 ## 가격대 정의
 
+- 10만원 이하: 0–99,999원
 - 10만원대: 100,000–199,999원
 - 20만원대: 200,000–299,999원
 - 30만원대: 300,000–399,999원
 - 40만원대: 400,000–499,999원
 - 50만원대: 500,000–599,999원
 - 60만원대: 600,000–699,999원
+- 80만원대: 800,000–899,999원
+- 100만원 이상: 1,000,000원 이상
 
 ## 실행 주소
 
@@ -73,18 +91,26 @@ guide/
 ├─ app.css
 ├─ extended.css
 ├─ collection-tools.css
+├─ product-media.css
 ├─ app.js
 ├─ advanced-search.js
 ├─ extensions.js
 ├─ additional-situations.js
+├─ product-media.js
 ├─ collection-tools.js
 ├─ result-tools.js
 ├─ manifest.webmanifest
 ├─ offline.html
 ├─ sw.js
+├─ assets/
+│  └─ products/
+├─ scripts/
+│  └─ sync_product_images.py
 ├─ data/
 │  ├─ catalog.js
-│  └─ premium.js
+│  ├─ premium.js
+│  ├─ expanded-products.js
+│  └─ product-images.js
 └─ modules/
    ├─ recommendation.js
    ├─ sanitize.js
@@ -105,22 +131,31 @@ guide/
 - 가격대 정의와 설명
 - 기본 16개 상황별 추천 후보와 상담 포인트
 
+### `expanded-products.js`
+
+- 10만원 이하 제품군 확대
+- 우드·레진·포켓·미니멀·업무 제품
+- 80만원대와 100만원 이상 플래그십 제품
+- 제품군 필터용 `families` 데이터
+
 ### `additional-situations.js`
 
 - 손 크기, 한글 세필, 필압, 관리, 첫 금닙, 부모님·은사 선물, 잉크 교체 등 고급 상황 8개
 - 상황별 확인 항목과 후보 3종
 
+### `product-media.js`
+
+- 기존 제품 카드의 일러스트를 공식 상품 사진으로 교체
+- 이미지 로딩 실패 시 공식 원본 URL 또는 플레이스홀더로 대체
+- 상세 상품 갤러리
+- 확장 제품군 섹션과 제품군 검색
+
 ### `collection-tools.js`
 
 - 관심 제품 저장
 - 제품 최대 3개 비교
-- 가격·닙·충전·무게·용도·재고 비교표
+- 가격·제품군·닙·충전·무게·용도·재고 비교표
 - 직원용 요약 복사, 공유와 인쇄
-
-### `result-tools.js`
-
-- 10문항 추천 결과 공유·복사·인쇄
-- 상황별 추천 결과 공유·복사·인쇄
 
 ## 데이터 원칙
 
@@ -132,6 +167,7 @@ guide/
 - 최종 제품 선택은 실제 시필을 기준으로 합니다.
 - 관심 목록과 비교 목록은 현재 브라우저의 localStorage에만 저장합니다.
 - 고객 연락처와 상담 본문은 로컬 이용 통계에 저장하지 않습니다.
+- 공식 상품 사진은 블루블랙 고객용 가이드 안에서 제품 식별과 상담 보조 목적으로 사용합니다.
 
 ## 안전 원칙
 
@@ -144,22 +180,21 @@ guide/
 ## 배포 전 검사
 
 1. `node --check guide/app.js`
-2. `node --check guide/advanced-search.js`
-3. `node --check guide/extensions.js`
-4. `node --check guide/additional-situations.js`
+2. `node --check guide/extensions.js`
+3. `node --check guide/additional-situations.js`
+4. `node --check guide/product-media.js`
 5. `node --check guide/collection-tools.js`
-6. `node --check guide/result-tools.js`
-7. `node --check guide/data/catalog.js`
-8. `node --check guide/data/premium.js`
-9. 10–60만원대 탭별 제품 표시 확인
-10. 24개 상황의 후보 3종 연결 확인
-11. 비교함 최대 3개 제한 확인
-12. 관심 제품 새로고침 후 유지 확인
-13. 결과 공유·복사·인쇄 확인
-14. 모바일과 태블릿에서 추천 완료 확인
+6. `node --check guide/data/expanded-products.js`
+7. `python guide/scripts/sync_product_images.py`
+8. 공식 상품 이미지 로컬 WebP 생성 확인
+9. 이미지 실패 제품의 플레이스홀더 확인
+10. 10만원 이하–100만원 이상 탭별 제품 표시 확인
+11. 24개 상황의 후보 3종 연결 확인
+12. 비교함 최대 3개 제한 확인
+13. 관심 제품 새로고침 후 유지 확인
+14. 모바일과 태블릿에서 이미지 비율 확인
 15. 오프라인 전환 후 신규 모듈 확인
 16. 공식몰 링크와 가격 기준일 확인
-17. 공개 Notion 페이지에 내부 DB가 포함되지 않았는지 확인
 
 ## 현재 의도적으로 제외한 기능
 
@@ -167,6 +202,6 @@ guide/
 - 직원 휴대전화 자동 푸시 알림
 - 고객 계정 간 관심 목록 동기화
 - 검수되지 않은 영문·일문 화면
-- 사용 권한이 확인되지 않은 공식 로고·상품 사진
+- 브랜드에서 별도로 제공하지 않은 고해상도 원본 사진
 
 위 기능은 관련 계정, API와 승인된 자산이 제공된 이후 연결합니다.
