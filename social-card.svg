@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">BlueBlack Sailor Pen Buffet Preview</title>
+  <desc id="desc">A navy and gold fountain pen combination preview card.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07172f"/>
+      <stop offset="0.58" stop-color="#10233f"/>
+      <stop offset="1" stop-color="#173657"/>
+    </linearGradient>
+    <linearGradient id="pen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#20263b"/>
+      <stop offset="0.48" stop-color="#0f1729"/>
+      <stop offset="1" stop-color="#27314c"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#8e672a"/>
+      <stop offset="0.42" stop-color="#f0d18d"/>
+      <stop offset="0.72" stop-color="#bd8c3e"/>
+      <stop offset="1" stop-color="#7a551f"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-40%" width="140%" height="180%">
+      <feDropShadow dx="0" dy="22" stdDeviation="20" flood-color="#020712" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <circle cx="1030" cy="90" r="210" fill="#2e5279" opacity="0.18"/>
+  <circle cx="110" cy="590" r="260" fill="#6f5126" opacity="0.14"/>
+  <g opacity="0.16" fill="none" stroke="#ffffff">
+    <path d="M70 160H1130"/>
+    <path d="M70 520H1130"/>
+  </g>
+  <g transform="translate(82 74)">
+    <text x="0" y="0" fill="#d7bd91" font-family="Arial, sans-serif" font-size="24" font-weight="700" letter-spacing="4">BLUEBLACK PEN SHOP</text>
+    <text x="0" y="74" fill="#ffffff" font-family="Arial, sans-serif" font-size="62" font-weight="800">Sailor Pen Buffet Preview</text>
+    <text x="0" y="119" fill="#c7d3e1" font-family="Arial, sans-serif" font-size="25">Choose six parts. Mix colors. Preview your fountain pen in 3D.</text>
+  </g>
+  <g transform="translate(112 270)" filter="url(#shadow)">
+    <path d="M0 52h78l104-34 88 34-88 34L78 52H0Z" fill="url(#gold)"/>
+    <path d="M36 52h58" stroke="#192033" stroke-width="10" stroke-linecap="round"/>
+    <rect x="236" y="9" width="136" height="86" rx="39" fill="#171d2f" stroke="#66738c" stroke-width="2"/>
+    <rect x="354" y="7" width="12" height="90" rx="5" fill="url(#gold)"/>
+    <rect x="368" y="5" width="22" height="94" rx="7" fill="url(#gold)"/>
+    <rect x="392" y="7" width="12" height="90" rx="5" fill="url(#gold)"/>
+    <path d="M404 9h470c60 0 104 18 104 43s-44 43-104 43H404Z" fill="url(#pen)" stroke="#59667d" stroke-width="2"/>
+    <path d="M828 20h87c31 0 52 13 52 32s-21 32-52 32h-87c13-8 21-19 21-32s-8-24-21-32Z" fill="#14192a"/>
+    <path d="M460 21h328c15 0 26 8 32 21l10 22-10 14H462c-17 0-29-11-29-27v-3c0-16 11-27 27-27Z" fill="url(#gold)"/>
+    <path d="M487 29h286c12 0 21 6 25 15l7 14-6 8H488c-11 0-18-7-18-18s7-19 17-19Z" fill="#f5deaa" opacity="0.58"/>
+  </g>
+  <g transform="translate(82 486)">
+    <g><circle cx="20" cy="20" r="20" fill="#d7e0e8"/><circle cx="20" cy="20" r="11" fill="#ffffff" opacity="0.55"/></g>
+    <g transform="translate(60)"><circle cx="20" cy="20" r="20" fill="#18395f"/></g>
+    <g transform="translate(120)"><circle cx="20" cy="20" r="20" fill="#d78a9b"/></g>
+    <g transform="translate(180)"><circle cx="20" cy="20" r="20" fill="#a8d0c0"/></g>
+    <g transform="translate(240)"><circle cx="20" cy="20" r="20" fill="#e2bd54"/></g>
+    <g transform="translate(300)"><circle cx="20" cy="20" r="20" fill="#c9a246"/></g>
+  </g>
+  <g transform="translate(846 472)">
+    <rect width="272" height="92" rx="22" fill="#ffffff" opacity="0.09" stroke="#ffffff" stroke-opacity="0.18"/>
+    <text x="24" y="38" fill="#ffffff" font-family="Arial, sans-serif" font-size="21" font-weight="700">나만의 만년필 조합</text>
+    <text x="24" y="66" fill="#c9d4e1" font-family="Arial, sans-serif" font-size="16">한국어 · English · 日本語 · 中文</text>
+  </g>
+</svg>
