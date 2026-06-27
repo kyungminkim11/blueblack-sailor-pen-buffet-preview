@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v8-20260627';
+const CACHE_NAME = 'blueblack-pen-v9-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -8,6 +8,7 @@ const CORE_PATHS = [
   './customer-flow-v6.css',
   './store-experience-v6.css',
   './part-guide-v8.css',
+  './mobile-share-v9.css',
   './pwa-v6.css',
   './manifest.webmanifest',
   './app-icon.svg',
@@ -16,9 +17,13 @@ const CORE_PATHS = [
   './src/pen-model.js',
   './src/nib-feed.js',
   './src/i18n-v3.js',
+  './src/i18n-v9.js',
   './src/restore-combination.js',
   './src/customer-flow-v6.js',
-  './src/session-v6.js',
+  './src/share-image-v9.js',
+  './src/mobile-actions-v9.js',
+  './src/language-polish-v9.js',
+  './src/session-v9.js',
   './src/store-experience-v6.js',
   './src/part-guide-v8.js',
   './src/pwa-v6.js'
