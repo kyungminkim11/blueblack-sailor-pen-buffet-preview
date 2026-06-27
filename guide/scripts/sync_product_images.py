@@ -17,10 +17,10 @@ from PIL import Image, ImageOps
 
 ROOT = Path(__file__).resolve().parents[2]
 GUIDE = ROOT / "guide"
-DATA_FILES = [
-    GUIDE / "data" / "catalog.js",
-    GUIDE / "data" / "premium.js",
-    GUIDE / "data" / "expanded-products.js",
+DATA_EXPORTS = [
+    (GUIDE / "data" / "catalog.js", "products"),
+    (GUIDE / "data" / "premium.js", "premiumProducts"),
+    (GUIDE / "data" / "expanded-products.js", "expandedProducts"),
 ]
 OUTPUT_DIR = GUIDE / "assets" / "products"
 OUTPUT_MAP = GUIDE / "data" / "product-images.js"
@@ -29,7 +29,7 @@ MAX_IMAGES = 4
 USER_AGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
     "AppleWebKit/537.36 (KHTML, like Gecko) "
-    "Chrome/126.0 Safari/537.36 BlueBlackGuideImageSync/2.0"
+    "Chrome/126.0 Safari/537.36 BlueBlackGuideImageSync/2.1"
 )
 
 PRODUCT_PATTERN = re.compile(
@@ -38,13 +38,27 @@ PRODUCT_PATTERN = re.compile(
 )
 
 
+def extract_exported_array(text: str, export_name: str) -> str:
+    """Return only one exported JS array, excluding guide and scenario objects."""
+    marker = f"export const {export_name}=["
+    start = text.find(marker)
+    if start < 0:
+        raise ValueError(f"export {export_name!r} was not found")
+    content_start = start + len(marker)
+    end = text.find("\n];", content_start)
+    if end < 0:
+        raise ValueError(f"export {export_name!r} has no closing array")
+    return text[content_start:end]
+
+
 def iter_products() -> Iterable[dict[str, str]]:
     seen: set[str] = set()
-    for path in DATA_FILES:
+    for path, export_name in DATA_EXPORTS:
         if not path.exists():
             continue
         text = path.read_text(encoding="utf-8")
-        for match in PRODUCT_PATTERN.finditer(text):
+        section = extract_exported_array(text, export_name)
+        for match in PRODUCT_PATTERN.finditer(section):
             item = match.groupdict()
             if item["id"] in seen:
                 continue
@@ -164,9 +178,28 @@ def write_map(records: list[dict[str, object]]) -> None:
     OUTPUT_MAP.write_text("\n".join(lines), encoding="utf-8")
 
 
+def gallery_files(product_id: str) -> list[Path]:
+    pattern = re.compile(rf"^{re.escape(product_id)}(?:-(\d+))?\.webp$")
+    matches = [path for path in OUTPUT_DIR.glob("*.webp") if pattern.match(path.name)]
+
+    def order(path: Path) -> tuple[int, str]:
+        match = pattern.match(path.name)
+        number = int(match.group(1)) if match and match.group(1) else 1
+        return number, path.name
+
+    return sorted(matches, key=order)
+
+
 def existing_gallery(product_id: str) -> list[str]:
-    files = sorted(OUTPUT_DIR.glob(f"{product_id}*.webp"))
-    return [f"./assets/products/{path.name}" for path in files]
+    return [f"./assets/products/{path.name}" for path in gallery_files(product_id)]
+
+
+def remove_stale_images(valid_ids: set[str]) -> None:
+    for path in OUTPUT_DIR.glob("*.webp"):
+        if any(path in gallery_files(product_id) for product_id in valid_ids):
+            continue
+        print(f"Removing stale image: {path.name}")
+        path.unlink()
 
 
 def main() -> int:
@@ -175,7 +208,10 @@ def main() -> int:
         print("No product records found", file=sys.stderr)
         return 1
 
+    valid_ids = {product["id"] for product in products}
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    remove_stale_images(valid_ids)
+
     session = requests.Session()
     session.headers.update({
         "User-Agent": USER_AGENT,
@@ -210,6 +246,13 @@ def main() -> int:
 
             if not local_gallery:
                 raise RuntimeError("all official image downloads failed")
+
+            # Remove old extra gallery frames if the official page now exposes fewer images.
+            keep_names = {Path(item).name for item in local_gallery}
+            for old_path in gallery_files(product_id):
+                if old_path.name not in keep_names:
+                    old_path.unlink()
+
             records.append({
                 "id": product_id,
                 "name": product["name"],
