@@ -1,3 +1,13 @@
+const visualStyle = document.createElement('style');
+visualStyle.textContent = `
+  .topbar { transition: background .25s ease, box-shadow .25s ease; }
+  .topbar.scrolled { background: rgba(245,241,233,.96); box-shadow: 0 10px 30px rgba(11,27,49,.07); }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity .62s ease var(--reveal-delay,0ms), transform .62s cubic-bezier(.2,.7,.2,1) var(--reveal-delay,0ms); }
+  .reveal.is-visible { opacity: 1; transform: translateY(0); }
+  @media (prefers-reduced-motion: reduce) { .reveal { opacity: 1; transform: none; } }
+`;
+document.head.append(visualStyle);
+
 const exportButton = document.querySelector('#export-log');
 if (exportButton) {
   exportButton.hidden = new URLSearchParams(location.search).get('admin') !== '1';
