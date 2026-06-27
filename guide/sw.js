@@ -1,5 +1,5 @@
-const CACHE='blueblack-guide-v4.2.0';
-const CORE=['./','./index.html','./app.css','./extended.css','./collection-tools.css','./app.js','./advanced-search.js','./extensions.js','./additional-situations.js','./collection-tools.js','./result-tools.js','./offline.html','./manifest.webmanifest','./data/catalog.js','./data/premium.js','./modules/search.js','./modules/recommendation.js','./modules/sanitize.js','../app-icon.svg'];
+const CACHE='blueblack-guide-v5.0.0';
+const CORE=['./','./index.html','./app.css','./extended.css','./collection-tools.css','./product-media.css','./app.js','./advanced-search.js','./extensions.js','./additional-situations.js','./product-media.js','./collection-tools.js','./result-tools.js','./offline.html','./manifest.webmanifest','./data/catalog.js','./data/premium.js','./data/expanded-products.js','./data/product-images.js','./modules/search.js','./modules/recommendation.js','./modules/sanitize.js','../app-icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE))));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
 self.addEventListener('message',event=>{if(event.data?.type==='SKIP_WAITING')self.skipWaiting()});
