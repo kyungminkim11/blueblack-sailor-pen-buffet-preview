@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v6-20260627';
+const CACHE_NAME = 'blueblack-pen-v6-20260627b';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -7,6 +7,7 @@ const CORE_PATHS = [
   './ux-upgrades-v4.css',
   './customer-flow-v6.css',
   './store-experience-v6.css',
+  './pwa-v6.css',
   './manifest.webmanifest',
   './app-icon.svg',
   './src/app-v6.js',
