@@ -8,6 +8,8 @@ const meta={
   'zh-Hant':{flag:'\ud83c\uddf9\ud83c\uddfc',label:'\u7e41\u9ad4\u4e2d\u6587'}
 };
 
+const desktopQuery=window.matchMedia('(min-width:900px)');
+
 function update(){
   const menu=document.querySelector('.language-menu');
   if(!menu)return;
@@ -21,13 +23,37 @@ function update(){
   });
 }
 
+function syncViewport(menu){
+  if(desktopQuery.matches){
+    menu.open=true;
+    menu.setAttribute('data-desktop-open','true');
+  }else{
+    menu.removeAttribute('data-desktop-open');
+    menu.open=false;
+  }
+}
+
 function init(){
   const menu=document.querySelector('.language-menu');
   if(!menu)return;
+  syncViewport(menu);
   update();
-  menu.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{update();menu.open=false;},30)));
-  document.addEventListener('click',event=>{if(menu.open&&!menu.contains(event.target))menu.open=false;});
-  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&menu.open)menu.open=false;});
+
+  menu.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{
+    update();
+    if(desktopQuery.matches)menu.open=true;
+    else menu.open=false;
+  },30)));
+
+  document.addEventListener('click',event=>{
+    if(!desktopQuery.matches&&menu.open&&!menu.contains(event.target))menu.open=false;
+  });
+
+  document.addEventListener('keydown',event=>{
+    if(event.key==='Escape'&&!desktopQuery.matches&&menu.open)menu.open=false;
+  });
+
+  desktopQuery.addEventListener?.('change',()=>syncViewport(menu));
 }
 
 setTimeout(init,0);
