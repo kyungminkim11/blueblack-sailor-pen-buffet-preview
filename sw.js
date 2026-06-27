@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v12-20260627';
+const CACHE_NAME = 'blueblack-pen-v12b-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -15,6 +15,7 @@ const CORE_PATHS = [
   './store-progress-v12.css',
   './store-dialogs-v12.css',
   './staff-handoff-v12.css',
+  './store-recovery-v12.css',
   './pwa-v6.css',
   './manifest.webmanifest',
   './app-icon.svg',
@@ -38,7 +39,8 @@ const CORE_PATHS = [
   './src/part-guide-v11.js',
   './src/locale-ui-v10.js',
   './src/store-session-v12.js',
-  './src/store-actions-v12.js'
+  './src/store-actions-v12.js',
+  './src/store-recovery-v12.js'
 ].map((path) => new URL(path, BASE).href);
 
 self.addEventListener('install', (event) => {
