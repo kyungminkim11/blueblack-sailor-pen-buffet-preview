@@ -8,6 +8,16 @@ const productMap=new Map(allProducts.map(product=>[product.id,product]));
 const formatPrice=value=>new Intl.NumberFormat('ko-KR').format(value)+'원';
 const escapeHtml=value=>String(value??'').replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
 
+function getTier(product){
+  if(product.tier)return product.tier;
+  if(product.price<100000)return 'entry';
+  return `${Math.min(6,Math.max(1,Math.floor(product.price/100000)))}0s`;
+}
+function tierLabel(product){const tier=getTier(product);return tier==='entry'?'입문 가격대':`${tier.replace('s','')}만원대`}
+function highlight(product){return product.highlight||product.purposes?.[0]||'입문 추천'}
+function nibDirection(product){return product.nibClass||product.nibs?.join(' · ')||'옵션 확인'}
+function verifiedAt(product){return product.verifiedAt||PREMIUM_VERIFIED_AT}
+
 function addStylesheet(){
   if(document.querySelector('link[href="./extended.css"]'))return;
   const link=document.createElement('link');link.rel='stylesheet';link.href='./extended.css';document.head.append(link);
@@ -23,15 +33,15 @@ function openExtensionDialog(title,subtitle,html){
 
 function premiumCard(product,compact=false){
   return `<article class="premium-card ${compact?'compact':''}" data-premium-card="${product.id}">
-    <div class="premium-visual" style="--premium-accent:${product.accent}">
-      <span class="premium-tier">${product.tier.replace('s','')}만원대</span>
+    <div class="premium-visual" style="--premium-accent:${product.accent||'#304f73'}">
+      <span class="premium-tier">${tierLabel(product)}</span>
       <span class="premium-pen"></span>
     </div>
     <div class="premium-card-body">
       <span class="premium-brand">${escapeHtml(product.brand)}</span>
       <h3>${escapeHtml(product.name)}</h3>
       <strong class="premium-price">${formatPrice(product.price)}</strong>
-      <div class="premium-tags"><span>${escapeHtml(product.highlight)}</span><span>${escapeHtml(product.filling)}</span></div>
+      <div class="premium-tags"><span>${escapeHtml(highlight(product))}</span><span>${escapeHtml(product.filling)}</span></div>
       <p>${escapeHtml(product.note)}</p>
       <small>${escapeHtml(product.stock)}</small>
       <div class="premium-actions"><button type="button" data-premium-detail="${product.id}">상세 비교</button><a href="${product.url}" target="_blank" rel="noopener">공식몰 →</a></div>
@@ -41,23 +51,23 @@ function premiumCard(product,compact=false){
 
 function openPremiumProduct(id){
   const product=productMap.get(id);if(!product)return;
-  openExtensionDialog(product.name,`${product.brand} · ${product.tier.replace('s','')}만원대 추천 후보`,`
-    <div class="premium-dialog-hero" style="--premium-accent:${product.accent}">
-      <div><span>${escapeHtml(product.highlight)}</span><h3>${formatPrice(product.price)}</h3><p>${escapeHtml(product.note)}</p></div><i class="premium-pen large"></i>
+  const label=tierLabel(product);
+  openExtensionDialog(product.name,`${product.brand} · ${label} 추천 후보`,`
+    <div class="premium-dialog-hero" style="--premium-accent:${product.accent||'#304f73'}">
+      <div><span>${escapeHtml(highlight(product))}</span><h3>${formatPrice(product.price)}</h3><p>${escapeHtml(product.note)}</p></div><i class="premium-pen large"></i>
     </div>
     <div class="metric-grid">
-      <div class="metric"><small>가격대</small><strong>${product.tier.replace('s','')}만원대</strong></div>
-      <div class="metric"><small>닙 방향</small><strong>${escapeHtml(product.nibClass)}</strong></div>
+      <div class="metric"><small>가격대</small><strong>${label}</strong></div>
+      <div class="metric"><small>닙 방향</small><strong>${escapeHtml(nibDirection(product))}</strong></div>
       <div class="metric"><small>충전 방식</small><strong>${escapeHtml(product.filling)}</strong></div>
     </div>
-    <div class="premium-purpose-list">${product.purposes.map(item=>`<span>${escapeHtml(item)}</span>`).join('')}</div>
-    <div class="info-box"><strong>구매 전 확인:</strong> ${escapeHtml(product.stock)}<br>가격은 ${product.verifiedAt} 공식몰 표시 기준이며 옵션·행사·재고에 따라 달라질 수 있습니다.</div>
+    <div class="premium-purpose-list">${(product.purposes||[]).map(item=>`<span>${escapeHtml(item)}</span>`).join('')}</div>
+    <div class="info-box"><strong>구매 전 확인:</strong> ${escapeHtml(product.stock)}<br>가격은 ${verifiedAt(product)} 공식몰 표시 기준이며 옵션·행사·재고에 따라 달라질 수 있습니다.</div>
     <div class="dialog-actions"><button class="button soft" type="button" id="premium-staff">직원에게 보여줄 내용</button><a class="button navy" href="${product.url}" target="_blank" rel="noopener">공식 상품 페이지</a></div>`);
-  $('#premium-staff').addEventListener('click',()=>openRequestSheet(`${product.tier.replace('s','')}만원대 관심 제품: ${product.name} / 확인 가격 ${formatPrice(product.price)}`));
+  $('#premium-staff').addEventListener('click',()=>openRequestSheet(`${label} 관심 제품: ${product.name} / 확인 가격 ${formatPrice(product.price)}`));
 }
 
 function openRequestSheet(prefill){
-  const detail=$('#dialog-body');
   const text=`[블루블랙 제품 상담]\n${prefill}\n가격·옵션·매장 재고 확인을 요청합니다.`;
   openExtensionDialog('직원에게 보여줄 상담 메모','자동 호출이 아니라 화면 제시·복사용 메모입니다.',`
     <div class="ticket" id="extension-ticket"></div>
@@ -73,7 +83,7 @@ function openScenario(id){
     <div class="scenario-dialog-head"><span>${scenario.icon}</span><div><small>SITUATION GUIDE</small><h3>${escapeHtml(scenario.title)}</h3><p>${escapeHtml(scenario.summary)}</p></div></div>
     <div class="scenario-checks"><h4>매장에서 확인할 것</h4>${scenario.tips.map((tip,index)=>`<div><b>${index+1}</b><span>${escapeHtml(tip)}</span></div>`).join('')}</div>
     <h4 class="dialog-section-title">추천 비교 후보</h4>
-    <div class="scenario-product-list">${candidates.map((product,index)=>`<button type="button" data-scenario-product="${product.id}"><span>${index+1}</span><div><strong>${escapeHtml(product.name)}</strong><small>${formatPrice(product.price)} · ${escapeHtml(product.highlight)}</small></div><i>→</i></button>`).join('')}</div>
+    <div class="scenario-product-list">${candidates.map((product,index)=>`<button type="button" data-scenario-product="${product.id}"><span>${index+1}</span><div><strong>${escapeHtml(product.name)}</strong><small>${formatPrice(product.price)} · ${escapeHtml(highlight(product))}</small></div><i>→</i></button>`).join('')}</div>
     <div class="info-box">추천 순서는 절대적인 순위가 아니라 이 상황에서 먼저 비교할 후보입니다. 실제 닙 굵기, 무게와 재고는 매장에서 확인해 주세요.</div>
     <div class="dialog-actions"><button class="button navy" type="button" id="scenario-staff">이 상황으로 상담 메모 만들기</button></div>`);
   $$('[data-scenario-product]',$('#dialog-body')).forEach(button=>button.addEventListener('click',()=>openPremiumProduct(button.dataset.scenarioProduct)));
@@ -104,20 +114,22 @@ function renderPriceBands(){
 }
 
 function insertSections(){
-  const productSection=$('#products-section');if(!productSection)return;
+  const productSection=$('#products-section');if(!productSection||$('#situations'))return;
   const scenarioSection=document.createElement('section');scenarioSection.className='situation-section';scenarioSection.id='situations';scenarioSection.innerHTML=`<div class="shell section-block"><div class="section-intro compact"><span class="section-index">03</span><div><span class="eyebrow">SITUATION RECOMMENDATION</span><h2>가격보다 먼저, 쓰는 상황을 골라보세요.</h2><p>입문, 학생 필기, 업무, 왼손잡이, 선물과 업그레이드까지 실제 매장에서 자주 만나는 상황을 준비했습니다.</p></div></div><div class="situation-grid" id="scenario-grid"></div></div>`;
   const priceSection=document.createElement('section');priceSection.className='price-guide-section';priceSection.id='price-guide';priceSection.innerHTML=`<div class="shell section-block"><div class="section-intro compact"><span class="section-index light">04</span><div><span class="eyebrow gold-text">PRICE GUIDE</span><h2>10만원대부터 60만원대까지.</h2><p>각 구간에서 무엇이 달라지고 어떤 제품부터 비교할지 한눈에 확인하세요.</p></div></div><div class="price-tier-tabs" id="price-tier-tabs" role="tablist" aria-label="가격대 선택"></div><div class="price-band-panel"><div class="price-band-copy"><span id="price-band-range"></span><h3 id="price-band-title"></h3><p id="price-band-summary"></p><small>가격 확인 기준 ${PREMIUM_VERIFIED_AT} · 재고와 옵션은 별도 확인</small></div><div class="premium-grid" id="price-product-grid"></div></div></div>`;
   productSection.before(scenarioSection,priceSection);
   const productIndex=$('.products-section .section-index');if(productIndex)productIndex.textContent='05';
   const guideIndex=$('.guide-section .section-index');if(guideIndex)guideIndex.textContent='06';
-  const nav=$('.desktop-nav');if(nav){nav.querySelector('a[href="#products-section"]')?.insertAdjacentHTML('beforebegin','<a href="#situations">상황별</a><a href="#price-guide">가격대별</a>')}
-  const proof=$$('.hero-proof span');if(proof[1]){proof[1].querySelector('b').textContent=allProducts.length;proof[1].querySelector('small').textContent='개 비교 후보'}if(proof[2]){proof[2].querySelector('b').textContent=scenarios.length;proof[2].querySelector('small').textContent='개 사용 상황'}
+  const nav=$('.desktop-nav');if(nav&&!nav.querySelector('a[href="#situations"]'))nav.querySelector('a[href="#products-section"]')?.insertAdjacentHTML('beforebegin','<a href="#situations">상황별</a><a href="#price-guide">가격대별</a>');
+  const proof=$$('.hero-proof span');
+  if(proof[1]){proof[1].querySelector('b').textContent=allProducts.length;proof[1].querySelector('small').textContent='개 비교 후보'}
+  if(proof[2]){proof[2].querySelector('b').textContent=scenarios.length;proof[2].querySelector('small').textContent='개 사용 상황'}
 }
 
 function handleExtendedSearch(query){
   const normalized=String(query||'').replace(/\s+/g,'').toLowerCase();
   const priceMatch=normalized.match(/([1-6]0)만원/);
-  if(priceMatch){const key=`${Number(priceMatch[1])/10}0s`.replace('10s','10s').replace('20s','20s').replace('30s','30s').replace('40s','40s').replace('50s','50s').replace('60s','60s');const bandKey=`${priceMatch[1][0]}0s`;renderPriceBand(bandKey);$('#price-guide').scrollIntoView({behavior:'smooth'});return true}
+  if(priceMatch){const bandKey=`${priceMatch[1][0]}0s`;renderPriceBand(bandKey);$('#price-guide').scrollIntoView({behavior:'smooth'});return true}
   const scenario=scenarios.find(item=>normalized.includes(item.title.replace(/\s+/g,'').toLowerCase())||item.title.split(/[· ]/).some(token=>token.length>1&&normalized.includes(token.toLowerCase())));
   if(scenario){openScenario(scenario.id);return true}
   if(normalized.includes('입문용')||normalized==='입문'){openScenario('first-pen');return true}
@@ -132,12 +144,8 @@ function interceptSearch(){
   input?.addEventListener('keydown',event=>{if(event.key==='Enter'&&handleExtendedSearch(input.value)){event.preventDefault();event.stopImmediatePropagation()}},true);
 }
 
-function bindGlobalPremiumButtons(){
-  document.addEventListener('click',event=>{const button=event.target.closest('[data-premium-detail]');if(button&&!button.closest('#price-product-grid'))openPremiumProduct(button.dataset.premiumDetail)});
-}
-
 function init(){
-  addStylesheet();insertSections();renderScenarios();renderPriceBands();interceptSearch();bindGlobalPremiumButtons();
+  addStylesheet();insertSections();renderScenarios();renderPriceBands();interceptSearch();
 }
 
 init();
