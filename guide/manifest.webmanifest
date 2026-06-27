@@ -1,9 +1,10 @@
 {
-  "name":"BlueBlack Pen Shop Guide",
+  "name":"BlueBlack Fountain Pen Guide",
   "short_name":"BlueBlack Guide",
   "start_url":"./",
+  "scope":"./",
   "display":"standalone",
-  "background_color":"#f4f1ea",
+  "background_color":"#f4f0e8",
   "theme_color":"#10233f",
   "description":"블루블랙 펜샵 고객용 만년필 검색·추천·문제 해결 가이드",
   "icons":[{"src":"../app-icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
