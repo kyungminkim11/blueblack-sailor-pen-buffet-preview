@@ -12,24 +12,36 @@ on:
       - 'guide/data/expanded-products.js'
       - 'guide/scripts/sync_product_images.py'
       - '.github/workflows/sync-guide-product-images.yml'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'guide/data/catalog.js'
+      - 'guide/data/premium.js'
+      - 'guide/data/expanded-products.js'
+      - 'guide/scripts/sync_product_images.py'
+      - '.github/workflows/sync-guide-product-images.yml'
+      - '.github/image-sync-trigger.md'
 
 permissions:
   contents: write
 
 concurrency:
-  group: guide-product-image-sync
+  group: guide-product-image-sync-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: false
 
 jobs:
   sync:
-    if: github.actor != 'github-actions[bot]'
+    if: github.actor != 'github-actions[bot]' && (github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository)
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Check out repository
+      - name: Check out writable branch
         uses: actions/checkout@v4
         with:
+          repository: ${{ github.event.pull_request.head.repo.full_name || github.repository }}
+          ref: ${{ github.event.pull_request.head.ref || github.ref_name }}
           fetch-depth: 0
+          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -43,6 +55,7 @@ jobs:
         run: python guide/scripts/sync_product_images.py
 
       - name: Commit synchronized images
+        shell: bash
         run: |
           if git diff --quiet -- guide/assets/products guide/data/product-images.js; then
             echo 'No image changes detected.'
@@ -52,4 +65,5 @@ jobs:
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
           git add guide/assets/products guide/data/product-images.js
           git commit -m 'Sync official BlueBlack product images'
-          git push
+          BRANCH="${GITHUB_HEAD_REF:-${GITHUB_REF_NAME}}"
+          git push origin HEAD:"${BRANCH}"
