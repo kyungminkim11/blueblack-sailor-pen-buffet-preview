@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <meta name="theme-color" content="#10233f">
+  <meta name="theme-color" content="#0b1b31">
+  <meta name="color-scheme" content="light">
   <meta name="description" content="블루블랙 펜샵 고객용 만년필 검색·추천·문제 해결 가이드">
   <meta name="robots" content="index,follow">
   <title>블루블랙 펜샵 | 첫 만년필 가이드</title>
@@ -16,71 +17,159 @@
   <div class="update-banner" id="update-banner" hidden>
     새 버전이 준비되었습니다. <button type="button" id="update-now">업데이트</button>
   </div>
+
   <header class="topbar">
-    <a class="brand" href="#home" aria-label="블루블랙 가이드 홈">
-      <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 52 52"><path d="M9 12h25c7 0 11 4 11 10 0 5-3 8-7 9 5 1 8 4 8 9 0 7-5 11-13 11H9V12Zm10 8v8h12c3 0 5-1 5-4s-2-4-5-4H19Zm0 16v8h13c3 0 5-1 5-4s-2-4-5-4H19Z"/></svg></span>
-      <span><strong>BLUEBLACK</strong><small>FOUNTAIN PEN GUIDE</small></span>
-    </a>
-    <div class="top-actions">
-      <span class="status-pill" id="network-status" aria-live="polite">온라인</span>
-      <button class="icon-button" id="text-size" type="button" aria-label="글자 크기 변경">가+</button>
-      <button class="icon-button" id="contrast" type="button" aria-label="고대비 모드">◐</button>
-      <a class="staff-call" href="tel:027658868">직원 전화</a>
+    <div class="topbar-inner shell">
+      <a class="brand" href="#home" aria-label="블루블랙 가이드 홈">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 52 52"><path d="M9 12h25c7 0 11 4 11 10 0 5-3 8-7 9 5 1 8 4 8 9 0 7-5 11-13 11H9V12Zm10 8v8h12c3 0 5-1 5-4s-2-4-5-4H19Zm0 16v8h13c3 0 5-1 5-4s-2-4-5-4H19Z"/></svg>
+        </span>
+        <span><strong>BLUEBLACK</strong><small>FOUNTAIN PEN GUIDE</small></span>
+      </a>
+      <nav class="desktop-nav" aria-label="주요 메뉴">
+        <a href="#journeys">맞춤 안내</a>
+        <a href="#nib-lab">닙 비교</a>
+        <a href="#products-section">제품 후보</a>
+        <a href="#guide-library">가이드</a>
+      </nav>
+      <div class="top-actions">
+        <span class="status-pill" id="network-status" aria-live="polite">온라인</span>
+        <button class="icon-button" id="text-size" type="button" aria-label="글자 크기 변경">가+</button>
+        <button class="icon-button" id="contrast" type="button" aria-label="고대비 모드">◐</button>
+        <a class="staff-call" href="tel:027658868">직원 전화</a>
+      </div>
     </div>
   </header>
 
   <main id="main">
-    <section class="hero shell" id="home">
-      <div class="hero-copy">
-        <span class="eyebrow">BLUEBLACK PEN SHOP</span>
-        <h1>무엇을<br>도와드릴까요?</h1>
-        <p>처음 고르는 순간부터 사용 중 문제 해결까지. 필요한 길만 짧고 정확하게 안내합니다.</p>
-      </div>
-      <div class="hero-search">
-        <label for="global-search">가이드 통합 검색</label>
-        <div class="search-box">
-          <input id="global-search" type="search" autocomplete="off" spellcheck="false" placeholder="예: 펜촉이 까슬해요, 작은 글씨, 각인">
-          <button id="search-button" type="button">검색</button>
+    <section class="hero-stage" id="home">
+      <div class="hero shell">
+        <div class="hero-copy">
+          <span class="hero-kicker"><i></i> BLUEBLACK PEN SHOP</span>
+          <h1>첫 만년필을<br><em>잘 고르는 방법.</em></h1>
+          <p>막연한 추천 대신 글씨 크기, 종이, 필압과 예산을 함께 살펴봅니다. 매장 시필 전 필요한 조건을 3분 안에 정리해 보세요.</p>
+          <div class="hero-actions">
+            <button class="hero-primary" type="button" data-action="recommend">맞춤 추천 시작</button>
+            <button class="hero-secondary" type="button" data-action="trouble">사용 문제 해결</button>
+          </div>
+          <div class="hero-proof" aria-label="서비스 특징">
+            <span><b>10</b><small>가지 선택 질문</small></span>
+            <span><b>6</b><small>개 입문 후보</small></span>
+            <span><b>14</b><small>개 전문 가이드</small></span>
+          </div>
         </div>
-        <div class="search-suggestions" aria-label="추천 검색어">
-          <button type="button" data-query="작은 글씨 닙">작은 글씨</button>
-          <button type="button" data-query="잉크 안 나옴">잉크 안 나옴</button>
-          <button type="button" data-query="왼손잡이">왼손잡이</button>
-          <button type="button" data-query="선물 각인">선물·각인</button>
+
+        <div class="hero-visual" aria-hidden="true">
+          <div class="visual-orbit orbit-one"></div>
+          <div class="visual-orbit orbit-two"></div>
+          <div class="hero-card-float float-one"><span>EF</span><small>작은 글씨</small></div>
+          <div class="hero-card-float float-two"><span>M</span><small>잉크 표현</small></div>
+          <svg class="nib-illustration" viewBox="0 0 520 520" role="img">
+            <defs>
+              <linearGradient id="metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff5cf"/><stop offset=".45" stop-color="#c6a15b"/><stop offset="1" stop-color="#7d5924"/></linearGradient>
+              <linearGradient id="bodyInk" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#294d79"/><stop offset="1" stop-color="#071628"/></linearGradient>
+              <filter id="shadow"><feDropShadow dx="0" dy="26" stdDeviation="22" flood-color="#000" flood-opacity=".28"/></filter>
+            </defs>
+            <g filter="url(#shadow)" transform="rotate(-18 260 260)">
+              <rect x="210" y="26" width="100" height="225" rx="48" fill="url(#bodyInk)"/>
+              <rect x="221" y="44" width="12" height="175" rx="6" fill="#50779f" opacity=".45"/>
+              <path d="M188 224h144v55c0 17-14 31-31 31h-82c-17 0-31-14-31-31z" fill="#132b49"/>
+              <path d="M260 472c-18-63-74-112-74-180 0-60 33-103 74-126 41 23 74 66 74 126 0 68-56 117-74 180z" fill="url(#metal)"/>
+              <path d="M260 190v234" stroke="#72501d" stroke-width="5" stroke-linecap="round"/>
+              <path d="M224 267c10-23 23-39 36-50 13 11 26 27 36 50" fill="none" stroke="#84642f" stroke-width="4"/>
+              <circle cx="260" cy="292" r="18" fill="#0c203a" stroke="#dec47d" stroke-width="6"/>
+              <path d="M260 424l-10 28h20z" fill="#071628"/>
+            </g>
+          </svg>
+          <div class="ink-drop"></div>
         </div>
       </div>
+
+      <div class="search-deck shell">
+        <div class="search-deck-label"><span>SEARCH GUIDE</span><strong>지금 궁금한 내용을 바로 찾아보세요.</strong></div>
+        <div class="hero-search">
+          <label class="sr-only" for="global-search">가이드 통합 검색</label>
+          <div class="search-box">
+            <span class="search-icon" aria-hidden="true">⌕</span>
+            <input id="global-search" type="search" autocomplete="off" spellcheck="false" placeholder="예: 펜촉이 까슬해요, 작은 글씨, 각인">
+            <button id="search-button" type="button">검색</button>
+          </div>
+          <div class="search-suggestions" aria-label="추천 검색어">
+            <button type="button" data-query="작은 글씨 닙">작은 글씨</button>
+            <button type="button" data-query="잉크 안 나옴">잉크 안 나옴</button>
+            <button type="button" data-query="왼손잡이">왼손잡이</button>
+            <button type="button" data-query="선물 각인">선물·각인</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="trust-strip">
+      <div class="shell trust-grid">
+        <div><span class="trust-icon">✓</span><p><strong>검증된 가이드</strong><small>매장 상담 기준으로 정리</small></p></div>
+        <div><span class="trust-icon">₩</span><p><strong>가격 기준일 표시</strong><small>변동 가능한 정보는 구분</small></p></div>
+        <div><span class="trust-icon">!</span><p><strong>안전한 문제 해결</strong><small>무리한 자가수리 안내 없음</small></p></div>
+        <div><span class="trust-icon">⌂</span><p><strong>매장 시필 연결</strong><small>최종 선택은 직접 비교</small></p></div>
+      </div>
+    </section>
+
+    <section class="shell section-intro" id="journeys">
+      <span class="section-index">01</span>
+      <div><span class="eyebrow">START HERE</span><h2>현재 상황을 골라주세요.</h2><p>길게 읽지 않아도 됩니다. 지금 필요한 흐름부터 바로 시작하세요.</p></div>
     </section>
 
     <section class="shell journey-grid" aria-label="도움말 시작">
       <button class="journey-card primary" data-action="recommend">
-        <span class="journey-no">01</span><span class="journey-icon">✒️</span>
+        <span class="journey-no">01 / SELECT</span>
+        <span class="journey-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M10 35 30 15l3 3-20 20H8v-5Zm23-23 3-3 4 4-3 3-4-4Z"/><path d="M9 41h30"/></svg></span>
         <strong>만년필을 고르고 있어요</strong>
-        <small>10문항 맞춤 추천 · 실제 상품 후보</small><em>추천 시작 →</em>
+        <small>10문항 맞춤 추천 · 실제 상품 후보 · 닙 방향</small><em>추천 시작 <b>→</b></em>
       </button>
-      <button class="journey-card" data-action="trouble">
-        <span class="journey-no">02</span><span class="journey-icon">💧</span>
+      <button class="journey-card trouble" data-action="trouble">
+        <span class="journey-no">02 / CHECK</span>
+        <span class="journey-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 7s13 14 13 24a13 13 0 1 1-26 0C11 21 24 7 24 7Z"/><path d="M18 33c1 3 3 5 6 5"/></svg></span>
         <strong>사용 중 문제가 생겼어요</strong>
-        <small>안전 점검 · 즉시 중단 기준</small><em>증상 확인 →</em>
+        <small>잉크 흐름 · 누출 · 세척 · 즉시 중단 기준</small><em>증상 확인 <b>→</b></em>
       </button>
-      <button class="journey-card" data-action="service">
-        <span class="journey-no">03</span><span class="journey-icon">✨</span>
+      <button class="journey-card service" data-action="service">
+        <span class="journey-no">03 / SERVICE</span>
+        <span class="journey-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="15"/><path d="m24 14 3 7 7 3-7 3-3 7-3-7-7-3 7-3 3-7Z"/></svg></span>
         <strong>각인·AS·매장 정보</strong>
-        <small>주문 전 확인 · 접수 준비 · 방문 안내</small><em>서비스 보기 →</em>
+        <small>주문 전 확인 · 접수 준비 · 방문 안내</small><em>서비스 보기 <b>→</b></em>
       </button>
     </section>
 
     <section class="shell search-results" id="search-results" hidden aria-live="polite">
-      <div class="section-head"><div><span class="eyebrow">SEARCH</span><h2 id="search-title">검색 결과</h2></div><button class="text-button" id="clear-search" type="button">닫기</button></div>
+      <div class="section-head"><div><span class="eyebrow">SEARCH RESULT</span><h2 id="search-title">검색 결과</h2></div><button class="text-button" id="clear-search" type="button">결과 닫기</button></div>
       <div id="result-list" class="result-list"></div>
     </section>
 
-    <section class="shell section-block" id="products-section">
-      <div class="section-head">
-        <div><span class="eyebrow">CURATED PRODUCTS</span><h2>매장에서 비교할 입문 후보</h2><p>공식몰에서 확인된 상품을 기준으로 표시하며, 매장 재고는 직원 확인이 필요합니다.</p></div>
-        <button class="text-button" type="button" data-action="recommend">내 조건으로 다시 추천</button>
+    <section class="nib-lab" id="nib-lab">
+      <div class="shell nib-lab-grid">
+        <div class="nib-lab-copy">
+          <span class="section-index light">02</span>
+          <span class="eyebrow gold-text">NIB LAB</span>
+          <h2>닙 표기보다 중요한 건<br>내 글씨에서 보이는 선입니다.</h2>
+          <p>같은 F촉도 브랜드와 잉크, 종이에 따라 다르게 보입니다. 아래 샘플은 선택 방향을 이해하기 위한 상대 비교입니다.</p>
+          <button class="button gold" type="button" data-action="recommend">내 글씨 조건으로 추천</button>
+        </div>
+        <div class="nib-samples" aria-label="닙 굵기 비교 예시">
+          <article><div><b>EF</b><small>Extra Fine</small></div><p class="sample ef">오늘의 기록, 2026.06.28</p><span>작은 글씨 · 좁은 칸</span></article>
+          <article><div><b>F</b><small>Fine</small></div><p class="sample f">오늘의 기록, 2026.06.28</p><span>공부 · 업무 필기</span></article>
+          <article><div><b>M</b><small>Medium</small></div><p class="sample m">오늘의 기록, 2026.06.28</p><span>부드러움 · 잉크 표현</span></article>
+          <article><div><b>B</b><small>Broad</small></div><p class="sample b">오늘의 기록, 2026.06.28</p><span>서명 · 큰 글씨</span></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="shell section-block products-section" id="products-section">
+      <div class="section-intro compact">
+        <span class="section-index">03</span>
+        <div><span class="eyebrow">CURATED PRODUCTS</span><h2>매장에서 비교할 입문 후보</h2><p>가격과 상품 정보는 확인 기준일을 표시하고, 매장 재고는 직원 확인으로 구분합니다.</p></div>
+        <button class="section-cta" type="button" data-action="recommend">내 조건으로 추천받기 <b>→</b></button>
       </div>
       <div class="filter-row" role="group" aria-label="상품 필터">
-        <button class="filter-chip active" data-filter="all">전체</button>
+        <button class="filter-chip active" data-filter="all">전체 보기</button>
         <button class="filter-chip" data-filter="under3">3만원 이하</button>
         <button class="filter-chip" data-filter="3to7">3–7만원</button>
         <button class="filter-chip" data-filter="bottle">병 잉크 중심</button>
@@ -89,21 +178,43 @@
       <div class="product-grid" id="product-grid"></div>
     </section>
 
-    <section class="shell section-block">
-      <div class="section-head"><div><span class="eyebrow">GUIDE LIBRARY</span><h2>상황별 빠른 가이드</h2><p>앱 안에서 바로 읽고, 필요한 경우에만 직원에게 연결됩니다.</p></div></div>
-      <div class="category-tabs" id="category-tabs" role="tablist" aria-label="가이드 카테고리"></div>
-      <div class="guide-grid" id="guide-grid"></div>
+    <section class="guide-section" id="guide-library">
+      <div class="shell section-block">
+        <div class="section-intro compact">
+          <span class="section-index">04</span>
+          <div><span class="eyebrow">GUIDE LIBRARY</span><h2>상황별 빠른 가이드</h2><p>전문 용어보다 고객이 실제로 겪는 상황을 중심으로 정리했습니다.</p></div>
+        </div>
+        <div class="category-tabs" id="category-tabs" role="tablist" aria-label="가이드 카테고리"></div>
+        <div class="guide-grid" id="guide-grid"></div>
+      </div>
     </section>
 
     <section class="shell store-card">
-      <div><span class="eyebrow">VISIT BLUEBLACK</span><h2>실물 시필이 가장 정확합니다.</h2><p>경복궁역 인근 매장에서 실제 글씨 크기, 무게, 그립과 잉크 흐름을 비교해 보세요.</p><ul><li>평일 10:00–18:00</li><li>토요일 12:00–18:00</li><li>일요일·공휴일 휴무</li></ul></div>
-      <div class="store-actions"><a class="button light" href="https://naver.me/5uIkGgy4" target="_blank" rel="noopener">지도 보기</a><a class="button outline-light" href="https://blueblack.co.kr/" target="_blank" rel="noopener">공식몰</a><button class="button gold" type="button" data-action="staff">상담 요청</button></div>
+      <div class="store-copy">
+        <span class="store-badge">VISIT BLUEBLACK</span>
+        <h2>마지막 선택은<br>직접 써보고 결정하세요.</h2>
+        <p>글씨 크기, 무게 중심, 그립감과 잉크 흐름은 화면만으로 확정하기 어렵습니다. 추천 결과를 직원에게 보여주면 비교 범위를 빠르게 좁힐 수 있습니다.</p>
+        <div class="store-hours"><span><small>평일</small><b>10:00–18:00</b></span><span><small>토요일</small><b>12:00–18:00</b></span><span><small>일요일</small><b>정기휴무</b></span></div>
+        <div class="store-actions"><a class="button light" href="https://naver.me/5uIkGgy4" target="_blank" rel="noopener">지도 보기</a><a class="button outline-light" href="https://blueblack.co.kr/" target="_blank" rel="noopener">공식몰</a><button class="button gold" type="button" data-action="staff">상담 요청서</button></div>
+      </div>
+      <div class="store-visual" aria-hidden="true">
+        <div class="map-grid"></div>
+        <span class="map-road road-one"></span><span class="map-road road-two"></span>
+        <div class="map-pin"><i></i><strong>BLUEBLACK</strong><small>경복궁역 인근</small></div>
+      </div>
     </section>
   </main>
 
-  <button class="assistant-launcher" id="assistant-launcher" type="button" aria-controls="assistant-panel" aria-expanded="false"><span>✦</span><strong>가이드 도우미</strong></button>
+  <nav class="mobile-dock" aria-label="모바일 빠른 메뉴">
+    <a href="#home"><span>⌂</span><small>홈</small></a>
+    <button type="button" data-action="recommend"><span>✒</span><small>추천</small></button>
+    <button type="button" data-action="trouble"><span>◉</span><small>문제</small></button>
+    <button type="button" data-action="staff"><span>↗</span><small>상담</small></button>
+  </nav>
+
+  <button class="assistant-launcher" id="assistant-launcher" type="button" aria-controls="assistant-panel" aria-expanded="false"><span class="assistant-spark">✦</span><strong>가이드 도우미</strong><i></i></button>
   <aside class="assistant-panel" id="assistant-panel" hidden aria-label="가이드 검색 도우미">
-    <div class="assistant-head"><div><strong>블루블랙 가이드 도우미</strong><small>승인된 매장 가이드에서만 찾아드립니다.</small></div><button type="button" id="assistant-close" aria-label="닫기">×</button></div>
+    <div class="assistant-head"><div><span class="assistant-avatar">BB</span><p><strong>블루블랙 가이드 도우미</strong><small>승인된 매장 가이드에서만 찾아드립니다.</small></p></div><button type="button" id="assistant-close" aria-label="닫기">×</button></div>
     <div class="assistant-log" id="assistant-log" aria-live="polite"></div>
     <form class="assistant-form" id="assistant-form"><label class="sr-only" for="assistant-input">질문</label><input id="assistant-input" maxlength="160" autocomplete="off" placeholder="예: 왼손잡이는 어떤 촉이 좋아요?"><button type="submit">전송</button></form>
   </aside>
@@ -122,11 +233,12 @@
 
   <footer>
     <div class="shell footer-inner">
-      <div><strong>BLUEBLACK PEN SHOP</strong><p>서울 종로구 사직로 109 · 02-765-8868</p></div>
+      <div class="footer-brand"><span class="brand-mark mini" aria-hidden="true">BB</span><p><strong>BLUEBLACK PEN SHOP</strong><small>서울 종로구 사직로 109 · 02-765-8868</small></p></div>
       <nav aria-label="하단 링크"><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">공식몰</a><a href="https://app.notion.com/p/38c5f865c253812da750e72d5607f81c" target="_blank" rel="noopener">전체 문서</a><button type="button" id="export-log">이용 기록 내보내기</button></nav>
     </div>
     <div class="shell footer-meta"><span id="app-version"></span><span>추천 결과는 상담 범위를 좁히는 참고 정보입니다.</span></div>
   </footer>
+
   <script type="module" src="./app.js"></script>
 </body>
 </html>
