@@ -49,7 +49,7 @@ function toggleCompare(id){
 }
 function toggleFavorite(id){
   favoriteIds.has(id)?favoriteIds.delete(id):favoriteIds.add(id);
-  persist();renderFavoritesToolbar();syncButtons();
+  persist();renderFavoritesToolbar(true);syncButtons();
 }
 
 function syncButtons(){
@@ -87,10 +87,13 @@ function enhanceDialog(){
   actions.before(tools);syncButtons();
 }
 
-function renderFavoritesToolbar(){
+function renderFavoritesToolbar(force=false){
   const section=$('#price-guide .section-block');if(!section)return;
   let toolbar=$('#collection-toolbar');
   if(!toolbar){toolbar=document.createElement('div');toolbar.id='collection-toolbar';toolbar.className='collection-toolbar';const tabs=$('#price-tier-tabs');tabs?.before(toolbar)}
+  const state=String(favoriteIds.size);
+  if(!force&&toolbar.dataset.favoriteCount===state)return;
+  toolbar.dataset.favoriteCount=state;
   toolbar.innerHTML=`<div><span>MY PEN LIST</span><strong>관심 제품 ${favoriteIds.size}개</strong><small>이 브라우저에만 저장됩니다.</small></div><button type="button" id="favorites-open" ${favoriteIds.size?'':'disabled'}>관심 제품 보기</button>`;
   $('#favorites-open')?.addEventListener('click',openFavorites);
 }
@@ -125,7 +128,8 @@ function openCompare(){
 }
 
 function printComparison(products){
-  const popup=window.open('','_blank','noopener,noreferrer,width=900,height=760');if(!popup){alert('팝업이 차단되었습니다. 브라우저의 팝업 허용 후 다시 눌러주세요.');return}
+  const popup=window.open('','_blank','width=900,height=760');if(!popup){alert('팝업이 차단되었습니다. 브라우저의 팝업 허용 후 다시 눌러주세요.');return}
+  popup.opener=null;
   popup.document.write(`<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>블루블랙 제품 비교</title><style>body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#172033;padding:32px}h1{font-family:Georgia,serif}table{width:100%;border-collapse:collapse;margin-top:24px}th,td{border:1px solid #ccd3dc;padding:12px;text-align:left;vertical-align:top}thead th{background:#0b1b31;color:white}tbody th{background:#f1ede4;width:120px}.note{margin-top:22px;padding:14px;background:#f5f1e9}.meta{color:#6d7685;font-size:12px}</style></head><body><p class="meta">BLUEBLACK PEN SHOP</p><h1>만년필 제품 비교</h1>${comparisonTable(products)}<div class="note">표시 가격과 재고는 확인 시점 기준입니다. 실제 닙, 무게와 그립은 매장에서 시필해 주세요.</div><script>window.onload=()=>window.print()<\/script></body></html>`);popup.document.close();
 }
 
@@ -140,9 +144,9 @@ function bindClicks(){
 }
 
 function initObserver(){
-  const observer=new MutationObserver(()=>{enhanceActions();enhanceDialog();renderFavoritesToolbar()});
+  const observer=new MutationObserver(()=>{enhanceActions();enhanceDialog();if(!$('#collection-toolbar'))renderFavoritesToolbar()});
   observer.observe(document.body,{childList:true,subtree:true});
 }
 
-function init(){ensureStyles();bindClicks();initObserver();enhanceActions();renderDock();renderFavoritesToolbar()}
+function init(){ensureStyles();bindClicks();initObserver();enhanceActions();renderDock();renderFavoritesToolbar(true)}
 init();
