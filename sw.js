@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-pen-v9-20260627';
+const CACHE_NAME = 'blueblack-pen-v9b-20260627';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -22,7 +22,8 @@ const CORE_PATHS = [
   './src/customer-flow-v6.js',
   './src/share-image-v9.js',
   './src/mobile-actions-v9.js',
-  './src/language-polish-v9.js',
+  './src/part-guide-chinese-v9.js',
+  './src/preset-chinese-v9.js',
   './src/session-v9.js',
   './src/store-experience-v6.js',
   './src/part-guide-v8.js',
