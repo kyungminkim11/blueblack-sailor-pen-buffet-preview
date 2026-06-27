@@ -1,4 +1,4 @@
-const CACHE='blueblack-guide-v2.0.1';
+const CACHE='blueblack-guide-v2.0.2';
 const CORE=['./','./index.html','./app.css','./app.js','./offline.html','./manifest.webmanifest','./data/catalog.js','./modules/search.js','./modules/recommendation.js','./modules/sanitize.js','../app-icon.svg'];
 self.addEventListener('install',event=>event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(CORE))));
 self.addEventListener('activate',event=>event.waitUntil(Promise.all([caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))),self.clients.claim()])));
