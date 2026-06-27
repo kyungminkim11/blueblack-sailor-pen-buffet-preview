@@ -1,6 +1,7 @@
 import '../advanced-search.js';
 import '../extensions.js';
 import '../additional-situations.js';
+import '../product-media.js';
 import '../collection-tools.js';
 import '../result-tools.js';
 
@@ -28,9 +29,9 @@ syncTopbar();
 
 setTimeout(() => {
   const version = document.querySelector('#app-version');
-  if (version) version.textContent = 'Guide v4.2.0 · 비교·저장·공유·인쇄·24개 상황 2026-06-28';
+  if (version) version.textContent = 'Guide v5.0.0 · 공식 상품 사진·40개 제품·확장 제품군 2026-06-28';
 
-  const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card, .situation-card, .premium-card');
+  const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card, .situation-card, .premium-card, .media-product-card');
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     targets.forEach((el) => el.classList.add('is-visible'));
     return;
@@ -48,7 +49,7 @@ setTimeout(() => {
     el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 45}ms`);
     observer.observe(el);
   });
-}, 220);
+}, 260);
 
 export function escapeHtml(value='') {
   return String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
