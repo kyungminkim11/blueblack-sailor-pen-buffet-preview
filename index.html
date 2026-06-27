@@ -43,6 +43,10 @@
   <link rel="stylesheet" href="./part-guide-v8.css" />
   <link rel="stylesheet" href="./mobile-share-v9.css" />
   <link rel="stylesheet" href="./ui-v10.css" />
+  <link rel="stylesheet" href="./store-console-v12.css" />
+  <link rel="stylesheet" href="./store-progress-v12.css" />
+  <link rel="stylesheet" href="./store-dialogs-v12.css" />
+  <link rel="stylesheet" href="./staff-handoff-v12.css" />
   <script>
     (function(){
       var query=new URLSearchParams(location.search);
@@ -63,35 +67,7 @@
     })();
   </script>
   <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
-  <script type="application/ld+json">
-  {
-    "@context":"https://schema.org",
-    "@graph":[
-      {
-        "@type":"WebApplication",
-        "@id":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/#app",
-        "name":"BlueBlack Sailor Pen Buffet Preview",
-        "alternateName":"블루블랙 펜샵 세일러 펜뷔페 미리보기",
-        "url":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/",
-        "applicationCategory":"DesignApplication",
-        "operatingSystem":"Any",
-        "isAccessibleForFree":true,
-        "inLanguage":["ko","en","ja","zh-Hans","zh-Hant"],
-        "description":"A mobile-friendly in-store consultation tool for previewing a six-part fountain pen color combination in 3D.",
-        "image":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png"
-      },
-      {
-        "@type":"Store",
-        "@id":"https://blueblack.co.kr/#store",
-        "name":"BlueBlack Pen Shop",
-        "url":"https://blueblack.co.kr/",
-        "telephone":"+82-2-765-8868",
-        "address":{"@type":"PostalAddress","streetAddress":"사직로 109","addressLocality":"종로구","addressRegion":"서울특별시","addressCountry":"KR"},
-        "sameAs":["https://www.instagram.com/blueblack_korea/"]
-      }
-    ]
-  }
-  </script>
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/#app","name":"BlueBlack Sailor Pen Buffet Preview","alternateName":"블루블랙 펜샵 세일러 펜뷔페 미리보기","url":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/","applicationCategory":"DesignApplication","operatingSystem":"Any","isAccessibleForFree":true,"inLanguage":["ko","en","ja","zh-Hans","zh-Hant"],"description":"A mobile-friendly in-store consultation tool for previewing a six-part fountain pen color combination in 3D.","image":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png"},{"@type":"Store","@id":"https://blueblack.co.kr/#store","name":"BlueBlack Pen Shop","url":"https://blueblack.co.kr/","telephone":"+82-2-765-8868","address":{"@type":"PostalAddress","streetAddress":"사직로 109","addressLocality":"종로구","addressRegion":"서울특별시","addressCountry":"KR"},"sameAs":["https://www.instagram.com/blueblack_korea/"]}]}</script>
 </head>
 <body>
   <header class="app-header">
@@ -123,15 +99,14 @@
   <footer class="app-footer" data-t="footer">본 페이지는 블루블랙 펜샵 매장 상담을 위한 조합 미리보기 도구입니다.</footer>
   <dialog class="staff-dialog" id="staff-dialog"><div class="staff-dialog-body"><div class="staff-dialog-head"><div><h2 data-t="staffTitle">선택 파츠 확인</h2><p data-t="staffCopy">고객님이 선택한 색상입니다. 실물 파츠와 하나씩 비교해 주세요.</p></div><button type="button" class="dialog-close" id="staff-close">×</button></div><div class="summary-list" id="staff-summary"></div><p class="converter"><b data-t="converterTitle">컨버터 안내</b><br><span data-t="converterCopy">잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않는 별도 구매 상품입니다.</span></p></div></dialog>
   <script>(function(){var ids=['cap_body','cap_end','nib_grip','metal_parts','barrel_body','barrel_end'];var q=new URLSearchParams(location.search);var compact=q.get('c');if(compact&&!ids.some(function(id){return q.has(id);})){var values=compact.split('.');if(values.length===ids.length){ids.forEach(function(id,index){q.set(id,values[index]);});q.delete('c');history.replaceState(null,'',location.pathname+'?'+q.toString());}}})();</script>
-  <script>window.__bbViewerTimeout=setTimeout(function(){var loading=document.getElementById('viewer-loading');var error=document.getElementById('viewer-error');if(loading&&!loading.hidden){loading.hidden=true;if(error)error.hidden=false;}},10000);window.addEventListener('penviewerready',function(){clearTimeout(window.__bbViewerTimeout);});</script>
+  <script>window.__bbViewerTimeout=setTimeout(function(){var loading=document.getElementById('viewer-loading');var error=document.getElementById('viewer-error');if(loading&&!loading.hidden){loading.hidden=true;if(error)error.hidden=false;}},12000);window.addEventListener('penviewerready',function(){clearTimeout(window.__bbViewerTimeout);});</script>
   <script type="module" src="./src/restore-combination-v9.js"></script>
-  <script type="module" src="./src/app-v6.js"></script>
+  <script type="module" src="./src/app-v12.js"></script>
   <script type="module" src="./src/part-guide-v8.js"></script>
-  <script type="module" src="./src/customer-flow-v6.js"></script>
   <script type="module" src="./src/part-guide-chinese-v9.js"></script>
   <script type="module" src="./src/preset-chinese-v9.js"></script>
-  <script type="module" src="./src/mobile-actions-v9.js"></script>
-  <script type="module" src="./src/session-v9.js"></script>
   <script type="module" src="./src/locale-ui-v10.js"></script>
+  <script type="module" src="./src/store-session-v12.js"></script>
+  <script type="module" src="./src/store-actions-v12.js"></script>
 </body>
 </html>
