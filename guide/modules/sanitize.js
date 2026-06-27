@@ -1,4 +1,6 @@
 import '../extensions.js';
+import '../additional-situations.js';
+import '../collection-tools.js';
 
 const visualStyle = document.createElement('style');
 visualStyle.textContent = `
@@ -24,7 +26,7 @@ syncTopbar();
 
 setTimeout(() => {
   const version = document.querySelector('#app-version');
-  if (version) version.textContent = 'Guide v4.0.0 · 가격대·상황 추천 확장 2026-06-28';
+  if (version) version.textContent = 'Guide v4.1.0 · 비교함·관심 저장·24개 상황 2026-06-28';
 
   const targets = document.querySelectorAll('.section-intro, .journey-card, .nib-lab-copy, .nib-samples, .product-card, .guide-card, .store-card, .situation-card, .premium-card');
   if (!('IntersectionObserver' in window) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
@@ -44,7 +46,7 @@ setTimeout(() => {
     el.style.setProperty('--reveal-delay', `${Math.min(index % 6, 5) * 45}ms`);
     observer.observe(el);
   });
-}, 120);
+}, 180);
 
 export function escapeHtml(value='') {
   return String(value).replace(/[&<>'"]/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));
