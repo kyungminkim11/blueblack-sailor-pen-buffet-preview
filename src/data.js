@@ -34,9 +34,9 @@ export const parts = [
     nameKo: '메탈파츠',
     nameEn: 'Metal Parts',
     nameJa: '金属パーツ',
-    descriptionKo: '닙·클립·캡 밴드·링 등 금속 파츠의 색상을 실버 또는 골드로 선택합니다. 전체 조합의 분위기를 정리해주는 요소입니다.',
-    descriptionEn: 'Choose silver or gold for the nib, clip, cap bands and rings. The metal finish brings the entire color combination together.',
-    descriptionJa: 'ペン先・クリップ・キャップリングなどの金属パーツを、シルバーまたはゴールドから選びます。全体の配色を引き締める要素です。',
+    descriptionKo: '펜촉은 MF 단일촉으로 제공됩니다. 닙·클립·캡 밴드·링 등 금속 파츠의 색상은 실버 또는 골드로 선택할 수 있습니다.',
+    descriptionEn: 'The pen is available with an MF nib only. Choose silver or gold for the nib, clip, cap bands and rings.',
+    descriptionJa: 'ペン先はMFのみです。ペン先・クリップ・キャップリングなどの金属パーツは、シルバーまたはゴールドから選べます。',
     colorGroup: 'metal',
   },
   {
