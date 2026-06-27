@@ -1,0 +1,56 @@
+name: Sync guide product images
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '20 18 * * 1'
+  push:
+    branches: [main]
+    paths:
+      - 'guide/data/catalog.js'
+      - 'guide/data/premium.js'
+      - 'guide/data/expanded-products.js'
+      - 'guide/scripts/sync_product_images.py'
+      - '.github/workflows/sync-guide-product-images.yml'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: guide-product-image-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+
+      - name: Install image sync dependencies
+        run: python -m pip install --upgrade requests beautifulsoup4 pillow
+
+      - name: Download and optimize official product images
+        run: python guide/scripts/sync_product_images.py
+
+      - name: Commit synchronized images
+        run: |
+          if git diff --quiet -- guide/assets/products guide/data/product-images.js; then
+            echo 'No image changes detected.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add guide/assets/products guide/data/product-images.js
+          git commit -m 'Sync official BlueBlack product images'
+          git push
