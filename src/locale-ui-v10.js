@@ -1,4 +1,6 @@
 import './booklet-guide-v13.js';
+import './store-policy-v14.js';
+import './store-policy-style.js';
 import { getLanguage } from './i18n-v3.js';
 
 const meta={
