@@ -1,10 +1,11 @@
-name: Render social preview
+name: Render social previews
 
 on:
   push:
     branches: [main]
     paths:
       - social-card.svg
+      - portal-card.svg
       - .github/workflows/render-social-card.yml
   workflow_dispatch:
 
@@ -18,15 +19,17 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install SVG renderer
         run: sudo apt-get update && sudo apt-get install -y librsvg2-bin
-      - name: Render PNG
-        run: rsvg-convert -w 1200 -h 630 social-card.svg -o social-card.png
-      - name: Commit PNG
+      - name: Render PNG previews
+        run: |
+          rsvg-convert -w 1200 -h 630 social-card.svg -o social-card.png
+          rsvg-convert -w 1200 -h 630 portal-card.svg -o portal-card.png
+      - name: Commit PNG previews
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add social-card.png
+          git add social-card.png portal-card.png
           if git diff --cached --quiet; then
             exit 0
           fi
-          git commit -m "Render social sharing thumbnail"
+          git commit -m "Render social sharing thumbnails"
           git push
