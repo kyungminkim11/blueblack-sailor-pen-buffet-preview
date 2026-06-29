@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" role="img" aria-labelledby="title desc">
+  <title id="title">블루블랙 펜샵 내부 브랜드 위치도</title>
+  <desc id="desc">오른쪽 출입문과 카운터를 기준으로 벽면 및 중앙 진열대의 브랜드 위치를 표시한 고객용 매장 지도</desc>
+  <style>
+    :root{color-scheme:light}
+    text{font-family:Pretendard,"Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;fill:#17263b;font-weight:750;pointer-events:none}
+    .plan{fill:#fbfcfd;stroke:#10233f;stroke-width:2.5}
+    .aisle{fill:#f6f8fa}
+    .zone rect{stroke:#8d9bac;stroke-width:1.5;transition:opacity .18s ease,stroke .18s ease,filter .18s ease}
+    .zone-brand rect{fill:#e8eef5}
+    .zone-paper rect{fill:#eef2e8}
+    .zone-table rect{fill:#f5ecdc}
+    .zone-service rect{fill:#10233f;stroke:#10233f}
+    .zone-service text{fill:#fff}
+    .zone.is-dimmed{opacity:.2}
+    .zone.is-match rect{stroke:#b67b24;stroke-width:5;filter:drop-shadow(0 0 7px rgba(182,123,36,.35))}
+    .orientation{font-size:12px;fill:#66768b;font-weight:700}
+    .north{font-size:11px;fill:#10233f;font-weight:900;letter-spacing:.08em}
+    @media(prefers-reduced-motion:reduce){.zone rect{transition:none}}
+  </style>
+  <rect width="1200" height="720" fill="#e9eef4"/>
+  <rect class="plan" x="25" y="25" width="1150" height="670" rx="18"/>
+  <path class="aisle" d="M170 145H1105V490H690V650H170Z"/>
+  <text class="north" x="56" y="676">BLUEBLACK PEN SHOP · STORE DIRECTORY</text>
+  <g aria-label="매장 진열 구역">
+    <g class="zone zone-brand" data-brands="오로라 Aurora 오토휘트 Otto Hutt"><rect x="45" y="45" width="105" height="82" rx="8"/><text x="97.5" y="77.9" text-anchor="middle" font-size="9.2"><tspan x="97.5" y="77.9">오로라 / 오토휘트</tspan><tspan x="97.5" y="89.7">Aurora</tspan><tspan x="97.5" y="101.5">Otto Hutt</tspan></text></g>
+    <g class="zone zone-brand" data-brands="쉐퍼 Sheaffer 파카 Parker 몽블랑 Mont Blanc 듀퐁 S.T. Dupont"><rect x="150" y="45" width="170" height="82" rx="8"/><text x="235.0" y="70.3" text-anchor="middle" font-size="8.6"><tspan x="235.0" y="70.3">쉐퍼 · 파카 · 몽블랑</tspan><tspan x="235.0" y="81.3">듀퐁</tspan><tspan x="235.0" y="92.3">Sheaffer / Parker</tspan><tspan x="235.0" y="103.3">Mont Blanc / S.T. Dupont</tspan></text></g>
+    <g class="zone zone-brand" data-brands="파카 Parker"><rect x="320" y="45" width="110" height="82" rx="8"/><text x="375.0" y="83.2" text-anchor="middle" font-size="12"><tspan x="375.0" y="83.2">파카</tspan><tspan x="375.0" y="98.6">Parker</tspan></text></g>
+    <g class="zone zone-brand" data-brands="라미 Lamy"><rect x="430" y="45" width="110" height="82" rx="8"/><text x="485.0" y="83.2" text-anchor="middle" font-size="12"><tspan x="485.0" y="83.2">라미</tspan><tspan x="485.0" y="98.6">Lamy</tspan></text></g>
+    <g class="zone zone-brand" data-brands="디플로마트 Diplomat 펜 파우치 Pen Pouch"><rect x="540" y="45" width="150" height="82" rx="8"/><text x="615.0" y="77.8" text-anchor="middle" font-size="9.5"><tspan x="615.0" y="77.8">디플로마트</tspan><tspan x="615.0" y="90.0">펜 파우치</tspan><tspan x="615.0" y="102.1">Diplomat / Pen Pouch</tspan></text></g>
+    <g class="zone zone-brand" data-brands="그라폰 파버카스텔 Graf von Faber-Castell 까렌다쉬 Caran d'Ache"><rect x="710" y="45" width="145" height="82" rx="8"/><text x="782.5" y="70.7" text-anchor="middle" font-size="8.3"><tspan x="782.5" y="70.7">그라폰 파버카스텔</tspan><tspan x="782.5" y="81.3">까렌다쉬</tspan><tspan x="782.5" y="92.0">Graf von Faber-Castell</tspan><tspan x="782.5" y="102.6">Caran d'Ache</tspan></text></g>
+    <g class="zone zone-brand" data-brands="오로라 Aurora 펠리칸 Pelikan"><rect x="855" y="45" width="105" height="82" rx="8"/><text x="907.5" y="77.9" text-anchor="middle" font-size="9.2"><tspan x="907.5" y="77.9">오로라 / 펠리칸</tspan><tspan x="907.5" y="89.7">Aurora</tspan><tspan x="907.5" y="101.5">Pelikan</tspan></text></g>
+    <g class="zone zone-brand" data-brands="나발루 Nahvalur 우루시 Urushi"><rect x="960" y="45" width="105" height="82" rx="8"/><text x="1012.5" y="77.9" text-anchor="middle" font-size="9.2"><tspan x="1012.5" y="77.9">나발루 / 우루시</tspan><tspan x="1012.5" y="89.7">Nahvalur</tspan><tspan x="1012.5" y="101.5">Urushi</tspan></text></g>
+    <g class="zone zone-brand" data-brands="몬테베르데 Monteverde 콘클린 Conklin"><rect x="1065" y="45" width="105" height="82" rx="8"/><text x="1117.5" y="78.5" text-anchor="middle" font-size="8.6"><tspan x="1117.5" y="78.5">몬테베르데 / 콘클린</tspan><tspan x="1117.5" y="89.5">Monteverde</tspan><tspan x="1117.5" y="100.5">Conklin</tspan></text></g>
+    <g class="zone zone-brand" data-brands="오마스 Omas"><rect x="45" y="145" width="105" height="75" rx="8"/><text x="97.5" y="178.7" text-anchor="middle" font-size="12"><tspan x="97.5" y="178.7">오마스</tspan><tspan x="97.5" y="194.1">Omas</tspan></text></g>
+    <g class="zone zone-brand" data-brands="우루시 Urushi"><rect x="45" y="220" width="105" height="75" rx="8"/><text x="97.5" y="253.7" text-anchor="middle" font-size="12"><tspan x="97.5" y="253.7">우루시</tspan><tspan x="97.5" y="269.1">Urushi</tspan></text></g>
+    <g class="zone zone-brand" data-brands="세일러 Sailor 플래티넘 Platinum"><rect x="45" y="295" width="105" height="85" rx="8"/><text x="97.5" y="333.7" text-anchor="middle" font-size="10"><tspan x="97.5" y="333.7">세일러 / 플래티넘</tspan><tspan x="97.5" y="346.5">Sailor / Platinum</tspan></text></g>
+    <g class="zone zone-brand" data-brands="라반 Laban 오퍼스88 Opus88 카키모리 Kakimori 블랙윙 Blackwing"><rect x="45" y="380" width="105" height="115" rx="8"/><text x="97.5" y="430.9" text-anchor="middle" font-size="9.2"><tspan x="97.5" y="430.9">라반 · 오퍼스88</tspan><tspan x="97.5" y="442.7">카키모리 · 블랙윙</tspan><tspan x="97.5" y="454.5">Laban / Opus88</tspan></text></g>
+    <g class="zone zone-brand" data-brands="매뉴스크립트 Manuscript 파이롯트 Pilot 이로우츠시 Iro-utsushi 볼펜 Ballpoint Pen"><rect x="45" y="495" width="105" height="155" rx="8"/><text x="97.5" y="559.2" text-anchor="middle" font-size="8.8"><tspan x="97.5" y="559.2">매뉴스크립트</tspan><tspan x="97.5" y="570.4">파이롯트 이로우츠시</tspan><tspan x="97.5" y="581.7">볼펜</tspan><tspan x="97.5" y="593.0">Manuscript / Pilot</tspan></text></g>
+    <g class="zone zone-brand" data-brands="워터맨 Waterman"><rect x="225" y="185" width="135" height="95" rx="8"/><text x="292.5" y="228.7" text-anchor="middle" font-size="12"><tspan x="292.5" y="228.7">워터맨</tspan><tspan x="292.5" y="244.1">Waterman</tspan></text></g>
+    <g class="zone zone-brand" data-brands="파카 Parker 볼펜 Ballpoint Pen"><rect x="360" y="185" width="145" height="95" rx="8"/><text x="432.5" y="229.1" text-anchor="middle" font-size="11"><tspan x="432.5" y="229.1">파카 볼펜</tspan><tspan x="432.5" y="243.1">Parker Ballpoint</tspan></text></g>
+    <g class="zone zone-brand" data-brands="파카 Parker 만년필 Fountain Pen"><rect x="505" y="185" width="145" height="95" rx="8"/><text x="577.5" y="229.2" text-anchor="middle" font-size="10.8"><tspan x="577.5" y="229.2">파카 만년필</tspan><tspan x="577.5" y="243.0">Parker Fountain Pen</tspan></text></g>
+    <g class="zone zone-brand" data-brands="세일러 Sailor"><rect x="225" y="345" width="140" height="95" rx="8"/><text x="295.0" y="388.7" text-anchor="middle" font-size="12"><tspan x="295.0" y="388.7">세일러</tspan><tspan x="295.0" y="404.1">Sailor</tspan></text></g>
+    <g class="zone zone-brand" data-brands="파이롯트 Pilot"><rect x="365" y="345" width="140" height="95" rx="8"/><text x="435.0" y="388.7" text-anchor="middle" font-size="12"><tspan x="435.0" y="388.7">파이롯트</tspan><tspan x="435.0" y="404.1">Pilot</tspan></text></g>
+    <g class="zone zone-brand" data-brands="플래티넘 Platinum 모나미 Monami"><rect x="505" y="345" width="145" height="95" rx="8"/><text x="577.5" y="389.3" text-anchor="middle" font-size="10.5"><tspan x="577.5" y="389.3">플래티넘 / 모나미</tspan><tspan x="577.5" y="402.7">Platinum / Monami</tspan></text></g>
+    <g class="zone zone-brand" data-brands="쉐퍼 Sheaffer 크로스 Cross 디플로마트 Diplomat 나발루 Nahvalur"><rect x="690" y="185" width="190" height="95" rx="8"/><text x="785.0" y="222.7" text-anchor="middle" font-size="10.5"><tspan x="785.0" y="222.7">쉐퍼 · 크로스</tspan><tspan x="785.0" y="236.1">디플로마트 · 나발루</tspan><tspan x="785.0" y="249.6">Sheaffer / Cross</tspan></text></g>
+    <g class="zone zone-brand" data-brands="몬테베르데 Monteverde 콘클린 Conklin"><rect x="880" y="185" width="190" height="95" rx="8"/><text x="975.0" y="229.3" text-anchor="middle" font-size="10.5"><tspan x="975.0" y="229.3">몬테베르데 / 콘클린</tspan><tspan x="975.0" y="242.7">Monteverde / Conklin</tspan></text></g>
+    <g class="zone zone-paper" data-brands="노트류 Papers"><rect x="1070" y="185" width="55" height="95" rx="8"/><text x="1097.5" y="229.7" text-anchor="middle" font-size="9.5"><tspan x="1097.5" y="229.7">노트류</tspan><tspan x="1097.5" y="241.9">Papers</tspan></text></g>
+    <g class="zone zone-brand" data-brands="펠리칸 Pelikan 로디아 Rhodia 오로라 Aurora"><rect x="690" y="345" width="190" height="95" rx="8"/><text x="785.0" y="389.4" text-anchor="middle" font-size="10.3"><tspan x="785.0" y="389.4">펠리칸 · 로디아 · 오로라</tspan><tspan x="785.0" y="402.6">Pelikan / Rhodia / Aurora</tspan></text></g>
+    <g class="zone zone-brand" data-brands="트위스비 TWSBI IWI 3오이스터스 3Oysters"><rect x="880" y="345" width="190" height="95" rx="8"/><text x="975.0" y="382.5" text-anchor="middle" font-size="9.8"><tspan x="975.0" y="382.5">트위스비 · IWI</tspan><tspan x="975.0" y="395.0">3오이스터스</tspan><tspan x="975.0" y="407.6">TWSBI / IWI / 3Oysters</tspan></text></g>
+    <g class="zone zone-paper" data-brands="노트류 Papers"><rect x="1070" y="345" width="55" height="95" rx="8"/><text x="1097.5" y="389.7" text-anchor="middle" font-size="9.5"><tspan x="1097.5" y="389.7">노트류</tspan><tspan x="1097.5" y="401.9">Papers</tspan></text></g>
+    <g class="zone zone-table" data-brands="잉크 차트 Ink Swatch"><rect x="255" y="520" width="90" height="105" rx="8"/><text x="300.0" y="569.0" text-anchor="middle" font-size="10"><tspan x="300.0" y="569.0">잉크 차트</tspan><tspan x="300.0" y="581.8">Ink Swatch</tspan></text></g>
+    <g class="zone zone-table" data-brands="테이블 Table"><rect x="345" y="520" width="330" height="105" rx="8"/><text x="510.0" y="568.1" text-anchor="middle" font-size="13"><tspan x="510.0" y="568.1">테이블</tspan><tspan x="510.0" y="584.7">TABLE</tspan></text></g>
+    <g class="zone zone-paper" data-brands="볼펜 Ballpoint Pen 샤프 Mechanical Pencils"><rect x="760" y="510" width="145" height="120" rx="8"/><text x="832.5" y="563.4" text-anchor="middle" font-size="9.5"><tspan x="832.5" y="563.4">볼펜 · 샤프 등</tspan><tspan x="832.5" y="575.5">Ballpoint Pen</tspan><tspan x="832.5" y="587.7">Mechanical Pencils</tspan></text></g>
+    <g class="zone zone-service" data-brands="카운터 Counter"><rect x="905" y="565" width="220" height="65" rx="8"/><text x="1015.0" y="593.2" text-anchor="middle" font-size="13"><tspan x="1015.0" y="593.2">카운터</tspan><tspan x="1015.0" y="609.8">COUNTER</tspan></text></g>
+    <g class="zone zone-service" data-brands="출입문 Entrance"><rect x="1125" y="145" width="45" height="80" rx="8"/><text x="1147.5" y="181.9" text-anchor="middle" font-size="9.5" transform="rotate(-90 1147.5 185.0)"><tspan x="1147.5" y="181.9">출입문</tspan><tspan x="1147.5" y="194.1">ENTRANCE</tspan></text></g>
+    <g class="zone zone-paper" data-brands="노트류 Papers"><rect x="1125" y="235" width="45" height="265" rx="8"/><text x="1147.5" y="364.4" text-anchor="middle" font-size="9.5" transform="rotate(-90 1147.5 367.5)"><tspan x="1147.5" y="364.4">노트류</tspan><tspan x="1147.5" y="376.6">PAPERS</tspan></text></g>
+  </g>
+  <g aria-hidden="true">
+    <path d="M1110 175h-18" stroke="#a77a3d" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1097 168l-8 7 8 7" fill="none" stroke="#a77a3d" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="orientation" x="1090" y="162" text-anchor="end">입구에서 왼쪽 방향으로 둘러보세요</text>
+  </g>
+</svg>
