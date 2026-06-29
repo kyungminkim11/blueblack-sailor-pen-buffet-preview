@@ -1,5 +1,6 @@
 import { INK_PRODUCTS, formatWon } from './ink-products-data.js';
 import { INK_INVENTORY_COLORS } from './ink-inventory-colors.js';
+import { INK_SAMPLE_COLORS } from './ink-sample-colors-v24.js';
 import { INK_STORE_COLORS } from './ink-store-colors-generated.js';
 import { INK_CATALOG_COPY } from './ink-catalog-i18n-v22.js';
 
@@ -29,12 +30,22 @@ export function colorName(color){
   if(lang==='zh-Hant')return color.nameZhHant||color.nameEn||color.nameKo;
   return color.nameEn||color.nameKo||color.productTitle;
 }
-export function formName(color){return color.form==='bottle'?copy().bottle:copy().cartridge;}
+export function formName(){return copy().bottle;}
+export function colorProductUrl(color){
+  if(color?.productUrl)return color.productUrl;
+  const keyword=[color?.brandKo,color?.nameKo||color?.nameEn].filter(Boolean).join(' ');
+  return keyword?`https://blueblack.co.kr/product/search.html?keyword=${encodeURIComponent(keyword)}`:'https://blueblack.co.kr/product/list.html?cate_no=193';
+}
 export function formatPrice(value){return value==null?copy().unknownPrice:formatWon(value);}
 export function priceFor(item,volume){return volume==='10ml'?item.price10:item.price5;}
-export function getList(){return read(LIST_KEY);}
 export function getFavorites(){return new Set(read(FAV_KEY));}
 export function priceItemById(id){return INK_PRODUCTS.find(item=>item.id===id);}
+export function getList(){
+  const values=read(LIST_KEY);
+  const filtered=values.filter(validListEntry);
+  if(filtered.length!==values.length)write(LIST_KEY,filtered);
+  return filtered;
+}
 
 const BRAND_COUNTRIES={
   '3 Oysters':'kr',
@@ -83,10 +94,34 @@ export function itemTypeKeys(item){
   return[...new Set(keys)];
 }
 
+const OPTION_NOISE_PATTERN=/^(?:vol\.\d+|본병\s*\d*\s*ml|샘플\s*\d*\s*ml|\d+\s*(?:ink bottle|vials|rounds|rectangles)|카트리지|\([^)]*본입\))$/i;
+
+function derivedNameFromTitle(color){
+  const title=String(color.productTitle||'').trim();
+  if(!title)return '';
+  const dominant=title.match(/도미넌트\s*인더스트리\s+(?:스탠다드|펄|쉬머|캘리그라피|센티드|시그니처|일루전|홀로그램)?\s*잉크\s+(.+)$/);
+  if(dominant?.[1])return dominant[1].trim();
+  const wearingeul=title.match(/(?:Wearingeul|글입다).*?-\s*([^-]+)$/);
+  if(wearingeul?.[1])return wearingeul[1].trim();
+  return '';
+}
+
+function cleanedBottleColor(color){
+  const text=[color.form,color.productTitle,color.nameKo,color.nameEn].join(' ');
+  if(color.form!=='bottle'||/카트리지|cartridge/i.test(text))return null;
+  const name=String(color.nameKo||color.nameEn||'').trim();
+  if(!OPTION_NOISE_PATTERN.test(name))return color;
+  const derived=derivedNameFromTitle(color);
+  if(!derived)return null;
+  return {...color,nameKo:derived,nameEn:derived,nameJa:derived,nameZhHans:derived,nameZhHant:derived};
+}
+
 const ALL_COLORS=(()=>{
   const result=[];
   const seen=new Set();
-  for(const color of [...INK_INVENTORY_COLORS,...INK_STORE_COLORS]){
+  for(const source of [...INK_SAMPLE_COLORS,...INK_INVENTORY_COLORS,...INK_STORE_COLORS]){
+    const color=cleanedBottleColor(source);
+    if(!color)continue;
     const key=[normalize(color.brandEn||color.brandKo),color.form,normalize(color.nameKo||color.nameEn)].join('|');
     if(!key||seen.has(key))continue;
     seen.add(key);
@@ -97,6 +132,14 @@ const ALL_COLORS=(()=>{
 
 export function colorById(id){return ALL_COLORS.find(item=>item.id===id);}
 export function colorCount(){return ALL_COLORS.length;}
+
+function validListEntry(entry){
+  if(!entry||typeof entry!=='object')return false;
+  if(entry.type==='color')return Boolean(colorById(entry.colorId));
+  if(entry.type==='color-price')return Boolean(colorById(entry.colorId)&&priceItemById(entry.itemId));
+  if(entry.type==='price')return Boolean(priceItemById(entry.itemId));
+  return false;
+}
 
 export function brandGroups(){
   const map=new Map();

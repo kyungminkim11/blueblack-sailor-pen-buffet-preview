@@ -1,5 +1,5 @@
 import {
-  COUNTRY_KEYS,TYPE_KEYS,addColor,addColorPrice,addPrice,brandGroups,brandName,clearList,colorById,colorName,copy,currentLang,formatPrice,formatWon,formName,getFavorites,getList,groupCountryKey,initials,isColorPriceSelected,isColorSelected,isPriceSelected,itemTypeKeys,listTotal,matchedGroups,priceFor,priceItemById,priceItemForColor,removeListItem,seriesName,shareLines,toggleFavorite
+  COUNTRY_KEYS,TYPE_KEYS,addColor,addColorPrice,addPrice,brandGroups,brandName,clearList,colorById,colorName,colorProductUrl,copy,currentLang,formatPrice,formatWon,formName,getFavorites,getList,groupCountryKey,initials,isColorPriceSelected,isColorSelected,isPriceSelected,itemTypeKeys,listTotal,matchedGroups,priceFor,priceItemById,priceItemForColor,removeListItem,seriesName,shareLines,toggleFavorite
 } from './ink-catalog-model-v22.js';
 
 let directoryOpen=false;
@@ -20,6 +20,10 @@ function colorVisual(color,small=false){
   const classes=`ink-color-image${small?' is-small':''}${color.image?'':' is-swatch'}`;
   if(color.image)return`<span class="${classes}"><img src="${color.image}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><i style="--swatch:${color.hex||'#d8d2c8'}"></i></span>`;
   return`<span class="${classes}"><i style="--swatch:${color.hex||'#d8d2c8'}"></i></span>`;
+}
+function colorShopLink(color,label){
+  const value=copy();
+  return`<a class="ink-color-shop-link" href="${colorProductUrl(color)}" target="_blank" rel="noopener noreferrer">${label||value.shopLink||'상품 보기'}</a>`;
 }
 function labelFrom(map,key){return(map&&map[key])||key;}
 function countryLabel(key){return key==='all'?copy().allFilter:labelFrom(copy().countryNames,key);}
@@ -62,11 +66,7 @@ function openSeriesDetail(item,group){
   const colors=colorsForPriceItem(item,group);
   const country=countryLabel(groupCountryKey(group));
   const types=itemTypeKeys(item).map(typeLabel).join(' · ');
-  dialog.querySelector('.ink-detail-body').innerHTML=`<span class="ink-card-kicker">INK DETAIL</span><h2>${brandName(group)} · ${seriesName(item)}</h2><div class="ink-detail-meta"><span>${country}</span><span>${types}</span><span>5ml ${formatPrice(priceFor(item,'5ml'))}</span><span>10ml ${formatPrice(priceFor(item,'10ml'))}</span></div><p>${value.seriesDetailIntro}</p><dl><div><dt>${value.detailCountry}</dt><dd>${country}</dd></div><div><dt>${value.detailType}</dt><dd>${types}</dd></div><div><dt>${value.detailColors}</dt><dd>${colors.length?colors.length+value.items:value.priceNoColors}</dd></div></dl>${colors.length?`<div class="ink-detail-color-list">${colors.slice(0,24).map(color=>`<button type="button" data-detail-color="${color.id}"><i style="--swatch:${color.hex||'#d8d2c8'}"></i><span>${colorName(color)}</span></button>`).join('')}</div>`:''}<p>${value.seriesDetailColorHelp}</p>`;
-  dialog.querySelectorAll('[data-detail-color]').forEach(button=>{
-    const color=colorById(button.dataset.detailColor);
-    button.addEventListener('click',()=>color&&openColorDetail(color,item,group));
-  });
+  dialog.querySelector('.ink-detail-body').innerHTML=`<span class="ink-card-kicker">INK DETAIL</span><h2>${brandName(group)} · ${seriesName(item)}</h2><div class="ink-detail-meta"><span>${country}</span><span>${types}</span><span>5ml ${formatPrice(priceFor(item,'5ml'))}</span><span>10ml ${formatPrice(priceFor(item,'10ml'))}</span></div><p>${value.seriesDetailIntro}</p><dl><div><dt>${value.detailCountry}</dt><dd>${country}</dd></div><div><dt>${value.detailType}</dt><dd>${types}</dd></div><div><dt>${value.detailColors}</dt><dd>${colors.length?colors.length+value.items:value.priceNoColors}</dd></div></dl>${colors.length?`<div class="ink-detail-color-list">${colors.slice(0,24).map(color=>`<a href="${colorProductUrl(color)}" target="_blank" rel="noopener noreferrer"><i style="--swatch:${color.hex||'#d8d2c8'}"></i><span>${colorName(color)}</span></a>`).join('')}</div>`:''}<p>${value.seriesDetailColorHelp}</p>`;
   if(!dialog.open)dialog.showModal();
 }
 function openColorDetail(color,item,group){
@@ -74,7 +74,7 @@ function openColorDetail(color,item,group){
   const dialog=detailDialog();
   const country=countryLabel(groupCountryKey(group));
   const types=item?itemTypeKeys(item).map(typeLabel).join(' · '):value.colorNeedsCheck;
-  dialog.querySelector('.ink-detail-body').innerHTML=`<span class="ink-card-kicker">COLOR DETAIL</span><div class="ink-detail-color-head">${colorVisual(color)}<div><h2>${colorName(color)}</h2><p>${brandName(group)}${item?' · '+seriesName(item):''}</p></div></div><div class="ink-detail-meta"><span>${country}</span><span>${types}</span><span>${formName(color)}${color.volume?' '+color.volume:''}</span></div><p>${value.colorDetailIntro}</p><dl><div><dt>${value.detailCountry}</dt><dd>${country}</dd></div><div><dt>${value.detailType}</dt><dd>${types}</dd></div><div><dt>${value.detailSource}</dt><dd>${color.productTitle||color.nameEn||colorName(color)}</dd></div></dl>${item?detailPriceButtons(item,color):`<p>${value.colorNeedsCheck}</p>`}`;
+  dialog.querySelector('.ink-detail-body').innerHTML=`<span class="ink-card-kicker">COLOR DETAIL</span><div class="ink-detail-color-head">${colorVisual(color)}<div><h2>${colorName(color)}</h2><p>${brandName(group)}${item?' · '+seriesName(item):''}</p></div></div><div class="ink-detail-meta"><span>${country}</span><span>${types}</span><span>${formName(color)}${color.volume?' '+color.volume:''}</span></div><p>${value.colorDetailIntro}</p><dl><div><dt>${value.detailCountry}</dt><dd>${country}</dd></div><div><dt>${value.detailType}</dt><dd>${types}</dd></div><div><dt>${value.detailSource}</dt><dd>${color.productTitle||color.nameEn||colorName(color)}</dd></div></dl>${colorShopLink(color)}${item?detailPriceButtons(item,color):`<p>${value.colorNeedsCheck}</p>`}`;
   dialog.querySelectorAll('[data-detail-volume]').forEach(button=>button.addEventListener('click',()=>{addColorPrice(color,item,button.dataset.detailVolume);toast(value.saved);dialog.close();refresh();}));
   if(!dialog.open)dialog.showModal();
 }
@@ -97,9 +97,7 @@ function colorCard(color,group){
   const priceArea=item
     ? `<div class="ink-color-price-grid">${colorPriceButton(color,item,'5ml')}${colorPriceButton(color,item,'10ml')}</div><span class="ink-color-series">${seriesName(item)}</span>`
     : `<button type="button" class="ink-color-add${selected?' is-selected':''}">${selected?'✓ '+value.selected:'+ '+value.addColor}</button><span class="ink-color-series is-unpriced">${value.unknownPrice}</span>`;
-  card.innerHTML=`${colorVisual(color)}<div class="ink-color-copy"><strong>${colorName(color)}</strong><small>${color.nameEn||color.productTitle||colorName(color)} · ${formName(color)}${color.volume?' '+color.volume:''}</small></div>${priceArea}`;
-  card.querySelector('.ink-color-image').addEventListener('click',()=>openColorDetail(color,item,group));
-  card.querySelector('.ink-color-copy').addEventListener('click',()=>openColorDetail(color,item,group));
+  card.innerHTML=`<a class="ink-color-image-link" href="${colorProductUrl(color)}" target="_blank" rel="noopener noreferrer">${colorVisual(color)}</a><div class="ink-color-copy"><a href="${colorProductUrl(color)}" target="_blank" rel="noopener noreferrer"><strong>${colorName(color)}</strong><small>${color.nameEn||color.productTitle||colorName(color)} · ${formName(color)}${color.volume?' '+color.volume:''}</small></a></div>${priceArea}`;
   if(item){card.querySelectorAll('.ink-color-price').forEach(button=>button.addEventListener('click',()=>saveColorPrice(color,item,button.dataset.volume)));}
   else card.querySelector('.ink-color-add').addEventListener('click',()=>saveColor(color));
   return card;
@@ -112,7 +110,7 @@ function colorSection(group){
   section.className='ink-brand-colors';
   section.innerHTML=`<div class="ink-brand-section-head"><div><span>STORE COLOR DATA</span><h4>${value.registeredColors}</h4></div><b>${group.visibleColors.length}${value.items}</b></div><div class="ink-color-groups"></div><p class="ink-color-disclaimer">${value.colorDisclaimer}</p>`;
   const root=section.querySelector('.ink-color-groups');
-  ['bottle','cartridge'].forEach(form=>{
+  ['bottle'].forEach(form=>{
     const colors=group.visibleColors.filter(color=>color.form===form);
     if(!colors.length)return;
     const block=document.createElement('div');
@@ -136,27 +134,39 @@ function seriesColorEntry(){
 function colorsForPriceItem(item,group){
   return group.colors.filter(color=>priceItemForColor(color,group)?.id===item.id);
 }
-function seriesColorPicker(item,group){
+function seriesColorPicker(item,group,colors=colorsForPriceItem(item,group)){
   const value=copy();
-  const colors=colorsForPriceItem(item,group);
-  if(!colors.length)return`<div class="ink-series-colors is-empty"><span>${value.priceNoColors}</span><small>${value.priceNoColorsBody}</small></div>`;
-  return`<div class="ink-series-colors"><div class="ink-series-picker-head"><span>${value.colorPickerLabel}</span><small>${value.colorPickerHelp}</small></div><div class="ink-series-color-choices">${colors.map(color=>`<button type="button" class="ink-series-color-choice" data-color-id="${color.id}" aria-pressed="false"><i style="--swatch:${color.hex||'#d8d2c8'}"></i><span>${colorName(color)}</span></button>`).join('')}</div></div>`;
+  if(!colors.length)return`<details class="ink-series-colors is-empty is-manual"><summary class="ink-series-picker-head"><span>${value.priceNoColors}</span><small>${value.priceNoColorsBody}</small></summary>${seriesColorEntry()}</details>`;
+  return`<details class="ink-series-colors"><summary class="ink-series-picker-head"><span>${value.colorPickerLabel}</span><small>${colors.length}${value.items} · ${value.colorPickerHelp}</small></summary><div class="ink-series-color-choices">${colors.map(color=>`<div class="ink-series-color-choice" data-color-id="${color.id}"><button type="button" class="ink-series-color-select" data-color-id="${color.id}" aria-pressed="false"><i style="--swatch:${color.hex||'#d8d2c8'}"></i><span>${value.selectColor||'선택'}</span></button><a class="ink-series-color-link" href="${colorProductUrl(color)}" target="_blank" rel="noopener noreferrer"><strong>${colorName(color)}</strong><small>${value.shopLink||'상품 보기'}</small></a></div>`).join('')}</div></details>`;
 }
 function priceRow(item,group){
+  const colors=colorsForPriceItem(item,group);
   const row=document.createElement('div');
-  row.className='ink-series-row';
-  row.innerHTML=`<button type="button" class="ink-series-copy ink-series-detail-trigger"><strong>${seriesName(item)}</strong><small>${item.productEn}</small><em>${copy().detail}</em></button>${seriesPriceButton(item,'5ml')}${seriesPriceButton(item,'10ml')}${seriesColorEntry()}${seriesColorPicker(item,group)}`;
+  row.className=`ink-series-row${colors.length?' has-color-picker':' is-manual-color'}`;
+  row.innerHTML=`<button type="button" class="ink-series-copy ink-series-detail-trigger"><strong>${seriesName(item)}</strong><small>${item.productEn}</small><em>${copy().detail}</em></button>${seriesPriceButton(item,'5ml')}${seriesPriceButton(item,'10ml')}${colors.length?'<input type="hidden" class="ink-series-color-input">':''}${seriesColorPicker(item,group,colors)}`;
   row.querySelector('.ink-series-detail-trigger').addEventListener('click',()=>openSeriesDetail(item,group));
-  row.querySelectorAll('.ink-series-color-choice').forEach(button=>button.addEventListener('click',()=>{
+  row.querySelectorAll('.ink-series-color-select').forEach(button=>button.addEventListener('click',()=>{
     const color=colorById(button.dataset.colorId);
     row.dataset.selectedColorId=button.dataset.colorId;
     row.querySelector('.ink-series-color-input').value=color?colorName(color):'';
-    row.querySelectorAll('.ink-series-color-choice').forEach(choice=>{choice.classList.toggle('is-selected',choice===button);choice.setAttribute('aria-pressed',String(choice===button));});
+    row.querySelectorAll('.ink-series-color-choice').forEach(choice=>choice.classList.toggle('is-selected',choice.dataset.colorId===button.dataset.colorId));
+    row.querySelectorAll('.ink-series-color-select').forEach(choice=>choice.setAttribute('aria-pressed',String(choice===button)));
   }));
   row.querySelectorAll('.ink-series-price').forEach(button=>button.addEventListener('click',()=>{
     const color=row.dataset.selectedColorId?colorById(row.dataset.selectedColorId):null;
     if(color)saveColorPrice(color,item,button.dataset.volume);
-    else saveSeriesPrice(item,button.dataset.volume,row.querySelector('.ink-series-color-input')?.value||'');
+    else if(colors.length){
+      row.querySelector('.ink-series-colors')?.setAttribute('open','');
+      toast(copy().pickColorFirst||'먼저 색상을 선택해 주세요.');
+    }else{
+      const input=row.querySelector('.ink-series-color-input');
+      if(input?.value.trim())saveSeriesPrice(item,button.dataset.volume,input.value);
+      else{
+        row.querySelector('.ink-series-colors')?.setAttribute('open','');
+        input?.focus();
+        toast(copy().typeColorFirst||'색상명을 먼저 입력해 주세요.');
+      }
+    }
   }));
   return row;
 }
@@ -178,8 +188,6 @@ function brandCard(group){
   card.querySelector('.ink-brand-fav').addEventListener('click',()=>{toggleFavorite(group.id);renderResults();});
   const content=card.querySelector('.ink-brand-content');
   content.append(priceSection(group));
-  const colors=colorSection(group);
-  if(colors)content.append(colors);
   return card;
 }
 

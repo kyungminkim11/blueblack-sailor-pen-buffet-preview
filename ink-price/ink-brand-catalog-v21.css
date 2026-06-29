@@ -133,6 +133,12 @@
   border-top: 0;
 }
 
+.ink-series-row.has-color-picker {
+  grid-template-areas:
+    "copy price5 price10"
+    "colors colors colors";
+}
+
 .ink-series-copy {
   grid-area: copy;
   min-width: 0;
@@ -295,10 +301,18 @@ button.ink-series-copy {
   grid-area: colors;
   display: block;
   margin-top: 2px;
-  padding: 8px 9px;
+  padding: 0;
   border: 1px solid #eee4d6;
   border-radius: 12px;
   background: #fffaf0;
+}
+
+.ink-series-colors[open] {
+  padding-bottom: 8px;
+}
+
+.ink-series-colors .ink-series-color-entry {
+  margin: 0 8px;
 }
 
 .ink-series-picker-head {
@@ -306,6 +320,31 @@ button.ink-series-copy {
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
+  min-height: 38px;
+  padding: 9px 10px;
+  cursor: pointer;
+  list-style: none;
+}
+
+.ink-series-picker-head::-webkit-details-marker {
+  display: none;
+}
+
+.ink-series-picker-head::after {
+  content: "열기";
+  flex: 0 0 auto;
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #10233f;
+  color: #fff;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.ink-series-colors[open] .ink-series-picker-head::after {
+  content: "닫기";
+  background: #d8c49d;
+  color: #10233f;
 }
 
 .ink-series-picker-head > span {
@@ -324,43 +363,87 @@ button.ink-series-copy {
 }
 
 .ink-series-color-choices {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 7px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0 8px;
   max-height: 92px;
   overflow: auto;
   scrollbar-width: thin;
 }
 
 .ink-series-color-choice {
-  display: inline-flex;
+  display: grid;
+  grid-template-columns: 58px minmax(0, 1fr);
   align-items: center;
-  gap: 5px;
+  gap: 6px;
   max-width: 100%;
-  min-height: 29px;
-  padding: 4px 7px;
+  min-height: 36px;
+  padding: 5px;
   border: 1px solid #dfd4c4;
-  border-radius: 999px;
+  border-radius: 10px;
   background: #fff;
   color: #536277;
   font-size: 8px;
   font-weight: 850;
 }
 
-.ink-series-color-choice:hover,
-.ink-series-color-choice:focus-visible {
+.ink-series-color-choice:hover {
   border-color: #10233f;
   color: #10233f;
 }
 
 .ink-series-color-choice.is-selected {
   border-color: #10233f;
+  background: #f2f6fb;
+  box-shadow: 0 0 0 2px rgba(16, 35, 63, .06);
+}
+
+.ink-series-color-select {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-width: 0;
+  height: 27px;
+  border: 1px solid #ddd4c7;
+  border-radius: 999px;
+  background: #fff;
+  color: #536277;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.ink-series-color-select[aria-pressed="true"] {
+  border-color: #10233f;
   background: #10233f;
   color: #fff;
 }
 
-.ink-series-color-choice span {
+.ink-series-color-link {
+  display: grid;
+  min-width: 0;
+  color: #10233f;
+  text-decoration: none;
+}
+
+.ink-series-color-link strong {
+  overflow: hidden;
+  font-size: 9px;
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ink-series-color-link small {
+  margin-top: 2px;
+  color: #8d6d3e;
+  font-size: 7px;
+  font-weight: 900;
+}
+
+.ink-series-color-choice span,
+.ink-series-color-link strong {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

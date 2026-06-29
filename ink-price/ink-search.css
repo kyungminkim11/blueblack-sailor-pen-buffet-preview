@@ -717,7 +717,8 @@
   overflow:auto;
 }
 
-.ink-detail-color-list button{
+.ink-detail-color-list button,
+.ink-detail-color-list a{
   display:flex;
   align-items:center;
   gap:8px;
@@ -729,6 +730,7 @@
   background:#fff;
   color:#10233f;
   text-align:left;
+  text-decoration:none;
 }
 
 .ink-detail-color-list i{
@@ -779,8 +781,23 @@
 }
 
 .ink-color-image,
-.ink-color-copy{
+.ink-color-copy,
+.ink-color-image-link{
   cursor:pointer;
+}
+
+.ink-color-shop-link{
+  display:inline-flex;
+  justify-content:center;
+  margin-top:14px;
+  padding:9px 12px;
+  border:1px solid #10233f;
+  border-radius:12px;
+  background:#fff;
+  color:#10233f;
+  font-size:10px;
+  font-weight:900;
+  text-decoration:none;
 }
 
 @media(max-width:900px){
