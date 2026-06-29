@@ -1,0 +1,35 @@
+name: Validate ink catalog
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/ink-inventory-colors.js'
+      - 'src/ink-catalog-i18n-v22.js'
+      - 'src/ink-catalog-model-v22.js'
+      - 'src/ink-price-search-v22.js'
+      - 'ink-price/ink-inventory-colors-v22.css'
+      - 'ink-price/index.html'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check src/ink-inventory-colors.js
+          node --check src/ink-catalog-i18n-v22.js
+          node --check src/ink-catalog-model-v22.js
+          node --check src/ink-price-search-v22.js
+      - name: Check required files
+        run: |
+          test -f ink-price/ink-inventory-colors-v22.css
+          grep -q 'ink-price-search-v22.js' ink-price/index.html
