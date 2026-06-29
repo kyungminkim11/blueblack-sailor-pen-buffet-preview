@@ -1,11 +1,12 @@
+import './booklet-guide-v13.js';
 import { getLanguage } from './i18n-v3.js';
 
 const meta={
-  ko:{flag:'\ud83c\uddf0\ud83c\uddf7',label:'\ud55c\uad6d\uc5b4'},
-  en:{flag:'\ud83c\uddfa\ud83c\uddf8',label:'English'},
-  ja:{flag:'\ud83c\uddef\ud83c\uddf5',label:'\u65e5\u672c\u8a9e'},
-  'zh-Hans':{flag:'\ud83c\udde8\ud83c\uddf3',label:'\u7b80\u4f53\u4e2d\u6587'},
-  'zh-Hant':{flag:'\ud83c\uddf9\ud83c\uddfc',label:'\u7e41\u9ad4\u4e2d\u6587'}
+  ko:{flag:'🇰🇷',label:'한국어'},
+  en:{flag:'🇺🇸',label:'English'},
+  ja:{flag:'🇯🇵',label:'日本語'},
+  'zh-Hans':{flag:'🇨🇳',label:'简体中文'},
+  'zh-Hant':{flag:'🇹🇼',label:'繁體中文'}
 };
 
 const desktopQuery=window.matchMedia('(min-width:900px)');
