@@ -1,0 +1,467 @@
+.booklet-guide,
+.booklet-guide * {
+  box-sizing: border-box;
+}
+
+.booklet-guide {
+  width: min(1180px, calc(100% - 32px));
+  margin: clamp(56px, 8vw, 96px) auto 0;
+  color: #172235;
+  scroll-margin-top: 24px;
+}
+
+.booklet-guide-head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 28px;
+  margin-bottom: 22px;
+}
+
+.booklet-guide-head > div {
+  max-width: 760px;
+}
+
+.booklet-guide-head small,
+.booklet-panel-head > small {
+  display: block;
+  margin-bottom: 8px;
+  color: #6d7a8d;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+
+.booklet-guide-head h2,
+.booklet-panel-head h3,
+.booklet-price-card h4,
+.booklet-steps h4 {
+  margin: 0;
+  color: #11243f;
+  letter-spacing: -0.035em;
+}
+
+.booklet-guide-head h2 {
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  line-height: 1.08;
+}
+
+.booklet-guide-head p,
+.booklet-panel-head p,
+.booklet-price-card p,
+.booklet-steps p {
+  margin: 0;
+  color: #687486;
+  line-height: 1.65;
+}
+
+.booklet-guide-head p {
+  margin-top: 12px;
+  font-size: 0.98rem;
+}
+
+.booklet-guide-head > span {
+  flex: 0 0 auto;
+  padding: 10px 14px;
+  border: 1px solid #d8dee7;
+  border-radius: 999px;
+  background: #f7f5f0;
+  color: #5f6774;
+  font-size: 0.78rem;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+.booklet-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.booklet-panel {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid #dfe4eb;
+  border-radius: 26px;
+  background: #fff;
+  box-shadow: 0 18px 48px rgba(24, 39, 61, 0.075);
+}
+
+.booklet-panel::before {
+  position: absolute;
+  inset: 0 0 auto;
+  height: 4px;
+  content: '';
+  background: linear-gradient(90deg, #102b4c, #b38a5b 52%, #8c9c68);
+}
+
+.booklet-process-panel {
+  grid-column: 1 / -1;
+  padding: clamp(24px, 4vw, 38px);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(185, 161, 120, 0.12), transparent 30%),
+    linear-gradient(145deg, #ffffff, #f8fafc);
+}
+
+.booklet-price-panel {
+  grid-column: span 5;
+  padding: clamp(22px, 3.4vw, 32px);
+}
+
+.booklet-beverage-panel {
+  grid-column: span 7;
+  padding: clamp(22px, 3.4vw, 32px);
+  background:
+    radial-gradient(circle at 94% 4%, rgba(111, 136, 89, 0.13), transparent 28%),
+    #fff;
+}
+
+.booklet-panel-head {
+  max-width: 760px;
+}
+
+.booklet-panel-head h3 {
+  font-size: clamp(1.38rem, 2.4vw, 2rem);
+  line-height: 1.18;
+}
+
+.booklet-panel-head p {
+  margin-top: 9px;
+  font-size: 0.92rem;
+}
+
+.booklet-steps {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  margin: 26px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booklet-steps li {
+  min-height: 172px;
+  padding: 18px;
+  border: 1px solid #e3e7ed;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.booklet-steps li > span {
+  display: inline-grid;
+  width: 36px;
+  height: 36px;
+  margin-bottom: 24px;
+  place-items: center;
+  border-radius: 12px;
+  background: #102b4c;
+  color: #fff;
+  font-size: 0.76rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+}
+
+.booklet-steps h4 {
+  font-size: 1rem;
+}
+
+.booklet-steps p {
+  margin-top: 8px;
+  font-size: 0.83rem;
+}
+
+.booklet-rule {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 16px 18px;
+  border: 1px solid #d6c5ad;
+  border-radius: 16px;
+  background: #fbf6ee;
+}
+
+.booklet-rule small {
+  flex: 0 0 auto;
+  padding: 6px 9px;
+  border-radius: 8px;
+  background: #785b38;
+  color: #fff;
+  font-size: 0.69rem;
+  font-weight: 850;
+  letter-spacing: 0.04em;
+}
+
+.booklet-rule strong {
+  color: #4e3c29;
+  font-size: 0.91rem;
+  line-height: 1.45;
+}
+
+.booklet-price-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.booklet-price-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 112px;
+  padding: 17px 18px;
+  border: 1px solid #e0e5eb;
+  border-radius: 17px;
+  background: #fbfcfd;
+}
+
+.booklet-price-copy {
+  min-width: 0;
+}
+
+.booklet-price-card small {
+  display: block;
+  margin-bottom: 5px;
+  color: #7c8796;
+  font-size: 0.64rem;
+  font-weight: 850;
+  letter-spacing: 0.13em;
+}
+
+.booklet-price-card h4 {
+  font-size: 0.98rem;
+}
+
+.booklet-price-card p {
+  margin-top: 5px;
+  font-size: 0.78rem;
+}
+
+.booklet-price-card > strong {
+  flex: 0 0 auto;
+  color: #17304f;
+  font-size: 1rem;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+}
+
+.booklet-price-card.is-featured {
+  border-color: #102b4c;
+  background: #102b4c;
+  box-shadow: 0 14px 30px rgba(16, 43, 76, 0.17);
+}
+
+.booklet-price-card.is-featured small,
+.booklet-price-card.is-featured p {
+  color: #bac7d5;
+}
+
+.booklet-price-card.is-featured h4,
+.booklet-price-card.is-featured > strong {
+  color: #fff;
+}
+
+.booklet-beverage-product {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 22px;
+  padding: 18px 20px;
+  border: 1px solid #d8dfce;
+  border-radius: 18px;
+  background: linear-gradient(135deg, #f4f7ef, #fbfaf6);
+}
+
+.booklet-beverage-product > div {
+  display: grid;
+  gap: 5px;
+}
+
+.booklet-beverage-product small {
+  color: #66745e;
+  font-size: 0.78rem;
+  font-weight: 750;
+}
+
+.booklet-beverage-product strong {
+  color: #34482f;
+  font-size: 1.16rem;
+}
+
+.booklet-beverage-product > span {
+  padding: 7px 10px;
+  border-radius: 999px;
+  background: #5d7353;
+  color: #fff;
+  font-size: 0.71rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.booklet-ink-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 14px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.booklet-ink-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid #e6e9e1;
+  border-radius: 12px;
+  background: rgba(251, 252, 249, 0.9);
+  color: #465143;
+  font-size: 0.78rem;
+  font-weight: 680;
+  line-height: 1.35;
+}
+
+.booklet-ink-list li span {
+  flex: 0 0 auto;
+  display: inline-grid;
+  width: 24px;
+  height: 24px;
+  place-items: center;
+  border-radius: 8px;
+  background: #e8ede3;
+  color: #62705a;
+  font-size: 0.61rem;
+  font-weight: 850;
+}
+
+.booklet-disclaimer {
+  margin: 14px 3px 0;
+  color: #7a8491;
+  font-size: 0.76rem;
+  line-height: 1.55;
+}
+
+@media (max-width: 980px) {
+  .booklet-price-panel,
+  .booklet-beverage-panel {
+    grid-column: 1 / -1;
+  }
+
+  .booklet-steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .booklet-steps li {
+    min-height: 150px;
+  }
+}
+
+@media (max-width: 699px) {
+  .booklet-guide {
+    width: min(100% - 20px, 1180px);
+    margin-top: 52px;
+  }
+
+  .booklet-guide-head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 16px;
+    padding: 0 4px;
+  }
+
+  .booklet-guide-head h2 {
+    font-size: clamp(1.72rem, 8vw, 2.28rem);
+  }
+
+  .booklet-guide-head > span {
+    padding: 8px 11px;
+    font-size: 0.7rem;
+  }
+
+  .booklet-guide-grid {
+    gap: 12px;
+  }
+
+  .booklet-panel,
+  .booklet-process-panel,
+  .booklet-price-panel,
+  .booklet-beverage-panel {
+    border-radius: 20px;
+  }
+
+  .booklet-process-panel,
+  .booklet-price-panel,
+  .booklet-beverage-panel {
+    padding: 21px 17px;
+  }
+
+  .booklet-steps {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 20px;
+  }
+
+  .booklet-steps li {
+    display: grid;
+    grid-template-columns: 38px minmax(0, 1fr);
+    gap: 12px;
+    min-height: 0;
+    padding: 14px;
+  }
+
+  .booklet-steps li > span {
+    width: 34px;
+    height: 34px;
+    margin: 0;
+    border-radius: 11px;
+  }
+
+  .booklet-steps p {
+    font-size: 0.8rem;
+  }
+
+  .booklet-rule {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 8px;
+    padding: 14px;
+  }
+
+  .booklet-price-card {
+    align-items: flex-start;
+    min-height: 0;
+    padding: 15px;
+  }
+
+  .booklet-price-card > strong {
+    padding-top: 18px;
+    font-size: 0.94rem;
+  }
+
+  .booklet-beverage-product {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .booklet-ink-list {
+    grid-template-columns: 1fr;
+    gap: 7px;
+  }
+
+  .booklet-ink-list li {
+    min-height: 40px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .booklet-guide * {
+    scroll-behavior: auto !important;
+  }
+}
