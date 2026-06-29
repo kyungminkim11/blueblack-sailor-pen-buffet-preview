@@ -1,0 +1,459 @@
+@media (max-width: 899px) {
+  :root {
+    --mobile-app-bg: #f3f5f7;
+    --mobile-app-card: #ffffff;
+    --mobile-app-line: #dfe5ec;
+    --mobile-app-navy: #102b4c;
+    --mobile-app-muted: #687486;
+  }
+
+  html {
+    scroll-padding-top: 76px;
+    background: var(--mobile-app-bg);
+  }
+
+  body.mobile-main-app {
+    min-width: 320px;
+    padding-bottom: calc(82px + env(safe-area-inset-bottom));
+    background: var(--mobile-app-bg);
+  }
+
+  body.mobile-main-app .app-header {
+    position: sticky;
+    z-index: 80;
+    top: 0;
+    min-height: 64px;
+    border-bottom: 1px solid rgba(209, 218, 228, 0.88);
+    background: rgba(255, 255, 255, 0.92);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 8px 22px rgba(20, 35, 54, 0.06);
+  }
+
+  body.mobile-main-app .header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-height: 64px;
+    padding: 9px 12px;
+  }
+
+  body.mobile-main-app .brand-row {
+    grid-column: 1;
+    align-self: end;
+    margin: 0;
+  }
+
+  body.mobile-main-app .brand-name {
+    font-size: 0.62rem;
+    letter-spacing: 0.14em;
+  }
+
+  body.mobile-main-app .status-badge {
+    display: none;
+  }
+
+  body.mobile-main-app .app-header h1 {
+    grid-column: 1;
+    align-self: start;
+    overflow: hidden;
+    margin: 0;
+    color: #10233f;
+    font-size: 1.02rem;
+    line-height: 1.18;
+    letter-spacing: -0.035em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.mobile-main-app .app-header > .header-inner > p {
+    display: none;
+  }
+
+  body.mobile-main-app .language-menu {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    margin: 0;
+  }
+
+  body.mobile-main-app .language-menu summary {
+    min-height: 42px;
+    padding: 8px 10px;
+    border: 1px solid #dfe5ec;
+    border-radius: 13px;
+    background: #fff;
+  }
+
+  body.mobile-main-app .language-current-label,
+  body.mobile-main-app .language-chevron {
+    display: none;
+  }
+
+  body.mobile-main-app .language-current-flag {
+    font-size: 1.15rem;
+  }
+
+  body.mobile-main-app .language-switcher {
+    position: absolute;
+    z-index: 120;
+    top: calc(100% + 8px);
+    right: 0;
+    width: min(250px, calc(100vw - 24px));
+    padding: 8px;
+    border: 1px solid #dfe5ec;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 18px 44px rgba(18, 34, 53, 0.18);
+  }
+
+  body.mobile-main-app main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 10px 10px 34px;
+  }
+
+  body.mobile-main-app .mobile-main-heading {
+    order: 0;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 8px 4px 12px;
+  }
+
+  body.mobile-main-app .mobile-main-heading small {
+    display: block;
+    margin-bottom: 4px;
+    color: #778498;
+    font-size: 0.66rem;
+    font-weight: 850;
+    letter-spacing: 0.13em;
+  }
+
+  body.mobile-main-app .mobile-main-heading h2 {
+    margin: 0;
+    color: #10233f;
+    font-size: 1.42rem;
+    line-height: 1.13;
+    letter-spacing: -0.045em;
+  }
+
+  body.mobile-main-app .mobile-main-heading p {
+    max-width: 150px;
+    margin: 0;
+    color: #697587;
+    font-size: 0.72rem;
+    line-height: 1.45;
+    text-align: right;
+  }
+
+  body.mobile-main-app .customizer {
+    order: 1;
+    display: block;
+    width: 100%;
+    margin: 0;
+  }
+
+  body.mobile-main-app .result-section {
+    order: 2;
+  }
+
+  body.mobile-main-app .booklet-guide {
+    order: 3;
+  }
+
+  body.mobile-main-app .store-policy-guide {
+    order: 4;
+  }
+
+  body.mobile-main-app .visit-section {
+    order: 5;
+  }
+
+  body.mobile-main-app .howto {
+    order: 6;
+  }
+
+  body.mobile-main-app .viewer-card,
+  body.mobile-main-app .control-card,
+  body.mobile-main-app .summary-card,
+  body.mobile-main-app .action-card,
+  body.mobile-main-app .visit-card {
+    width: 100%;
+    border-radius: 22px;
+  }
+
+  body.mobile-main-app .viewer-card {
+    overflow: hidden;
+    margin: 0;
+    border: 1px solid var(--mobile-app-line);
+    background: var(--mobile-app-card);
+    box-shadow: 0 14px 34px rgba(19, 36, 57, 0.09);
+  }
+
+  body.mobile-main-app .viewer-head {
+    min-height: 58px;
+    padding: 10px 12px;
+  }
+
+  body.mobile-main-app .viewer-title small {
+    font-size: 0.62rem;
+  }
+
+  body.mobile-main-app .viewer-title strong {
+    font-size: 0.94rem;
+  }
+
+  body.mobile-main-app .viewer-actions {
+    gap: 5px;
+  }
+
+  body.mobile-main-app .viewer-actions button {
+    min-height: 36px;
+    padding: 7px 9px;
+    border-radius: 11px;
+    font-size: 0.7rem;
+  }
+
+  body.mobile-main-app .viewer-stage {
+    height: clamp(300px, 42svh, 430px);
+    min-height: 300px;
+    max-height: 430px;
+  }
+
+  body.mobile-main-app .viewer-hint {
+    right: 10px;
+    bottom: 9px;
+    left: 10px;
+    width: auto;
+    padding: 7px 9px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    text-align: center;
+  }
+
+  body.mobile-main-app .control-card {
+    margin-top: 10px;
+    padding: 18px 15px 20px;
+    border: 1px solid var(--mobile-app-line);
+    background: var(--mobile-app-card);
+    box-shadow: 0 12px 28px rgba(19, 36, 57, 0.07);
+  }
+
+  body.mobile-main-app .control-title {
+    align-items: center;
+    margin-bottom: 14px;
+  }
+
+  body.mobile-main-app .control-title h2 {
+    font-size: 1.18rem;
+  }
+
+  body.mobile-main-app .part-grid {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    margin: 0 -15px;
+    padding: 2px 15px 10px;
+    scroll-padding-inline: 15px;
+    scroll-snap-type: x proximity;
+    scrollbar-width: none;
+  }
+
+  body.mobile-main-app .part-grid::-webkit-scrollbar {
+    display: none;
+  }
+
+  body.mobile-main-app .part-button {
+    flex: 0 0 92px;
+    min-height: 68px;
+    padding: 10px 8px;
+    border-radius: 15px;
+    scroll-snap-align: start;
+    font-size: 0.76rem;
+  }
+
+  body.mobile-main-app .part-description {
+    margin-top: 8px;
+    padding: 15px;
+    border-radius: 16px;
+  }
+
+  body.mobile-main-app .part-description h3 {
+    font-size: 1.12rem;
+  }
+
+  body.mobile-main-app .part-description p {
+    font-size: 0.8rem;
+    line-height: 1.55;
+  }
+
+  body.mobile-main-app .palette {
+    margin-top: 14px;
+  }
+
+  body.mobile-main-app .swatch-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  body.mobile-main-app .swatch {
+    min-height: 78px;
+    padding: 9px 4px;
+    border-radius: 14px;
+    font-size: 0.68rem;
+  }
+
+  body.mobile-main-app .swatch .swatch-dot {
+    width: 31px;
+    height: 31px;
+  }
+
+  body.mobile-main-app .selected-bar {
+    position: sticky;
+    z-index: 16;
+    bottom: calc(72px + env(safe-area-inset-bottom));
+    margin: 16px 0 0;
+    border: 1px solid #d7e0e9;
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(14px);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 10px 26px rgba(17, 34, 54, 0.12);
+  }
+
+  body.mobile-main-app .part-navigation {
+    gap: 8px;
+  }
+
+  body.mobile-main-app .part-navigation button,
+  body.mobile-main-app .action-grid button {
+    min-height: 48px;
+    border-radius: 14px;
+  }
+
+  body.mobile-main-app .notice,
+  body.mobile-main-app .converter {
+    font-size: 0.72rem;
+    line-height: 1.55;
+  }
+
+  body.mobile-main-app .result-section,
+  body.mobile-main-app .booklet-guide,
+  body.mobile-main-app .store-policy-guide,
+  body.mobile-main-app .visit-section,
+  body.mobile-main-app .howto {
+    width: 100%;
+    margin-right: 0;
+    margin-left: 0;
+    scroll-margin-top: 76px;
+  }
+
+  body.mobile-main-app .result-section {
+    margin-top: 18px;
+  }
+
+  body.mobile-main-app .section-head {
+    padding-inline: 4px;
+  }
+
+  body.mobile-main-app .result-layout {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  body.mobile-main-app .summary-card,
+  body.mobile-main-app .action-card {
+    padding: 16px;
+  }
+
+  body.mobile-main-app .booklet-guide {
+    margin-top: 34px;
+  }
+
+  body.mobile-main-app .store-policy-guide {
+    margin-top: 12px !important;
+  }
+
+  body.mobile-main-app .visit-section {
+    margin-top: 18px;
+  }
+
+  body.mobile-main-app .howto {
+    margin-top: 14px;
+    border: 1px solid var(--mobile-app-line);
+    border-radius: 18px;
+    background: #fff;
+  }
+
+  body.mobile-main-app .howto summary {
+    min-height: 52px;
+    padding: 15px 16px;
+  }
+
+  body.mobile-main-app .app-footer {
+    padding-bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+
+  body.mobile-main-app .mobile-bottom-nav {
+    position: fixed;
+    z-index: 110;
+    right: 8px;
+    bottom: calc(8px + env(safe-area-inset-bottom));
+    left: 8px;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 4px;
+    min-height: 62px;
+    padding: 6px;
+    border: 1px solid rgba(208, 218, 228, 0.94);
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.94);
+    -webkit-backdrop-filter: blur(18px);
+    backdrop-filter: blur(18px);
+    box-shadow: 0 16px 42px rgba(17, 34, 54, 0.18);
+  }
+
+  body.mobile-main-app .mobile-bottom-nav button {
+    display: grid;
+    place-items: center;
+    gap: 2px;
+    min-width: 0;
+    min-height: 48px;
+    padding: 5px 2px;
+    border: 0;
+    border-radius: 14px;
+    background: transparent;
+    color: #748094;
+    font: inherit;
+  }
+
+  body.mobile-main-app .mobile-bottom-nav button span:first-child {
+    font-size: 1rem;
+    line-height: 1;
+  }
+
+  body.mobile-main-app .mobile-bottom-nav button span:last-child {
+    font-size: 0.64rem;
+    font-weight: 780;
+    letter-spacing: -0.015em;
+  }
+
+  body.mobile-main-app .mobile-bottom-nav button.is-active {
+    background: #102b4c;
+    color: #fff;
+  }
+}
+
+@media (min-width: 900px) {
+  .mobile-main-heading,
+  .mobile-bottom-nav {
+    display: none !important;
+  }
+}
