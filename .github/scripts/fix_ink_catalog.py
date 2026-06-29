@@ -11,7 +11,7 @@ from bs4 import BeautifulSoup
 
 PATH = Path('src/ink-store-colors-generated.js')
 HEADERS = {
-    'User-Agent': 'Mozilla/5.0 (compatible; BlueBlackStoreGuide/2.1; +https://blueblack.co.kr/)',
+    'User-Agent': 'Mozilla/5.0 (compatible; BlueBlackStoreGuide/2.2; +https://blueblack.co.kr/)',
     'Accept-Language': 'ko-KR,ko;q=0.9,en;q=0.7',
 }
 
@@ -27,6 +27,12 @@ BRAND_RULES = [
     ('제이허빈', '제이 에르뱅', 'J. Herbin'),
     ('페리스휠', '페리스 휠 프레스', 'Ferris Wheel Press'),
 ]
+
+BAD_IMAGE_TOKENS = (
+    'store_logo', '/web/upload/icon_', 'blank.gif', 'spacer.gif', 'common/',
+    'btn_', 'ico_', 'icon_', 'loading', 'logo.', 'logo_', 'ec-base',
+)
+PREFERRED_IMAGE_TOKENS = ('/web/product/', '/web/upload/nneditor/', '/web/upload/product/', '/product/')
 
 
 def load_rows():
@@ -54,21 +60,47 @@ def normalize_brand(row):
             break
 
 
+def image_value(node, page_url):
+    value = node.get('content') or node.get('data-original') or node.get('data-src') or node.get('src') or ''
+    if not value:
+        return ''
+    if value.startswith('//'):
+        value = 'https:' + value
+    else:
+        value = urljoin(page_url, value)
+    value = value.replace('http://blueblack.co.kr', 'https://blueblack.co.kr')
+    lowered = value.casefold()
+    if any(token in lowered for token in BAD_IMAGE_TOKENS):
+        return ''
+    return value
+
+
 def fetch_image(url):
     try:
         response = requests.get(url, headers=HEADERS, timeout=25)
         response.raise_for_status()
         response.encoding = response.apparent_encoding or 'utf-8'
         soup = BeautifulSoup(response.text, 'html.parser')
-        node = soup.select_one("meta[property='og:image'], meta[name='twitter:image'], .keyImg img, #bigImage")
-        if not node:
+        selectors = [
+            '.xans-product-detail .keyImg img', '.keyImg img', '#bigImage', 'img.BigImage',
+            '.xans-product-detail .thumbnail img', '.thumbnail img',
+            "meta[property='og:image']", "meta[name='twitter:image']",
+        ]
+        candidates = []
+        for selector in selectors:
+            for node in soup.select(selector):
+                value = image_value(node, url)
+                if value and value not in candidates:
+                    candidates.append(value)
+        if not candidates:
+            for node in soup.select('img'):
+                value = image_value(node, url)
+                if value:
+                    candidates.append(value)
+        if not candidates:
             return url, ''
-        image = node.get('content') or node.get('src') or ''
-        if image.startswith('//'):
-            image = 'https:' + image
-        else:
-            image = urljoin(url, image)
-        return url, image.replace('http://blueblack.co.kr', 'https://blueblack.co.kr')
+        preferred = next((value for value in candidates if any(token in value.casefold() for token in PREFERRED_IMAGE_TOKENS)), '')
+        return url, preferred or candidates[0]
     except Exception as exc:
         print(f'image fetch failed: {url}: {exc}')
         return url, ''
@@ -92,6 +124,8 @@ def main():
         if image:
             row['image'] = image
             fixed += 1
+        elif any(token in str(row.get('image', '')).casefold() for token in BAD_IMAGE_TOKENS):
+            row['image'] = ''
         elif str(row.get('image', '')).startswith('http://'):
             row['image'] = row['image'].replace('http://', 'https://', 1)
     rows.sort(key=lambda row: (str(row.get('brandEn', '')).casefold(), row.get('form', ''), str(row.get('nameKo', '')).casefold()))
