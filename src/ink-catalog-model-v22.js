@@ -1,5 +1,6 @@
 import { INK_PRODUCTS, formatWon } from './ink-products-data.js';
 import { INK_INVENTORY_COLORS } from './ink-inventory-colors.js';
+import { INK_STORE_COLORS } from './ink-store-colors-generated.js';
 import { INK_CATALOG_COPY } from './ink-catalog-i18n-v22.js';
 
 const LIST_KEY='blueblack-ink-check-list-v4';
@@ -17,26 +18,52 @@ export function copy(){return INK_CATALOG_COPY[currentLang()]||INK_CATALOG_COPY.
 function read(key,fallback=[]){try{return JSON.parse(localStorage.getItem(key)||'null')||fallback;}catch{return fallback;}}
 function write(key,value){try{localStorage.setItem(key,JSON.stringify(value));}catch{}}
 export function normalize(value=''){return String(value).toLowerCase().normalize('NFKC').replace(/[\s._&()\-/·'’]/g,'');}
-export function initials(value){return value.split(/\s+/).map(word=>word[0]).join('').slice(0,3).toUpperCase();}
+export function initials(value){return String(value||'INK').split(/\s+/).map(word=>word[0]).join('').slice(0,3).toUpperCase();}
 export function brandName(group){return currentLang()==='ko'?group.brandKo:group.brandEn;}
 export function seriesName(item){return currentLang()==='ko'?item.productKo:item.productEn;}
-export function colorName(color){const lang=currentLang();if(lang==='ko')return color.nameKo;if(lang==='ja')return color.nameJa;if(lang==='zh-Hans')return color.nameZhHans;if(lang==='zh-Hant')return color.nameZhHant;return color.nameEn;}
+export function colorName(color){
+  const lang=currentLang();
+  if(lang==='ko')return color.nameKo||color.nameEn||color.productTitle;
+  if(lang==='ja')return color.nameJa||color.nameEn||color.nameKo;
+  if(lang==='zh-Hans')return color.nameZhHans||color.nameEn||color.nameKo;
+  if(lang==='zh-Hant')return color.nameZhHant||color.nameEn||color.nameKo;
+  return color.nameEn||color.nameKo||color.productTitle;
+}
 export function formName(color){return color.form==='bottle'?copy().bottle:copy().cartridge;}
 export function formatPrice(value){return value==null?copy().unknownPrice:formatWon(value);}
 export function priceFor(item,volume){return volume==='10ml'?item.price10:item.price5;}
 export function getList(){return read(LIST_KEY);}
 export function getFavorites(){return new Set(read(FAV_KEY));}
 export function priceItemById(id){return INK_PRODUCTS.find(item=>item.id===id);}
-export function colorById(id){return INK_INVENTORY_COLORS.find(item=>item.id===id);}
+
+const ALL_COLORS=(()=>{
+  const result=[];
+  const seen=new Set();
+  for(const color of [...INK_INVENTORY_COLORS,...INK_STORE_COLORS]){
+    const key=[normalize(color.brandEn||color.brandKo),color.form,normalize(color.nameKo||color.nameEn)].join('|');
+    if(!key||seen.has(key))continue;
+    seen.add(key);
+    result.push(color);
+  }
+  return result;
+})();
+
+export function colorById(id){return ALL_COLORS.find(item=>item.id===id);}
+export function colorCount(){return ALL_COLORS.length;}
 
 export function brandGroups(){
   const map=new Map();
   const ensure=(brandKo,brandEn)=>{
-    if(!map.has(brandEn))map.set(brandEn,{id:normalize(brandEn),brandKo,brandEn,priceItems:[],colors:[],keywords:[]});
-    return map.get(brandEn);
+    const key=brandEn||brandKo||'Other';
+    if(!map.has(key))map.set(key,{id:normalize(key),brandKo:brandKo||brandEn,brandEn:brandEn||brandKo,priceItems:[],colors:[],keywords:[]});
+    return map.get(key);
   };
   INK_PRODUCTS.forEach(item=>{const group=ensure(item.brandKo,item.brandEn);group.priceItems.push(item);group.keywords.push(...(item.keywords||[]));});
-  INK_INVENTORY_COLORS.forEach(color=>{const group=ensure(color.brandKo,color.brandEn);group.colors.push(color);group.keywords.push(color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.form,color.volume||'');});
+  ALL_COLORS.forEach(color=>{
+    const group=ensure(color.brandKo,color.brandEn);
+    group.colors.push(color);
+    group.keywords.push(color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.form,color.volume||'',color.productTitle||'');
+  });
   return[...map.values()];
 }
 
@@ -47,7 +74,7 @@ export function matchedGroups(query=''){
     if(!value)return{...group,visiblePrices:group.priceItems,visibleColors:group.colors};
     const brandHit=normalize([group.brandKo,group.brandEn,...group.keywords].join(' ')).includes(value);
     const visiblePrices=brandHit?group.priceItems:group.priceItems.filter(item=>normalize([item.productKo,item.productEn,...(item.keywords||[])].join(' ')).includes(value));
-    const visibleColors=brandHit?group.colors:group.colors.filter(color=>normalize([color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.form].join(' ')).includes(value));
+    const visibleColors=brandHit?group.colors:group.colors.filter(color=>normalize([color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.form,color.productTitle||''].join(' ')).includes(value));
     return{...group,visiblePrices,visibleColors};
   }).filter(group=>group.visiblePrices.length||group.visibleColors.length).sort((a,b)=>Number(fav.has(b.id))-Number(fav.has(a.id))||Number(b.colors.length>0)-Number(a.colors.length>0)||brandName(a).localeCompare(brandName(b)));
 }
