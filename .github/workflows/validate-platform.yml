@@ -22,6 +22,7 @@ jobs:
           node --check src/portal-ink-live.js
           node --check src/ink-price-viewer.js
           node --check src/ink-price-search.js
+          node --check src/ink-price-ux-v19.js
           node --check src/app-v12.js
           node --check src/pwa-v9.js
           node --check src/part-guide-v11.js
@@ -37,6 +38,7 @@ jobs:
           test -f ink-price/index.html
           test -f ink-price/ink-price.css
           test -f ink-price/ink-search.css
+          test -f ink-price/ink-ux-v19.css
           test -f ink-price/source/price-list-1.png
           test -f ink-price/source/price-list-2.png
           test -f ink-price/source/price-list-3.png
