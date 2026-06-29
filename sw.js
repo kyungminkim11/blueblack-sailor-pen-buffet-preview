@@ -1,8 +1,21 @@
-const CACHE_NAME = 'blueblack-pen-v13-20260629';
+const CACHE_NAME = 'blueblack-store-guide-v14-20260629';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
   './index.html',
+  './portal.css',
+  './platform-shell.css',
+  './store-guide/',
+  './store-guide/index.html',
+  './ink-price/',
+  './ink-price/index.html',
+  './service/',
+  './service/index.html',
+  './staff/',
+  './staff/index.html',
+  './pen-buffet/',
+  './pen-buffet/index.html',
+  './pen-buffet/manifest.webmanifest',
   './app-v3.css',
   './ux-upgrades-v4.css',
   './customer-flow-v6.css',
@@ -18,12 +31,12 @@ const CORE_PATHS = [
   './store-recovery-v12.css',
   './consultation-polish-v13.css',
   './pwa-v6.css',
-  './manifest.webmanifest',
   './app-icon.svg',
   './social-card.svg',
   './social-card.png',
   './robots.txt',
   './sitemap.xml',
+  './src/portal.js',
   './src/app-v12.js',
   './src/data.js',
   './src/pen-model.js',
@@ -74,7 +87,7 @@ async function networkFirst(request) {
     if (response.ok || response.type === 'opaque') cache.put(request, response.clone());
     return response;
   } catch {
-    const cached = await cache.match(request);
+    const cached = await cache.match(request, { ignoreSearch: request.mode === 'navigate' });
     if (cached) return cached;
     if (request.mode === 'navigate') return cache.match(new URL('./index.html', BASE).href);
     throw new Error('Offline resource unavailable');
