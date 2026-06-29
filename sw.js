@@ -1,14 +1,17 @@
-const CACHE_NAME = 'blueblack-store-guide-v14-20260629';
+const CACHE_NAME = 'blueblack-store-guide-v15-20260629';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
   './index.html',
   './portal.css',
   './platform-shell.css',
+  './portal-card.svg',
+  './portal-card.png',
   './store-guide/',
   './store-guide/index.html',
   './ink-price/',
   './ink-price/index.html',
+  './ink-price/ink-price.css',
   './service/',
   './service/index.html',
   './staff/',
@@ -37,6 +40,8 @@ const CORE_PATHS = [
   './robots.txt',
   './sitemap.xml',
   './src/portal.js',
+  './src/portal-ink-live.js',
+  './src/ink-price-viewer.js',
   './src/app-v12.js',
   './src/data.js',
   './src/pen-model.js',
