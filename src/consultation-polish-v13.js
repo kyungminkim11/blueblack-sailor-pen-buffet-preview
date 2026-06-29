@@ -1,6 +1,14 @@
 import { parts, colors } from './data.js';
 import { getLanguage, localizeColor, localizePart } from './i18n-v3.js';
 
+if(!document.querySelector('link[data-consultation-polish-v13]')){
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  link.href='./consultation-polish-v13.css';
+  link.dataset.consultationPolishV13='true';
+  document.head.append(link);
+}
+
 const copy={
   ko:{guide:'드래그로 회전 · 파츠를 눌러 바로 선택',section:'구매·이용 안내',title:'매장에서 함께 확인해 주세요',body:'구성과 서비스 조건을 확인한 뒤 실물 파츠와 최종 색상을 비교해 주세요.',badge:'상담 필수 안내',mobileShare:'조합 공유',mobileStaff:'직원 확인',items:[['✒','펜촉','MF 단일촉으로 제공됩니다.'],['▣','기본 구성','블랙 색상 카트리지 2개가 동봉됩니다.'],['＋','컨버터','기본 구성에 포함되지 않으며 별도 구매 상품입니다.'],['◷','추가 색상','본품 구매 당일에 한해 추가 색상 파츠를 구매할 수 있습니다.'],['✓','A/S 안내','블루블랙 펜샵에서만 가능하며 기한과 점검비는 없습니다. 부품 교체 시 비용이 발생합니다.'],['※','사은품 기준','펜뷔페 제품 금액은 사은품 합산 금액에서 제외됩니다.']]},
   en:{guide:'Drag to rotate · Tap the pen to select a part',section:'Purchase information',title:'Please review these details in store',body:'Confirm the included items and service terms, then compare the final colors with the physical parts.',badge:'Important consultation notes',mobileShare:'Share',mobileStaff:'Staff check',items:[['✒','Nib','Available with an MF nib only.'],['▣','Included','Two black ink cartridges are included.'],['＋','Converter','Not included and sold separately.'],['◷','Additional colors','Additional color parts may be purchased only on the same day as the main pen.'],['✓','After-sales service','Available only at BlueBlack Pen Shop, with no time limit or inspection fee. Replacement parts may incur a charge.'],['※','Gift calculation','Pen Buffet purchases are excluded from the gift-amount calculation.']]},
