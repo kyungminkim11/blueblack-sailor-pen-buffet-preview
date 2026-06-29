@@ -1,5 +1,5 @@
 import { parts } from './data.js';
-import { readAdminSettings } from './admin-store-v16.js';
+import { ADMIN_SETTINGS_KEY, readAdminSettings } from './admin-store-v16.js';
 
 let settings = readAdminSettings();
 let idleTimer = 0;
@@ -89,14 +89,20 @@ function applySettingsToDom() {
   applyVisibility('.visit-section', settings.showVisit);
 }
 
+function openAdminDefaultCombination() {
+  const query = new URLSearchParams(location.search);
+  for (const part of parts) query.set(part.id, settings.defaultCombination?.[part.id]);
+  if (settings.defaultLanguage !== 'auto') query.set('lang', settings.defaultLanguage);
+  location.replace(`${location.pathname}?${query.toString()}`);
+}
+
 function resetIdleTimer() {
   clearTimeout(idleTimer);
   const minutes = Number(settings.idleResetMinutes || 0);
   if (!minutes) return;
 
   idleTimer = window.setTimeout(() => {
-    window.blueblackPenApp?.resetCombination?.();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    openAdminDefaultCombination();
   }, minutes * 60 * 1000);
 }
 
@@ -132,6 +138,9 @@ function init() {
 }
 
 window.addEventListener('blueblackadminsettingschange', (event) => refresh(event.detail));
+window.addEventListener('storage', (event) => {
+  if (event.key === ADMIN_SETTINGS_KEY) refresh();
+});
 
 if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init, { once: true });
 else init();
