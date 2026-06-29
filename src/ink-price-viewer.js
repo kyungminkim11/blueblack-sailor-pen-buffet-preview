@@ -14,7 +14,7 @@ const COPY={
 };
 
 let currentPage=0;
-let zoom=matchMedia('(max-width:760px)').matches?1.45:1.15;
+let zoom=matchMedia('(max-width:760px)').matches?1:1.15;
 
 function language(){const value=document.documentElement.lang||'ko';if(value.startsWith('zh-Hant'))return'zh-Hant';if(value.startsWith('zh'))return'zh-Hans';if(value.startsWith('ja'))return'ja';if(value.startsWith('en'))return'en';return'ko';}
 function text(){return COPY[language()]||COPY.ko;}
@@ -61,7 +61,7 @@ function selectPage(index,options={}){
   dispatchEvent(new CustomEvent('inkpagechange',{detail:{page:currentPage}}));
 }
 function changeZoom(delta){zoom=Math.max(.75,Math.min(3,zoom+delta));applyZoom();}
-function resetZoom(){zoom=matchMedia('(max-width:760px)').matches?1.45:1.15;applyZoom();$('.ink-canvas').scrollTo({top:0,left:0,behavior:'smooth'});}
+function resetZoom(){zoom=matchMedia('(max-width:760px)').matches?1:1.15;applyZoom();$('.ink-canvas').scrollTo({top:0,left:0,behavior:'smooth'});}
 function openLarge(){const dialog=$('.ink-image-dialog');const image=dialog.querySelector('img');image.src=PAGES[currentPage].src;image.alt=text().tabs[currentPage];updateMeta();dialog.showModal();}
 async function shareCurrent(){const url=new URL(location.href);url.searchParams.set('page',String(currentPage));const payload={title:`BlueBlack · ${text().tabs[currentPage]}`,text:text().sourceCopy,url:url.href};if(navigator.share){try{await navigator.share(payload);return;}catch{}}try{await navigator.clipboard.writeText(url.href);toast(text().shared);}catch{window.prompt(text().shared,url.href);}}
 
