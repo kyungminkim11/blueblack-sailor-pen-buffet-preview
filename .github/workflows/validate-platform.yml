@@ -21,6 +21,7 @@ jobs:
           node --check src/portal.js
           node --check src/detail-language.js
           node --check src/portal-ink-live.js
+          node --check src/ink-products-data.js
           node --check src/ink-price-viewer.js
           node --check src/ink-price-search.js
           node --check src/ink-price-ux-v19.js
