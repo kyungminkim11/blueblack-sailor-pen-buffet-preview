@@ -3,7 +3,7 @@ import { getLanguage } from './i18n-v3.js';
 if(!document.querySelector('link[data-store-recovery-v12]')){
   const link=document.createElement('link');
   link.rel='stylesheet';
-  link.href='./store-recovery-v12.css';
+  link.href=new URL('../store-recovery-v12.css',import.meta.url).href;
   link.dataset.storeRecoveryV12='true';
   document.head.append(link);
 }
