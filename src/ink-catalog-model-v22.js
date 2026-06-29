@@ -3,7 +3,7 @@ import { INK_INVENTORY_COLORS } from './ink-inventory-colors.js';
 import { INK_STORE_COLORS } from './ink-store-colors-generated.js';
 import { INK_CATALOG_COPY } from './ink-catalog-i18n-v22.js';
 
-const LIST_KEY='blueblack-ink-check-list-v5';
+const LIST_KEY='blueblack-ink-check-list-v6';
 const FAV_KEY='blueblack-ink-brand-favorites-v4';
 
 export function currentLang(){
@@ -35,6 +35,53 @@ export function priceFor(item,volume){return volume==='10ml'?item.price10:item.p
 export function getList(){return read(LIST_KEY);}
 export function getFavorites(){return new Set(read(FAV_KEY));}
 export function priceItemById(id){return INK_PRODUCTS.find(item=>item.id===id);}
+
+const BRAND_COUNTRIES={
+  '3 Oysters':'kr',
+  'Dominant Industry':'kr',
+  'Wearingeul':'kr',
+  'Colorverse':'kr',
+  IWI:'tw',
+  'Ink Institute':'tw',
+  Sailor:'jp',
+  Pilot:'jp',
+  Platinum:'jp',
+  Kakimori:'jp',
+  Pelikan:'de',
+  Kaweco:'de',
+  'Faber-Castell':'de',
+  'Graf von Faber-Castell':'de',
+  Super5:'de',
+  Diamine:'uk',
+  'J. Herbin':'fr',
+  'Jacques Herbin':'fr',
+  Waterman:'fr',
+  Aurora:'it',
+  Visconti:'it',
+  Montegrappa:'it',
+  "Noodler's":'us',
+  Monteverde:'us',
+  Sheaffer:'us',
+  Conklin:'us',
+  Parker:'us',
+  'Robert Oster':'au',
+  'Ferris Wheel Press':'ca'
+};
+export const COUNTRY_KEYS=['kr','jp','de','fr','it','uk','us','tw','au','ca','other'];
+export const TYPE_KEYS=['standard','shimmer','pigment','scented','calligraphy','special','other'];
+export function groupCountryKey(group){return BRAND_COUNTRIES[group?.brandEn]||'other';}
+export function itemTypeKeys(item){
+  const text=itemText(item);
+  const keys=[];
+  if(/쉬머|shimmer|glistening|glitter|sparkle|펄|pearl|카멜레온|chameleon|starbright|starbright|star/.test(text))keys.push('shimmer');
+  if(/피그먼트|pigment|카본|carbon/.test(text))keys.push('pigment');
+  if(/센티드|scented|향/.test(text))keys.push('scented');
+  if(/캘리그라피|calligraphy|아티스트|artist/.test(text))keys.push('calligraphy');
+  if(/150|100|anniversary|만요|manyo|스튜디오|studio|시키오리|shikiori|유라메쿠|yurameku|킹덤|kingdom|이로시주쿠|iroshizuku|에델슈타인|edelstein|반고흐|vangogh|1670|1798|350|그리스|greek|매직|magic|타이완|taiwan|인디고|indigo|카사네|kasane/.test(text))keys.push('special');
+  if(/22ml|30ml|32ml|60ml|90ml/.test(text))keys.push('other');
+  if(!keys.length||/스탠다드|standard|4001|큉크|quink/.test(text))keys.unshift('standard');
+  return[...new Set(keys)];
+}
 
 const ALL_COLORS=(()=>{
   const result=[];
@@ -71,11 +118,15 @@ export function matchedGroups(query=''){
   const value=normalize(query);
   const fav=getFavorites();
   return brandGroups().map(group=>{
-    if(!value)return{...group,visiblePrices:group.priceItems,visibleColors:group.colors};
-    const brandHit=normalize([group.brandKo,group.brandEn,...group.keywords].join(' ')).includes(value);
-    const visiblePrices=brandHit?group.priceItems:group.priceItems.filter(item=>normalize([item.productKo,item.productEn,...(item.keywords||[])].join(' ')).includes(value));
-    const visibleColors=brandHit?group.colors:group.colors.filter(color=>normalize([color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.form,color.productTitle||''].join(' ')).includes(value));
-    return{...group,visiblePrices,visibleColors};
+    const decantColors=group.colors.filter(color=>priceItemForColor(color,group));
+    if(!value)return{...group,colors:decantColors,visiblePrices:group.priceItems,visibleColors:decantColors};
+    const brandHit=normalize([group.brandKo,group.brandEn].join(' ')).includes(value);
+    const priceMatches=group.priceItems.filter(item=>itemText(item).includes(value));
+    const colorMatches=decantColors.filter(color=>normalize([color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.form,color.productTitle||''].join(' ')).includes(value));
+    const priceIdsFromColors=new Set(colorMatches.map(color=>priceItemForColor(color,group)?.id).filter(Boolean));
+    const visiblePrices=brandHit?group.priceItems:priceMatches.length?priceMatches:group.priceItems.filter(item=>priceIdsFromColors.has(item.id));
+    const visibleColors=brandHit?decantColors:colorMatches.length?colorMatches:priceMatches.length?decantColors.filter(color=>priceMatches.some(item=>priceItemForColor(color,group)?.id===item.id)):[];
+    return{...group,colors:decantColors,visiblePrices,visibleColors};
   }).filter(group=>group.visiblePrices.length||group.visibleColors.length).sort((a,b)=>Number(fav.has(b.id))-Number(fav.has(a.id))||Number(b.colors.length>0)-Number(a.colors.length>0)||brandName(a).localeCompare(brandName(b)));
 }
 
@@ -131,10 +182,10 @@ export function priceItemForColor(color,group){
 export function toggleFavorite(id){const values=getFavorites();values.has(id)?values.delete(id):values.add(id);write(FAV_KEY,[...values]);}
 export function isColorSelected(id){return getList().some(entry=>entry.type==='color'&&entry.colorId===id);}
 export function isColorPriceSelected(id,volume){return getList().some(entry=>entry.type==='color-price'&&entry.colorId===id&&entry.volume===volume);}
-export function isPriceSelected(id,volume){return getList().some(entry=>entry.type==='price'&&entry.itemId===id&&entry.volume===volume);}
+export function isPriceSelected(id,volume){return getList().some(entry=>entry.type==='price'&&entry.itemId===id&&entry.volume===volume&&!entry.colorName);}
 export function addColor(color){const values=getList();if(!values.some(entry=>entry.type==='color'&&entry.colorId===color.id))values.push({type:'color',colorId:color.id,addedAt:Date.now()});write(LIST_KEY,values);}
 export function addColorPrice(color,item,volume){const values=getList();if(!values.some(entry=>entry.type==='color-price'&&entry.colorId===color.id&&entry.volume===volume))values.push({type:'color-price',colorId:color.id,itemId:item.id,volume,price:priceFor(item,volume),addedAt:Date.now()});write(LIST_KEY,values);}
-export function addPrice(item,volume){const values=getList();if(!values.some(entry=>entry.type==='price'&&entry.itemId===item.id&&entry.volume===volume))values.push({type:'price',itemId:item.id,volume,price:priceFor(item,volume),addedAt:Date.now()});write(LIST_KEY,values);}
+export function addPrice(item,volume,colorName=''){const values=getList();const normalizedColor=normalize(colorName);if(!values.some(entry=>entry.type==='price'&&entry.itemId===item.id&&entry.volume===volume&&normalize(entry.colorName||'')===normalizedColor))values.push({type:'price',itemId:item.id,colorName:String(colorName||'').trim(),volume,price:priceFor(item,volume),addedAt:Date.now()});write(LIST_KEY,values);}
 export function removeListItem(index){const values=getList();values.splice(index,1);write(LIST_KEY,values);}
 export function clearList(){write(LIST_KEY,[]);}
 export function listTotal(){return getList().reduce((sum,entry)=>sum+Number(entry.price||0),0);}
@@ -143,9 +194,10 @@ export function shareLines(){
     if(entry.type==='color'){const color=colorById(entry.colorId);return`${index+1}. ${color?.brandKo||''} · ${color?.nameKo||entry.colorId} · ${color?formName(color):''} · ${copy().unknownPrice}`;}
     if(entry.type==='color-price'){
       const color=colorById(entry.colorId);
-      return`${index+1}. ${color?.brandKo||''} · ${color?.nameKo||entry.colorId} · ${entry.volume} · ${formatPrice(entry.price)}`;
+      const item=priceItemById(entry.itemId);
+      return`${index+1}. ${color?.brandKo||item?.brandKo||''} · ${item?.productKo||''}${item?' · ':''}${color?.nameKo||entry.colorId} · ${entry.volume} · ${formatPrice(entry.price)}`;
     }
-    const item=priceItemById(entry.itemId);return`${index+1}. ${item?.brandKo||''} · ${item?.productKo||entry.itemId} · ${entry.volume} · ${formatPrice(entry.price)}`;
+    const item=priceItemById(entry.itemId);return`${index+1}. ${item?.brandKo||''} · ${item?.productKo||entry.itemId}${entry.colorName?' · '+entry.colorName:''} · ${entry.volume} · ${formatPrice(entry.price)}`;
   });
 }
 export{formatWon};
