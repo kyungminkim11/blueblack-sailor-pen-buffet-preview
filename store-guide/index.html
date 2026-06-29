@@ -14,7 +14,16 @@
 <body class="detail-shell">
   <header class="detail-header">
     <div class="detail-header-inner">
-      <a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a>
+      <div class="detail-topbar">
+        <a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a>
+        <div class="portal-language detail-language" role="group" aria-label="Language / 언어">
+          <button type="button" data-portal-lang="ko" aria-pressed="true">🇰🇷 <span>한국어</span></button>
+          <button type="button" data-portal-lang="en" aria-pressed="false">🇺🇸 <span>English</span></button>
+          <button type="button" data-portal-lang="ja" aria-pressed="false">🇯🇵 <span>日本語</span></button>
+          <button type="button" data-portal-lang="zh-Hans" aria-pressed="false">🇨🇳 <span>简体</span></button>
+          <button type="button" data-portal-lang="zh-Hant" aria-pressed="false">🇹🇼 <span>繁體</span></button>
+        </div>
+      </div>
       <h1 data-portal-t="storePageTitle">블루블랙 펜샵 매장 안내</h1>
       <p data-portal-t="storePageIntro">방문 전 위치와 영업시간을 확인하고, 매장에서 필요한 서비스를 빠르게 살펴보세요.</p>
     </div>
@@ -26,13 +35,13 @@
       <div class="detail-grid">
         <article class="detail-item">
           <small data-portal-t="address">매장 주소</small>
-          <strong>서울특별시 종로구 사직로 109</strong>
-          <span>내자동 · 경복궁역 인근</span>
+          <strong data-map-i18n="addressValue">서울특별시 종로구 사직로 109</strong>
+          <span data-map-i18n="areaHint">내자동 · 경복궁역 인근</span>
         </article>
         <article class="detail-item">
           <small data-portal-t="phone">전화 문의</small>
           <strong>02-765-8868</strong>
-          <span>특정 상품과 색상은 방문 전 문의해 주세요.</span>
+          <span data-map-i18n="phoneHint">특정 상품과 색상은 방문 전 문의해 주세요.</span>
         </article>
         <article class="detail-item">
           <small data-portal-t="hours">영업시간</small>
@@ -42,16 +51,19 @@
         <article class="detail-item">
           <small>CLOSED</small>
           <strong data-portal-t="closed">일요일·공휴일 휴무</strong>
-          <span>영업시간과 휴무는 변경될 수 있습니다.</span>
+          <span data-map-i18n="hoursNote">영업시간과 휴무는 변경될 수 있습니다.</span>
         </article>
       </div>
       <div class="detail-actions">
-        <a class="primary" href="https://map.naver.com/p/search/%EB%B8%94%EB%A3%A8%EB%B8%94%EB%9E%99%20%ED%8E%9C%EC%83%B5" target="_blank" rel="noopener" data-portal-t="map">네이버지도 열기</a>
+        <a class="primary" href="https://map.naver.com/p/search/%EB%B8%94%EB%A3%A8%EB%B8%94%EB%9E%99%20%ED%8E%9C%EC%83%B5" target="_blank" rel="noopener" data-map-i18n="naverMap">네이버지도</a>
+        <a href="https://www.google.com/maps/search/?api=1&query=BlueBlack%20Pen%20Shop%2C%20109%20Sajik-ro%2C%20Jongno-gu%2C%20Seoul" target="_blank" rel="noopener" data-map-i18n="googleMap">Google Maps</a>
         <a href="#store-map" data-map-i18n="openMap">매장 내부 지도</a>
+        <button class="store-action-button" type="button" id="copyStoreAddress" data-map-i18n="copyAddress">주소 복사</button>
         <a href="tel:027658868" data-portal-t="call">전화하기</a>
         <a href="https://blueblack.co.kr/" target="_blank" rel="noopener" data-portal-t="website">공식 홈페이지</a>
         <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-portal-t="instagram">인스타그램</a>
       </div>
+      <p class="store-utility-status" id="storeUtilityStatus" aria-live="polite"></p>
     </section>
 
     <section class="detail-card store-map-card" id="store-map">
@@ -64,47 +76,54 @@
         <a class="store-map-new-window" href="./store-map.svg" target="_blank" rel="noopener" data-map-i18n="largeView">새 창에서 크게 보기</a>
       </div>
 
-      <div class="store-map-tools" aria-label="매장 지도 도구">
+      <div class="store-map-tools" aria-label="매장 지도 도구" data-map-i18n-aria="toolsAria">
         <label class="store-map-search">
           <span data-map-i18n="searchLabel">브랜드 찾기</span>
-          <input id="storeMapSearch" type="search" list="storeMapBrands" autocomplete="off" placeholder="예: 세일러, 라미, 파이롯트" data-map-i18n-placeholder="searchPlaceholder" />
+          <span class="store-map-search-field">
+            <input id="storeMapSearch" type="search" list="storeMapBrands" autocomplete="off" enterkeyhint="search" aria-describedby="storeMapResult storeMapLanguageHint" placeholder="예: 세일러, Sailor, セーラー" data-map-i18n-placeholder="searchPlaceholder" />
+            <button type="button" id="storeMapClear" class="store-map-clear" data-map-i18n-aria="clearSearch" aria-label="검색 지우기">×</button>
+          </span>
         </label>
         <datalist id="storeMapBrands">
-          <option value="세일러"></option><option value="Sailor"></option>
-          <option value="파이롯트"></option><option value="Pilot"></option>
-          <option value="플래티넘"></option><option value="Platinum"></option>
-          <option value="라미"></option><option value="Lamy"></option>
-          <option value="파카"></option><option value="Parker"></option>
-          <option value="워터맨"></option><option value="Waterman"></option>
-          <option value="펠리칸"></option><option value="Pelikan"></option>
-          <option value="오로라"></option><option value="Aurora"></option>
-          <option value="몽블랑"></option><option value="Mont Blanc"></option>
-          <option value="트위스비"></option><option value="TWSBI"></option>
-          <option value="몬테베르데"></option><option value="Monteverde"></option>
-          <option value="콘클린"></option><option value="Conklin"></option>
-          <option value="나발루"></option><option value="Nahvalur"></option>
-          <option value="그라폰 파버카스텔"></option><option value="Graf von Faber-Castell"></option>
-          <option value="까렌다쉬"></option><option value="Caran d'Ache"></option>
+          <option value="Sailor"></option><option value="Pilot"></option><option value="Platinum"></option>
+          <option value="Lamy"></option><option value="Parker"></option><option value="Waterman"></option>
+          <option value="Pelikan"></option><option value="Aurora"></option><option value="Mont Blanc"></option>
+          <option value="TWSBI"></option><option value="Monteverde"></option><option value="Conklin"></option>
+          <option value="Nahvalur"></option><option value="Graf von Faber-Castell"></option><option value="Caran d'Ache"></option>
+          <option value="Sheaffer"></option><option value="Cross"></option><option value="Diplomat"></option>
+          <option value="Rhodia"></option><option value="Monami"></option><option value="Opus 88"></option>
         </datalist>
         <div class="store-map-buttons">
-          <button type="button" id="storeMapZoomOut" aria-label="지도 축소">−</button>
+          <button type="button" id="storeMapZoomOut" data-map-i18n-aria="zoomOut" aria-label="지도 축소">−</button>
           <button type="button" id="storeMapFit" data-map-i18n="fit">맞춤</button>
-          <button type="button" id="storeMapZoomIn" aria-label="지도 확대">＋</button>
+          <button type="button" id="storeMapZoomIn" data-map-i18n-aria="zoomIn" aria-label="지도 확대">＋</button>
           <button type="button" id="storeMapFullscreen" data-map-i18n="fullscreen">전체 화면</button>
         </div>
       </div>
 
+      <p class="store-map-language-hint" id="storeMapLanguageHint" data-map-i18n="searchLanguageHint">한국어·영어·일본어·중국어 브랜드명으로 검색하거나 아래 브랜드를 눌러보세요.</p>
       <p class="store-map-result" id="storeMapResult" aria-live="polite" data-map-i18n="searchHint">브랜드명을 입력하면 해당 진열 구역이 강조됩니다.</p>
 
-      <div class="store-map-viewport" id="storeMapViewport" tabindex="0" aria-label="블루블랙 펜샵 내부 지도">
+      <div class="store-map-brand-picker">
+        <div class="store-map-popular">
+          <strong data-map-i18n="popularBrands">자주 찾는 브랜드</strong>
+          <div class="store-map-chip-row" id="storeMapPopularBrands"></div>
+        </div>
+        <details class="store-map-all-brands">
+          <summary data-map-i18n="allBrands">전체 브랜드 보기</summary>
+          <div class="store-map-chip-grid" id="storeMapAllBrands"></div>
+        </details>
+      </div>
+
+      <div class="store-map-viewport" id="storeMapViewport" tabindex="0" aria-label="블루블랙 펜샵 내부 지도" data-map-i18n-aria="mapAria">
         <div class="store-map-canvas" id="storeMapCanvas">
-          <object id="storeMapObject" type="image/svg+xml" data="./store-map.svg" aria-label="블루블랙 펜샵 내부 브랜드 위치도">
+          <object id="storeMapObject" type="image/svg+xml" data="./store-map.svg" aria-label="블루블랙 펜샵 내부 브랜드 위치도" data-map-i18n-aria="mapAria">
             <img src="./store-map.svg" alt="블루블랙 펜샵 내부 브랜드 위치도" />
           </object>
         </div>
       </div>
 
-      <div class="store-map-legend" aria-label="지도 범례">
+      <div class="store-map-legend" aria-label="지도 범례" data-map-i18n-aria="legendAria">
         <span><i class="legend-brand"></i><b data-map-i18n="legendBrand">브랜드 진열</b></span>
         <span><i class="legend-table"></i><b data-map-i18n="legendTable">테이블·체험</b></span>
         <span><i class="legend-service"></i><b data-map-i18n="legendService">카운터·출입구</b></span>
