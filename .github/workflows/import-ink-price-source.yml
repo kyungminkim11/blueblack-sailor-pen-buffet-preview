@@ -25,9 +25,9 @@ jobs:
           npx playwright install --with-deps chromium
           sudo apt-get update
           sudo apt-get install -y tesseract-ocr tesseract-ocr-kor
-      - name: Download the official source image
+      - name: Download every official source image
         run: |
-          mkdir -p ink-price
+          mkdir -p ink-price/source
           node <<'NODE'
           const fs=require('fs');
           const {chromium}=require('playwright');
@@ -37,31 +37,36 @@ jobs:
             const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:2});
             await page.goto('https://m.site.naver.com/25z4y',{waitUntil:'networkidle',timeout:90000});
             await page.waitForTimeout(3000);
-            await page.screenshot({path:'ink-price/source-page.png',fullPage:true});
-            const images=await page.locator('img').evaluateAll(nodes=>nodes.map((node,index)=>({index,src:node.currentSrc||node.src,naturalWidth:node.naturalWidth,naturalHeight:node.naturalHeight,alt:node.alt||''})).filter(item=>item.src));
-            fs.writeFileSync('ink-price/source-images.json',JSON.stringify({finalUrl:page.url(),images},null,2));
-            const best=[...images].sort((a,b)=>(b.naturalWidth*b.naturalHeight)-(a.naturalWidth*a.naturalHeight))[0];
-            if(best?.src){
-              const response=await page.request.get(best.src);
-              if(response.ok()){
-                const buffer=await response.body();
-                await sharp(buffer).png().toFile('ink-price/price-list-source.png');
-              }
+            await page.screenshot({path:'ink-price/source/source-page.png',fullPage:true});
+            const images=await page.locator('img').evaluateAll(nodes=>nodes.map((node,index)=>({index,src:node.currentSrc||node.src,naturalWidth:node.naturalWidth,naturalHeight:node.naturalHeight,alt:node.alt||''})).filter(item=>item.src&&item.naturalWidth>=1000));
+            fs.writeFileSync('ink-price/source/source-images.json',JSON.stringify({finalUrl:page.url(),images},null,2));
+            let saved=0;
+            for(const image of images){
+              const response=await page.request.get(image.src);
+              if(!response.ok())continue;
+              const buffer=await response.body();
+              saved+=1;
+              await sharp(buffer).png().toFile(`ink-price/source/price-list-${saved}.png`);
             }
-            if(!fs.existsSync('ink-price/price-list-source.png')){
-              await sharp('ink-price/source-page.png').png().toFile('ink-price/price-list-source.png');
-            }
+            if(!saved)await sharp('ink-price/source/source-page.png').png().toFile('ink-price/source/price-list-1.png');
+            fs.writeFileSync('ink-price/source/source-count.txt',String(saved||1));
             await browser.close();
           })().catch(error=>{console.error(error);process.exit(1);});
           NODE
       - name: Extract text for verification
         run: |
-          tesseract ink-price/price-list-source.png ink-price/price-list-ocr -l kor+eng --psm 6 || true
+          rm -f ink-price/source/price-list-all-ocr.txt
+          for image in ink-price/source/price-list-*.png; do
+            base="${image%.png}"
+            tesseract "$image" "$base-ocr" -l kor+eng --psm 6 || true
+            printf '\n\n===== %s =====\n' "$(basename "$image")" >> ink-price/source/price-list-all-ocr.txt
+            cat "$base-ocr.txt" >> ink-price/source/price-list-all-ocr.txt || true
+          done
       - name: Commit imported source
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ink-price/price-list-source.png ink-price/source-page.png ink-price/source-images.json ink-price/price-list-ocr.txt
+          git add ink-price/source
           if git diff --cached --quiet; then exit 0; fi
-          git commit -m "Import official ink decant price list source"
+          git commit -m "Import all official ink decant price list pages"
           git push
