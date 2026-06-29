@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#102b4c" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>펜뷔페 관리자 · BlueBlack Pen Shop</title>
+  <link rel="icon" href="./app-icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="./admin-v16.css" />
+</head>
+<body>
+  <header class="admin-header">
+    <div class="admin-header-inner">
+      <div class="admin-brand">
+        <small>BLUEBLACK PEN SHOP</small>
+        <h1>펜뷔페 관리자</h1>
+      </div>
+      <div class="admin-header-actions">
+        <a class="admin-link" href="./" target="_blank" rel="noopener">고객 화면 열기</a>
+        <button class="admin-link primary" type="button" id="header-save">변경사항 저장</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="admin-shell">
+    <section class="admin-hero">
+      <div>
+        <small>STORE CONTROL CENTER</small>
+        <h2>매장 화면을 간단하게 관리하세요</h2>
+        <p>공지, 안내 섹션 노출, 기본 조합, 자동 초기화 시간을 설정할 수 있습니다. 재고 관리·주문·결제 기능은 포함하지 않습니다.</p>
+      </div>
+      <div class="admin-local-note">
+        <strong>현재 기기 전용 설정</strong><br />
+        이 관리자 페이지는 서버 없는 정적 방식입니다. 저장한 설정은 현재 브라우저에만 적용되며 다른 PC나 태블릿과 자동 동기화되지 않습니다.
+      </div>
+    </section>
+
+    <div class="admin-grid">
+      <form class="admin-card" id="admin-form">
+        <div class="admin-card-head">
+          <div>
+            <small>DISPLAY SETTINGS</small>
+            <h2>고객 화면 설정</h2>
+            <p>매장 고객 화면에 표시할 내용과 초기화 방식을 설정합니다.</p>
+          </div>
+        </div>
+
+        <div class="field-grid">
+          <div class="field full">
+            <span>상단 공지 문구</span>
+            <textarea id="announcement-text" maxlength="240" placeholder="예: 오늘은 매장 혼잡으로 조립까지 약 20분 소요될 수 있습니다."></textarea>
+          </div>
+          <div class="field">
+            <label for="default-language">기본 언어</label>
+            <select id="default-language">
+              <option value="auto">기기 언어 자동</option>
+              <option value="ko">한국어</option>
+              <option value="en">English</option>
+              <option value="ja">日本語</option>
+              <option value="zh-Hans">简体中文</option>
+              <option value="zh-Hant">繁體中文</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="idle-reset-minutes">미사용 시 자동 초기화</label>
+            <select id="idle-reset-minutes">
+              <option value="0">사용 안 함</option>
+              <option value="3">3분 후</option>
+              <option value="5">5분 후</option>
+              <option value="10">10분 후</option>
+              <option value="15">15분 후</option>
+              <option value="30">30분 후</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="toggle-list">
+          <label class="toggle"><span class="toggle-copy"><b>공지 배너 표시</b><span>입력한 공지를 고객 화면 상단에 표시합니다.</span></span><input type="checkbox" id="announcement-enabled" /></label>
+          <label class="toggle"><span class="toggle-copy"><b>간단 이용 방법 표시</b><span>파츠 선택·색상 선택·실물 확인 안내를 표시합니다.</span></span><input type="checkbox" id="show-howto" /></label>
+          <label class="toggle"><span class="toggle-copy"><b>매장 책자 안내 표시</b><span>이용 순서와 구성별 가격 안내를 표시합니다.</span></span><input type="checkbox" id="show-guide" /></label>
+          <label class="toggle"><span class="toggle-copy"><b>구매·A/S 안내 표시</b><span>추가 섹션 구매와 A/S 정책을 표시합니다.</span></span><input type="checkbox" id="show-policy" /></label>
+          <label class="toggle"><span class="toggle-copy"><b>음료 시리즈 잉크 표시</b><span>매장 책자 안내 안의 병잉크 목록을 표시합니다.</span></span><input type="checkbox" id="show-beverage" /></label>
+          <label class="toggle"><span class="toggle-copy"><b>매장 방문 안내 표시</b><span>주소·영업시간·전화·공식 채널을 표시합니다.</span></span><input type="checkbox" id="show-visit" /></label>
+        </div>
+
+        <div class="admin-actions">
+          <button class="admin-button primary" type="submit">설정 저장</button>
+          <button class="admin-button" type="button" id="preview-settings">고객 화면에서 확인</button>
+          <button class="admin-button danger" type="button" id="reset-settings">기본값으로 초기화</button>
+        </div>
+      </form>
+
+      <aside class="admin-card">
+        <div class="admin-card-head">
+          <div>
+            <small>DEVICE STATUS</small>
+            <h2>현재 기기 상태</h2>
+            <p>매장용 브라우저와 저장 상태를 확인합니다.</p>
+          </div>
+        </div>
+        <div class="status-list" id="status-list"></div>
+        <p class="admin-footer">정적 관리자 페이지이므로 별도의 관리자 계정이나 서버 로그인은 사용하지 않습니다.</p>
+      </aside>
+
+      <section class="admin-card full">
+        <div class="admin-card-head">
+          <div>
+            <small>DEFAULT COMBINATION</small>
+            <h2>고객 화면 기본 조합</h2>
+            <p>조합 링크 없이 고객 화면을 처음 열었을 때 적용할 6개 파츠의 색상입니다.</p>
+          </div>
+        </div>
+        <div class="combination-editor" id="combination-editor"></div>
+        <div class="admin-actions">
+          <button class="admin-button primary" type="button" id="save-combination">기본 조합 저장</button>
+          <button class="admin-button" type="button" id="use-current-combination">현재 고객 조합 불러오기</button>
+          <button class="admin-button" type="button" id="copy-preview-link">기본 조합 링크 복사</button>
+        </div>
+      </section>
+
+      <section class="admin-card">
+        <div class="admin-card-head">
+          <div>
+            <small>SESSION TOOLS</small>
+            <h2>고객 세션 도구</h2>
+            <p>현재 기기에 저장된 조합을 확인하거나 초기화합니다.</p>
+          </div>
+        </div>
+        <div class="status-item"><span>현재 저장 조합</span><strong class="session-code" id="session-summary">없음</strong></div>
+        <div class="admin-actions">
+          <button class="admin-button primary" type="button" id="open-current-session">현재 조합 열기</button>
+          <button class="admin-button danger" type="button" id="clear-current-session">저장 조합 삭제</button>
+        </div>
+      </section>
+
+      <section class="admin-card">
+        <div class="admin-card-head">
+          <div>
+            <small>BACKUP & RESTORE</small>
+            <h2>설정 백업</h2>
+            <p>다른 기기로 설정을 옮길 때 JSON 파일을 사용합니다.</p>
+          </div>
+        </div>
+        <div class="tool-grid">
+          <button class="tool-button" type="button" id="export-settings"><b>설정 내보내기</b><span>현재 관리자 설정을 JSON 파일로 저장합니다.</span></button>
+          <button class="tool-button" type="button" id="import-settings"><b>설정 가져오기</b><span>이전에 저장한 JSON 설정 파일을 불러옵니다.</span></button>
+        </div>
+        <input class="hidden-input" type="file" id="import-file" accept="application/json,.json" />
+      </section>
+    </div>
+  </main>
+
+  <div class="admin-toast" id="admin-toast" role="status" aria-live="polite"></div>
+  <script type="module" src="./src/admin-v16.js"></script>
+</body>
+</html>
