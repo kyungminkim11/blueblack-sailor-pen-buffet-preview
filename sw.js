@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v17-20260629';
+const CACHE_NAME = 'blueblack-store-guide-v18-20260629';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
