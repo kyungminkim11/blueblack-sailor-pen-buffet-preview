@@ -1,0 +1,40 @@
+{
+  "finalUrl": "https://m.site.naver.com/25z4y",
+  "images": [
+    {
+      "index": 0,
+      "src": "https://qrcodethumb-phinf.pstatic.net//20260417_176/1776387738740JqHJE_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5_1.jpg",
+      "naturalWidth": 2382,
+      "naturalHeight": 3368,
+      "alt": "https://qrcodethumb-phinf.pstatic.net//20260417_176/1776387738740JqHJE_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5_1.jpg"
+    },
+    {
+      "index": 1,
+      "src": "https://qrcodethumb-phinf.pstatic.net//20260417_260/1776387738946P7UJv_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5_2.jpg",
+      "naturalWidth": 2382,
+      "naturalHeight": 3368,
+      "alt": "https://qrcodethumb-phinf.pstatic.net//20260417_260/1776387738946P7UJv_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5_2.jpg"
+    },
+    {
+      "index": 2,
+      "src": "https://qrcodethumb-phinf.pstatic.net//20260417_188/1776387738704TBQLV_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5_3.jpg",
+      "naturalWidth": 2382,
+      "naturalHeight": 3368,
+      "alt": "https://qrcodethumb-phinf.pstatic.net//20260417_188/1776387738704TBQLV_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5_3.jpg"
+    },
+    {
+      "index": 3,
+      "src": "https://qrcodethumb-phinf.pstatic.net//20260522_264/17794398594590U0lB_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5.jpg",
+      "naturalWidth": 1191,
+      "naturalHeight": 1684,
+      "alt": "https://qrcodethumb-phinf.pstatic.net//20260522_264/17794398594590U0lB_JPEG/%BA%B9%BB%E7%BA%BB_%BA%B9%BB%E7%BA%BB_%BC%D2%BA%D0_%B0%A1%B0%DD%C7%A5.jpg"
+    },
+    {
+      "index": 4,
+      "src": "https://s.pstatic.net/static/www/mobile/edit/20220408_0/upload_1649397312685xI8Rn.png",
+      "naturalWidth": 144,
+      "naturalHeight": 144,
+      "alt": "NAVER Bug Bounty"
+    }
+  ]
+}
