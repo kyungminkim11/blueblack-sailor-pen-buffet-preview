@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v19-20260629';
+const CACHE_NAME = 'blueblack-store-guide-v20-20260629';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -49,6 +49,7 @@ const CORE_PATHS = [
   './sitemap.xml',
   './src/portal.js',
   './src/store-map.js',
+  './src/store-map-foreign-v20.js',
   './src/portal-ink-live.js',
   './src/ink-price-viewer.js',
   './src/ink-price-search.js',
