@@ -1,0 +1,78 @@
+name: Extract ink price data
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/extract-ink-price-data.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install OCR tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-kor
+          python -m pip install --upgrade pip
+          pip install pillow
+      - name: Split and preprocess price sheets
+        run: |
+          rm -rf ink-price/ocr-v2
+          mkdir -p ink-price/ocr-v2/crops
+          python <<'PY'
+          from pathlib import Path
+          from PIL import Image, ImageOps, ImageEnhance, ImageFilter
+
+          source = Path('ink-price/source')
+          out = Path('ink-price/ocr-v2/crops')
+          out.mkdir(parents=True, exist_ok=True)
+
+          for page in (2, 3, 4):
+              image = Image.open(source / f'price-list-{page}.png').convert('RGB')
+              width, height = image.size
+              # Remove narrow outer margins while preserving both table columns.
+              image = image.crop((int(width * .015), int(height * .01), int(width * .985), int(height * .99)))
+              width, height = image.size
+              column_bounds = [(0, int(width * .505)), (int(width * .475), width)]
+              segment_height = height / 4
+              overlap = int(height * .025)
+              for col_index, (left, right) in enumerate(column_bounds, start=1):
+                  for segment in range(4):
+                      top = max(0, int(segment * segment_height) - overlap)
+                      bottom = min(height, int((segment + 1) * segment_height) + overlap)
+                      crop = image.crop((left, top, right, bottom))
+                      gray = ImageOps.grayscale(crop)
+                      gray = ImageEnhance.Contrast(gray).enhance(1.7)
+                      gray = gray.filter(ImageFilter.SHARPEN)
+                      gray = gray.resize((gray.width * 2, gray.height * 2), Image.Resampling.LANCZOS)
+                      gray.save(out / f'page-{page}-col-{col_index}-seg-{segment + 1}.png')
+          PY
+      - name: Run OCR with multiple layouts
+        run: |
+          mkdir -p ink-price/ocr-v2/text
+          : > ink-price/ocr-v2/all.txt
+          for image in ink-price/ocr-v2/crops/*.png; do
+            base="$(basename "$image" .png)"
+            echo "===== $base / PSM4 =====" >> ink-price/ocr-v2/all.txt
+            tesseract "$image" stdout -l kor+eng --psm 4 2>/dev/null | tee "ink-price/ocr-v2/text/${base}-psm4.txt" >> ink-price/ocr-v2/all.txt || true
+            echo "===== $base / PSM6 =====" >> ink-price/ocr-v2/all.txt
+            tesseract "$image" stdout -l kor+eng --psm 6 2>/dev/null | tee "ink-price/ocr-v2/text/${base}-psm6.txt" >> ink-price/ocr-v2/all.txt || true
+            tesseract "$image" "ink-price/ocr-v2/text/${base}" -l kor+eng --psm 4 tsv 2>/dev/null || true
+          done
+      - name: Commit extracted data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ink-price/ocr-v2
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Extract structured OCR from ink price sheets"
+          git push
