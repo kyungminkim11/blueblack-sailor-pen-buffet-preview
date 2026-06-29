@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v23-20260629';
+const CACHE_NAME = 'blueblack-store-guide-v24-20260629';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -57,6 +57,7 @@ const CORE_PATHS = [
   './src/ink-inventory-colors.js',
   './src/ink-store-colors-generated.js',
   './src/ink-catalog-i18n-v22.js',
+  './src/ink-catalog-copy-patch-v23.js',
   './src/ink-catalog-model-v22.js',
   './src/ink-price-viewer.js',
   './src/ink-price-search-v22.js',
