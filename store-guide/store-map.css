@@ -1,20 +1,35 @@
+.detail-topbar{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.detail-language{max-width:min(58vw,430px)}
 .store-map-card{overflow:hidden}
 .store-map-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
 .store-map-kicker{display:block;margin-bottom:5px;color:#a77a3d;font-size:8px;font-weight:900;letter-spacing:.12em}
 .store-map-heading h2{margin:0}
 .store-map-heading p{max-width:620px}
-.store-map-new-window{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 11px;border:1px solid #dce3ea;border-radius:10px;background:#fff;color:#10233f;font-size:9px;font-weight:900;text-decoration:none}
+.store-map-new-window{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 12px;border:1px solid #dce3ea;border-radius:10px;background:#fff;color:#10233f;font-size:10px;font-weight:900;text-decoration:none}
 .store-map-tools{display:grid;grid-template-columns:minmax(220px,1fr) auto;gap:10px;align-items:end;margin-top:16px}
 .store-map-search{display:grid;gap:6px}
-.store-map-search span{color:#6b7889;font-size:9px;font-weight:900}
-.store-map-search input{width:100%;min-height:44px;padding:0 13px;border:1px solid #cfd8e2;border-radius:12px;background:#fff;color:#10233f;font:inherit;font-size:12px;outline:none}
+.store-map-search>span:first-child{color:#6b7889;font-size:9px;font-weight:900}
+.store-map-search-field{position:relative;display:block}
+.store-map-search input{width:100%;min-height:48px;padding:0 48px 0 14px;border:1px solid #cfd8e2;border-radius:13px;background:#fff;color:#10233f;font:inherit;font-size:13px;outline:none}
 .store-map-search input:focus{border-color:#10233f;box-shadow:0 0 0 3px rgba(16,35,63,.08)}
+.store-map-clear{position:absolute;right:6px;top:50%;display:none;place-items:center;width:36px;height:36px;transform:translateY(-50%);border:0;border-radius:10px;background:#eef3f7;color:#10233f;font-size:20px;line-height:1;cursor:pointer}
+.store-map-clear.is-visible{display:grid}
 .store-map-buttons{display:flex;gap:6px}
-.store-map-buttons button{min-width:42px;min-height:44px;padding:0 12px;border:1px solid #d4dde6;border-radius:11px;background:#fff;color:#10233f;font-size:10px;font-weight:900;cursor:pointer}
-.store-map-buttons button:hover{border-color:#10233f}
-.store-map-result{min-height:18px;margin:9px 0 8px!important;color:#68778a!important;font-size:9px!important}
+.store-map-buttons button{min-width:44px;min-height:48px;padding:0 12px;border:1px solid #d4dde6;border-radius:11px;background:#fff;color:#10233f;font-size:10px;font-weight:900;cursor:pointer}
+.store-map-buttons button:hover,.store-map-buttons button:focus-visible,.store-brand-chip:hover,.store-brand-chip:focus-visible,.store-action-button:hover,.store-action-button:focus-visible{border-color:#10233f;outline:none}
+.store-map-language-hint{margin:10px 0 0!important;color:#526176!important;font-size:9px!important;line-height:1.6!important}
+.store-map-result{min-height:18px;margin:5px 0 8px!important;color:#68778a!important;font-size:9px!important}
 .store-map-result.is-found{color:#227a55!important;font-weight:850}
 .store-map-result.is-missing{color:#b4553b!important;font-weight:850}
+.store-map-brand-picker{display:grid;gap:9px;margin-bottom:12px;padding:11px;border:1px solid #e0e6ed;border-radius:14px;background:#f8fafc}
+.store-map-popular{display:grid;gap:8px}
+.store-map-popular>strong{color:#526176;font-size:9px;font-weight:900}
+.store-map-chip-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
+.store-map-chip-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:7px;margin-top:10px}
+.store-brand-chip{flex:0 0 auto;min-height:40px;padding:0 11px;border:1px solid #d6dee7;border-radius:999px;background:#fff;color:#10233f;font-size:10px;font-weight:850;cursor:pointer;white-space:nowrap}
+.store-brand-chip.is-selected{border-color:#a77a3d;background:#fff8eb;color:#7d5317;box-shadow:0 0 0 2px rgba(167,122,61,.12)}
+.store-map-all-brands{border-top:1px solid #e2e8ee;padding-top:8px}
+.store-map-all-brands summary{width:max-content;color:#10233f;font-size:9px;font-weight:900;cursor:pointer}
 .store-map-viewport{position:relative;overflow:auto;max-height:min(72vh,720px);border:1px solid #d6dee8;border-radius:16px;background:#e9eef4;overscroll-behavior:contain;scrollbar-color:#9daaba transparent}
 .store-map-viewport:fullscreen{max-height:none;border:0;border-radius:0;background:#e9eef4;padding:18px}
 .store-map-canvas{width:100%;min-width:760px;transition:width .2s ease}
@@ -27,17 +42,29 @@
 .legend-table{background:#f5ecdc}
 .legend-service{background:#10233f}
 .store-map-note{margin-top:8px!important;font-size:9px!important}
+.store-action-button{display:inline-flex;align-items:center;justify-content:center;min-height:40px;padding:0 13px;border:1px solid #dce3ea;border-radius:10px;background:#fff;color:#10233f;font-size:10px;font-weight:900;cursor:pointer}
+.store-utility-status{min-height:17px;margin:8px 0 0!important;color:#227a55!important;font-size:9px!important;font-weight:850}
+.store-utility-status.is-error{color:#b4553b!important}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
 @media(max-width:760px){
+  .detail-topbar{align-items:flex-start}
+  .detail-language{max-width:58vw}
   .store-map-heading{display:block}
   .store-map-new-window{margin-top:12px}
   .store-map-tools{grid-template-columns:1fr}
   .store-map-buttons{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
   .store-map-buttons button{padding-inline:6px}
   .store-map-canvas{min-width:680px}
+  .store-map-chip-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .store-brand-chip{min-height:42px}
 }
 @media(max-width:420px){
+  .detail-topbar{gap:9px}
+  .detail-language{max-width:57vw}
   .store-map-card{padding:14px}
   .store-map-canvas{min-width:620px}
+  .store-map-chip-grid{grid-template-columns:1fr 1fr}
+  .store-map-search input{font-size:12px}
 }
 @media(prefers-reduced-motion:reduce){
   .store-map-canvas{transition:none}
