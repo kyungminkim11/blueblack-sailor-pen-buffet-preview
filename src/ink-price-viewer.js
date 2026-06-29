@@ -13,8 +13,10 @@ const COPY={
   'zh-Hant':{title:'官方墨水分裝價格表',intro:'可透過官方原圖查看門市說明及各品牌5ml、10ml分裝價格。',badge:'官方原圖',sheets:'共4頁',tabs:['使用說明','價格表 1','價格表 2','價格表 3'],zoomOut:'縮小',zoomIn:'放大',reset:'適應畫面',full:'大圖查看',loading:'正在載入價格表。',page:'目前頁面',source:'原始說明',sourceCopy:'價格與可分裝情況可能會變更。付款前請與店員確認顏色、容量和最終金額。',previous:'上一頁',next:'下一頁',share:'分享目前頁面',shared:'價格表連結已複製。',notices:['價格表中未列出的品牌以及部分限定款、套裝不提供分裝。','門市繁忙或庫存不足時，準備時間可能延長，銷售容量也可能調整。','價格按5ml和10ml標示。','付款前請與店員確認墨水顏色、金額及容器密封狀態。']}
 };
 
+const MIN_ZOOM=.75;
+const FIT_ZOOM=1;
 let currentPage=0;
-let zoom=matchMedia('(max-width:760px)').matches?1:1.15;
+let zoom=FIT_ZOOM;
 
 function language(){const value=document.documentElement.lang||'ko';if(value.startsWith('zh-Hant'))return'zh-Hant';if(value.startsWith('zh'))return'zh-Hans';if(value.startsWith('ja'))return'ja';if(value.startsWith('en'))return'en';return'ko';}
 function text(){return COPY[language()]||COPY.ko;}
@@ -45,7 +47,13 @@ function renderCopy(){
 }
 
 function updateMeta(){const value=text();$('[data-ink-current]').textContent=value.tabs[currentPage];$('.ink-dialog-head strong').textContent=value.tabs[currentPage];$('.ink-prev-page').disabled=currentPage===0;$('.ink-next-page').disabled=currentPage===PAGES.length-1;}
-function applyZoom(){const image=$('.ink-sheet');image.style.width=`${Math.round(zoom*100)}%`;$('.ink-canvas').dataset.zoom=Math.round(zoom*100);}
+function updateZoomControls(){
+  const out=$('.ink-zoom-out');
+  const zoomIn=$('.ink-zoom-in');
+  if(out)out.disabled=zoom<=MIN_ZOOM+.001;
+  if(zoomIn)zoomIn.disabled=zoom>=FIT_ZOOM-.001;
+}
+function applyZoom(){const image=$('.ink-sheet');image.style.width=`${Math.round(zoom*100)}%`;$('.ink-canvas').dataset.zoom=Math.round(zoom*100);updateZoomControls();}
 function selectPage(index,options={}){
   currentPage=Math.max(0,Math.min(PAGES.length-1,Number(index)||0));
   const image=$('.ink-sheet');
@@ -60,8 +68,8 @@ function selectPage(index,options={}){
   if(options.updateUrl!==false){const url=new URL(location.href);url.searchParams.set('page',String(currentPage));history.replaceState(null,'',url);}
   dispatchEvent(new CustomEvent('inkpagechange',{detail:{page:currentPage}}));
 }
-function changeZoom(delta){zoom=Math.max(.75,Math.min(3,zoom+delta));applyZoom();}
-function resetZoom(){zoom=matchMedia('(max-width:760px)').matches?1:1.15;applyZoom();$('.ink-canvas').scrollTo({top:0,left:0,behavior:'smooth'});}
+function changeZoom(delta){zoom=Math.max(MIN_ZOOM,Math.min(FIT_ZOOM,zoom+delta));applyZoom();}
+function resetZoom(){zoom=FIT_ZOOM;applyZoom();$('.ink-canvas').scrollTo({top:0,left:0,behavior:'smooth'});}
 function openLarge(){const dialog=$('.ink-image-dialog');const image=dialog.querySelector('img');image.src=PAGES[currentPage].src;image.alt=text().tabs[currentPage];updateMeta();dialog.showModal();}
 async function shareCurrent(){const url=new URL(location.href);url.searchParams.set('page',String(currentPage));const payload={title:`BlueBlack · ${text().tabs[currentPage]}`,text:text().sourceCopy,url:url.href};if(navigator.share){try{await navigator.share(payload);return;}catch{}}try{await navigator.clipboard.writeText(url.href);toast(text().shared);}catch{window.prompt(text().shared,url.href);}}
 
