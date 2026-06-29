@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10233f" />
+  <meta name="color-scheme" content="light" />
+  <meta name="application-name" content="BlueBlack Pen Buffet Preview" />
+  <meta name="description" content="블루블랙 펜샵 매장 상담용 세일러 펜뷔페 미리보기. 여섯 개 파츠의 색상을 조합하고 완성된 만년필을 3D로 확인해보세요." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/pen-buffet/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="BlueBlack Pen Shop" />
+  <meta property="og:title" content="BlueBlack Sailor Pen Buffet Preview" />
+  <meta property="og:description" content="Choose six pen parts, mix your colors and preview the finished fountain pen in 3D." />
+  <meta property="og:url" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/pen-buffet/" />
+  <meta property="og:image" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="BlueBlack Pen Buffet fountain pen color combination preview" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="BlueBlack Sailor Pen Buffet Preview" />
+  <meta name="twitter:description" content="Build a six-part fountain pen color combination and preview it in 3D." />
+  <meta name="twitter:image" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/social-card.png" />
+  <title>블루블랙 펜샵 세일러 펜뷔페 미리보기</title>
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../app-v3.css" />
+  <link rel="stylesheet" href="../ux-upgrades-v4.css" />
+  <link rel="stylesheet" href="../customer-flow-v6.css" />
+  <link rel="stylesheet" href="../store-experience-v6.css" />
+  <link rel="stylesheet" href="../part-guide-v8.css" />
+  <link rel="stylesheet" href="../mobile-share-v9.css" />
+  <link rel="stylesheet" href="../ui-v10.css" />
+  <link rel="stylesheet" href="../store-console-v12.css" />
+  <link rel="stylesheet" href="../store-progress-v12.css" />
+  <link rel="stylesheet" href="../store-dialogs-v12.css" />
+  <link rel="stylesheet" href="../staff-handoff-v12.css" />
+  <link rel="stylesheet" href="../platform-shell.css" />
+  <script>
+    (function(){
+      var query=new URLSearchParams(location.search);
+      if(query.has('lang')||localStorage.getItem('blueblack-language'))return;
+      var locales=navigator.languages&&navigator.languages.length?navigator.languages:[navigator.language||'en'];
+      var value='en';
+      for(var i=0;i<locales.length;i++){
+        var locale=String(locales[i]||'').toLowerCase();
+        if(locale.indexOf('ko')===0){value='ko';break;}
+        if(locale.indexOf('ja')===0){value='ja';break;}
+        if(locale.indexOf('zh-tw')===0||locale.indexOf('zh-hk')===0||locale.indexOf('zh-mo')===0||locale.indexOf('hant')>-1){value='zh-Hant';break;}
+        if(locale.indexOf('zh')===0){value='zh-Hans';break;}
+        if(locale.indexOf('en')===0){value='en';break;}
+      }
+      query.set('lang',value);
+      document.documentElement.lang=value;
+      history.replaceState(null,'',location.pathname+'?'+query.toString());
+    })();
+  </script>
+  <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/"}}</script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="platform-subnav"><a class="platform-back" href="../">← 디지털 가이드</a><span class="platform-tool-label">PEN BUFFET TOOL</span></div>
+      <div class="brand-row"><span class="brand-name">BLUEBLACK PEN SHOP</span><span class="status-badge" data-t="storePreview">매장 상담용 미리보기</span></div>
+      <h1 data-t="title">세일러 펜뷔페 미리보기</h1>
+      <p data-t="intro">여섯 개 파츠의 색상을 직접 조합하고 완성 모습을 3D로 확인해보세요. 최종 선택은 매장에서 실물 파츠와 함께 확인해 드립니다.</p>
+      <details class="language-menu">
+        <summary aria-label="Choose language"><span class="language-current"><span class="language-current-flag">🇰🇷</span><span class="language-current-label">한국어</span></span><span class="language-chevron">⌄</span></summary>
+        <div class="language-switcher" role="group" aria-label="Language">
+          <button type="button" data-language="ko" aria-pressed="true"><span class="language-flag">🇰🇷</span><span class="language-label">한국어</span></button>
+          <button type="button" data-language="en" aria-pressed="false"><span class="language-flag">🇺🇸</span><span class="language-label">English</span></button>
+          <button type="button" data-language="ja" aria-pressed="false"><span class="language-flag">🇯🇵</span><span class="language-label">日本語</span></button>
+          <button type="button" data-language="zh-Hans" aria-pressed="false"><span class="language-flag">🇨🇳</span><span class="language-label">简体中文</span></button>
+          <button type="button" data-language="zh-Hant" aria-pressed="false"><span class="language-flag">🇹🇼</span><span class="language-label">繁體中文</span></button>
+        </div>
+      </details>
+    </div>
+  </header>
+  <main>
+    <details class="howto"><summary data-t="howTo">이용 방법</summary><div class="howto-body"><p data-t="howToCopy">파츠와 색상을 고른 뒤 3D로 확인하고, 마음에 드는 조합은 링크나 이미지로 저장해 주세요.</p><div class="howto-grid"><article class="howto-step"><strong>01</strong><div><b data-t="step1">파츠 선택</b><span data-t="step1Copy">캡부터 배럴앤드까지 6개 파츠를 차례로 선택합니다.</span></div></article><article class="howto-step"><strong>02</strong><div><b data-t="step2">색상 선택</b><span data-t="step2Copy">각 파츠에 원하는 수지 컬러 또는 메탈 컬러를 적용합니다.</span></div></article><article class="howto-step"><strong>03</strong><div><b data-t="step3">실물 확인</b><span data-t="step3Copy">매장에서 실제 색상과 투명도를 확인한 뒤 조립을 진행합니다.</span></div></article></div></div></details>
+    <section class="customizer">
+      <div class="viewer-card" id="viewer-card"><div class="viewer-head"><div class="viewer-title"><small data-t="preview">3D 미리보기</small><strong id="viewer-mode">완성 모습</strong></div><div class="viewer-actions"><button type="button" id="toggle-view">파츠 분리</button><button type="button" id="toggle-fullscreen">크게 보기</button></div></div><div class="viewer-stage" id="viewer-stage"><div class="static-pen-fallback is-visible" id="static-pen-fallback" aria-hidden="true"><svg viewBox="0 0 720 260" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="resin" x1="0" x2="1"><stop stop-color="#e8eef3" stop-opacity=".86"/><stop offset=".52" stop-color="#ffffff" stop-opacity=".56"/><stop offset="1" stop-color="#cbd8e2" stop-opacity=".82"/></linearGradient><linearGradient id="metal" x1="0" x2="1"><stop stop-color="#8d969f"/><stop offset=".45" stop-color="#f2f5f7"/><stop offset="1" stop-color="#9da6ae"/></linearGradient></defs><g transform="translate(45 130)"><rect x="0" y="-43" width="286" height="86" rx="43" fill="url(#resin)" stroke="#b9c5cf"/><rect x="270" y="-36" width="54" height="72" rx="24" fill="url(#metal)"/><rect x="316" y="-31" width="246" height="62" rx="31" fill="url(#resin)" stroke="#b9c5cf"/><rect x="550" y="-34" width="66" height="68" rx="27" fill="url(#resin)" stroke="#b9c5cf"/><path d="M320-27h42l55 27-55 27h-42z" fill="url(#metal)"/><path d="M355-18l38 18-38 18z" fill="#b48a4b"/><rect x="40" y="-50" width="9" height="100" rx="4.5" fill="url(#metal)"/><rect x="244" y="-49" width="8" height="98" rx="4" fill="url(#metal)"/></g></svg></div><canvas id="pen-canvas" aria-label="3D fountain pen preview"></canvas><div class="viewer-status" id="viewer-loading" data-t="loading">3D 미리보기를 준비하고 있습니다.</div><div class="viewer-status" id="viewer-error" hidden data-t="error">3D 미리보기를 불러오지 못했습니다. 아래 색상 선택과 조합 확인 기능은 계속 사용할 수 있습니다.</div><div class="viewer-hint" data-t="viewerHint">한 손가락으로 회전 · 두 손가락으로 확대·축소</div><div class="fullscreen-controls"><button type="button" id="zoom-in" aria-label="Zoom in">＋</button><button type="button" id="zoom-out" aria-label="Zoom out">−</button><button type="button" id="reset-view" aria-label="Reset view">↺</button><button type="button" id="fullscreen-close" aria-label="Close">×</button></div></div></div>
+      <section class="control-card"><div class="control-title"><div><small>CUSTOMIZE</small><h2 data-t="customize">파츠별 색상을 골라주세요</h2></div><span class="progress-pill" id="progress-pill">1 / 6</span></div><div class="part-grid" id="part-grid" role="tablist"></div><div class="part-description"><small id="part-name-en">CAP</small><h3 id="part-name">캡</h3><p id="part-description"></p></div><div class="palette" id="palette"></div><div class="selected-bar"><span class="swatch-dot" id="selected-dot"></span><div><small data-t="selectedColor">선택한 색상</small><strong id="selected-color"></strong></div></div><div class="part-navigation"><button type="button" class="secondary" id="previous-part" data-t="previousPart">이전 파츠</button><button type="button" class="primary" id="next-part">다음 파츠</button></div><p class="notice" data-t="colorNotice">화면 색상은 조명과 디스플레이 환경에 따라 실제 파츠와 다르게 보일 수 있습니다. 최종 선택 전 매장 실물을 확인해 주세요.</p><p class="converter"><b data-t="converterTitle">컨버터 안내</b><br><span data-t="converterCopy">잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않는 별도 구매 상품입니다.</span></p></section>
+    </section>
+    <section class="result-section" id="result-section"><div class="section-head"><small>COMBINATION</small><h2 data-t="resultTitle">선택한 조합</h2><p data-t="resultCopy">아래 목록을 매장 실물 파츠와 비교해 주세요.</p></div><div class="result-layout"><div class="summary-card"><div class="summary-list" id="summary-list"></div></div><div class="action-card"><h3 data-t="resultTitle">선택한 조합</h3><p data-t="resultCopy">아래 목록을 매장 실물 파츠와 비교해 주세요.</p><div class="action-grid"><button type="button" class="primary wide" id="share-combination" data-t="share">조합 공유하기</button><button type="button" class="secondary" id="save-image" data-t="saveImage">조합 이미지 저장</button><button type="button" class="secondary" id="staff-view" data-t="staffView">직원과 함께 확인</button><button type="button" class="ghost wide" id="reset-combination" data-t="reset">새 조합 만들기</button></div><p class="toast" id="toast" aria-live="polite"></p></div></div></section>
+    <section class="visit-section"><div class="visit-card"><h2 data-t="visitTitle">블루블랙 펜샵 방문 안내</h2><p data-t="visitCopy">특정 색상을 찾으신다면 방문 전 재고 문의를 권장드립니다.</p><div class="visit-info"><article><small data-t="address">매장 주소</small><strong id="store-address"></strong></article><article><small data-t="hours">영업시간</small><span data-t="weekday">월–금 10:00–18:00</span><span data-t="saturday">토요일 12:00–18:00</span><span data-t="closed">일요일·공휴일 휴무</span></article><article><small data-t="phone">전화 문의</small><strong id="store-phone"></strong></article></div><div class="visit-actions"><a href="https://map.naver.com/p/search/%EB%B8%94%EB%A3%A8%EB%B8%94%EB%9E%99%20%ED%8E%9C%EC%83%B5" target="_blank" rel="noopener noreferrer" data-t="map">네이버지도</a><a href="tel:027658868" data-t="call">전화하기</a><a href="https://blueblack.co.kr/" target="_blank" rel="noopener noreferrer" data-t="website">공식 홈페이지</a><a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener noreferrer" data-t="instagram">인스타그램</a></div><p class="visit-note" data-t="visitNote">영업시간·휴무일·재고는 변경될 수 있습니다. 방문 전 공식 채널에서 최신 안내를 확인해 주세요.</p></div></section>
+  </main>
+  <footer class="app-footer" data-t="footer">본 페이지는 블루블랙 펜샵 매장 상담을 위한 조합 미리보기 도구입니다.</footer>
+  <dialog class="staff-dialog" id="staff-dialog"><div class="staff-dialog-body"><div class="staff-dialog-head"><div><h2 data-t="staffTitle">선택 파츠 확인</h2><p data-t="staffCopy">고객님이 선택한 색상입니다. 실물 파츠와 하나씩 비교해 주세요.</p></div><button type="button" class="dialog-close" id="staff-close">×</button></div><div class="summary-list" id="staff-summary"></div><p class="converter"><b data-t="converterTitle">컨버터 안내</b><br><span data-t="converterCopy">잉크 컨버터는 펜뷔페 기본 구성에 포함되지 않는 별도 구매 상품입니다.</span></p></div></dialog>
+  <script>(function(){var ids=['cap_body','cap_end','nib_grip','metal_parts','barrel_body','barrel_end'];var q=new URLSearchParams(location.search);var compact=q.get('c');if(compact&&!ids.some(function(id){return q.has(id);})){var values=compact.split('.');if(values.length===ids.length){ids.forEach(function(id,index){q.set(id,values[index]);});q.delete('c');history.replaceState(null,'',location.pathname+'?'+q.toString());}}})();</script>
+  <script>window.__bbViewerTimeout=setTimeout(function(){var loading=document.getElementById('viewer-loading');var error=document.getElementById('viewer-error');if(loading&&!loading.hidden){loading.hidden=true;if(error)error.hidden=false;}},12000);window.addEventListener('penviewerready',function(){clearTimeout(window.__bbViewerTimeout);});</script>
+  <script type="module" src="../src/restore-combination-v9.js"></script>
+  <script type="module" src="../src/app-v12.js"></script>
+  <script type="module" src="../src/part-guide-v8.js"></script>
+  <script type="module" src="../src/part-guide-chinese-v9.js"></script>
+  <script type="module" src="../src/preset-chinese-v9.js"></script>
+  <script type="module" src="../src/locale-ui-v10.js"></script>
+  <script type="module" src="../src/store-session-v12.js"></script>
+  <script type="module" src="../src/store-actions-v12.js"></script>
+</body>
+</html>
