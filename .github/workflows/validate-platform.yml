@@ -1,0 +1,37 @@
+name: Validate digital guide platform
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check JavaScript syntax
+        run: |
+          node --check src/portal.js
+          node --check src/app-v12.js
+          node --check src/pwa-v9.js
+          node --check src/part-guide-v11.js
+          node --check src/store-recovery-v12.js
+          node --check src/consultation-polish-v13.js
+          node --check src/store-session-v12.js
+          node --check src/store-actions-v12.js
+      - name: Check platform pages
+        run: |
+          test -f index.html
+          test -f pen-buffet/index.html
+          test -f store-guide/index.html
+          test -f ink-price/index.html
+          test -f service/index.html
+          test -f staff/index.html
+          test -f pen-buffet/manifest.webmanifest
