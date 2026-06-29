@@ -6,19 +6,21 @@ import './mobile-app-v15.js';
 import { getLanguage } from './i18n-v3.js';
 
 const meta={
-  ko:{flag:'🇰🇷',label:'한국어'},
-  en:{flag:'🇺🇸',label:'English'},
-  ja:{flag:'🇯🇵',label:'日本語'},
-  'zh-Hans':{flag:'🇨🇳',label:'简体中文'},
-  'zh-Hant':{flag:'🇹🇼',label:'繁體中文'}
+  ko:{flag:'🇰🇷',label:'한국어',back:'← 디지털 가이드'},
+  en:{flag:'🇺🇸',label:'English',back:'← Digital guide'},
+  ja:{flag:'🇯🇵',label:'日本語',back:'← デジタルガイド'},
+  'zh-Hans':{flag:'🇨🇳',label:'简体中文',back:'← 数字指南'},
+  'zh-Hant':{flag:'🇹🇼',label:'繁體中文',back:'← 數位指南'}
 };
 
 const desktopQuery=window.matchMedia('(min-width:900px)');
 
 function update(){
   const menu=document.querySelector('.language-menu');
-  if(!menu)return;
   const current=meta[getLanguage()]||meta.en;
+  const back=document.querySelector('.platform-back');
+  if(back)back.textContent=current.back;
+  if(!menu)return;
   const flag=menu.querySelector('.language-current-flag');
   const label=menu.querySelector('.language-current-label');
   if(flag)flag.textContent=current.flag;
