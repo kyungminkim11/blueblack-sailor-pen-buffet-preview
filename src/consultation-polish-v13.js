@@ -4,7 +4,7 @@ import { getLanguage, localizeColor, localizePart } from './i18n-v3.js';
 if(!document.querySelector('link[data-consultation-polish-v13]')){
   const link=document.createElement('link');
   link.rel='stylesheet';
-  link.href='./consultation-polish-v13.css';
+  link.href=new URL('../consultation-polish-v13.css',import.meta.url).href;
   link.dataset.consultationPolishV13='true';
   document.head.append(link);
 }
@@ -20,87 +20,11 @@ const copy={
 const text=()=>copy[getLanguage()]||copy.ko;
 const colorById=id=>colors.find(color=>color.id===id)||colors[0];
 
-function ensureRibbon(){
-  const viewer=document.querySelector('#viewer-card');
-  if(!viewer)return null;
-  let ribbon=viewer.querySelector('.combination-ribbon');
-  if(!ribbon){ribbon=document.createElement('div');ribbon.className='combination-ribbon';ribbon.setAttribute('aria-label','Current combination');viewer.append(ribbon);}
-  return ribbon;
-}
-
-function renderRibbon(){
-  const ribbon=ensureRibbon();
-  if(!ribbon||!window.blueblackPenApp)return;
-  const selections=window.blueblackPenApp.selections;
-  const active=window.blueblackPenApp.activePartId;
-  ribbon.replaceChildren(...parts.map((part,index)=>{
-    const color=colorById(selections[part.id]);
-    const button=document.createElement('button');
-    button.type='button';
-    button.dataset.partId=part.id;
-    button.setAttribute('aria-current',String(part.id===active));
-    button.innerHTML=`<span class="combination-ribbon-dot" style="background:${color.hex}"></span><span class="combination-ribbon-copy"><small>${index+1}. ${localizePart(part).name}</small><b>${localizeColor(color)}</b></span>`;
-    button.addEventListener('click',()=>window.blueblackPenApp.selectPart(part.id,true));
-    return button;
-  }));
-}
-
-function ensureGuidance(){
-  const stage=document.querySelector('#viewer-stage');
-  if(!stage)return;
-  let node=stage.querySelector('.viewer-guidance');
-  if(!node){node=document.createElement('div');node.className='viewer-guidance';stage.append(node);}
-  node.textContent=text().guide;
-}
-
-function ensurePolicy(){
-  let section=document.querySelector('.consultation-section');
-  if(!section){
-    section=document.createElement('section');
-    section.className='consultation-section';
-    const result=document.querySelector('#result-section');
-    result?.insertAdjacentElement('beforebegin',section);
-  }
-  const value=text();
-  section.innerHTML=`<div class="consultation-card"><div class="consultation-card-head"><div><small>${value.section}</small><h2>${value.title}</h2><p>${value.body}</p></div><span class="consultation-badge">${value.badge}</span></div><div class="consultation-grid"></div></div>`;
-  const grid=section.querySelector('.consultation-grid');
-  value.items.forEach((item,index)=>{
-    const article=document.createElement('article');
-    article.className=`consultation-item${index===3||index===4?' is-important':''}`;
-    article.innerHTML=`<span class="consultation-icon">${item[0]}</span><div><b>${item[1]}</b><p>${item[2]}</p></div>`;
-    grid.append(article);
-  });
-}
-
-function ensureMobileActions(){
-  let bar=document.querySelector('.mobile-primary-actions');
-  if(!bar){
-    bar=document.createElement('div');
-    bar.className='mobile-primary-actions';
-    bar.innerHTML='<button type="button" class="primary mobile-share-v13"></button><button type="button" class="secondary mobile-staff-v13"></button>';
-    document.body.append(bar);
-    bar.querySelector('.mobile-share-v13').addEventListener('click',()=>document.querySelector('#share-combination')?.click());
-    bar.querySelector('.mobile-staff-v13').addEventListener('click',()=>document.querySelector('#staff-view')?.click());
-  }
-  bar.querySelector('.mobile-share-v13').textContent=text().mobileShare;
-  bar.querySelector('.mobile-staff-v13').textContent=text().mobileStaff;
-}
-
-function ensureStaffPolicy(){
-  const body=document.querySelector('#staff-dialog .staff-dialog-body');
-  if(!body)return;
-  let box=body.querySelector('.staff-policy-v13');
-  if(!box){box=document.createElement('section');box.className='staff-policy-v13';body.append(box);}
-  const value=text();
-  box.innerHTML=`<h3>${value.badge}</h3><ul>${value.items.map(item=>`<li>${item[1]} · ${item[2]}</li>`).join('')}</ul>`;
-}
-
+function ensureRibbon(){const viewer=document.querySelector('#viewer-card');if(!viewer)return null;let ribbon=viewer.querySelector('.combination-ribbon');if(!ribbon){ribbon=document.createElement('div');ribbon.className='combination-ribbon';ribbon.setAttribute('aria-label','Current combination');viewer.append(ribbon);}return ribbon;}
+function renderRibbon(){const ribbon=ensureRibbon();if(!ribbon||!window.blueblackPenApp)return;const selections=window.blueblackPenApp.selections;const active=window.blueblackPenApp.activePartId;ribbon.replaceChildren(...parts.map((part,index)=>{const color=colorById(selections[part.id]);const button=document.createElement('button');button.type='button';button.dataset.partId=part.id;button.setAttribute('aria-current',String(part.id===active));button.innerHTML=`<span class="combination-ribbon-dot" style="background:${color.hex}"></span><span class="combination-ribbon-copy"><small>${index+1}. ${localizePart(part).name}</small><b>${localizeColor(color)}</b></span>`;button.addEventListener('click',()=>window.blueblackPenApp.selectPart(part.id,true));return button;}));}
+function ensureGuidance(){const stage=document.querySelector('#viewer-stage');if(!stage)return;let node=stage.querySelector('.viewer-guidance');if(!node){node=document.createElement('div');node.className='viewer-guidance';stage.append(node);}node.textContent=text().guide;}
+function ensurePolicy(){let section=document.querySelector('.consultation-section');if(!section){section=document.createElement('section');section.className='consultation-section';const result=document.querySelector('#result-section');result?.insertAdjacentElement('beforebegin',section);}const value=text();section.innerHTML=`<div class="consultation-card"><div class="consultation-card-head"><div><small>${value.section}</small><h2>${value.title}</h2><p>${value.body}</p></div><span class="consultation-badge">${value.badge}</span></div><div class="consultation-grid"></div></div>`;const grid=section.querySelector('.consultation-grid');value.items.forEach((item,index)=>{const article=document.createElement('article');article.className=`consultation-item${index===3||index===4?' is-important':''}`;article.innerHTML=`<span class="consultation-icon">${item[0]}</span><div><b>${item[1]}</b><p>${item[2]}</p></div>`;grid.append(article);});}
+function ensureMobileActions(){let bar=document.querySelector('.mobile-primary-actions');if(!bar){bar=document.createElement('div');bar.className='mobile-primary-actions';bar.innerHTML='<button type="button" class="primary mobile-share-v13"></button><button type="button" class="secondary mobile-staff-v13"></button>';document.body.append(bar);bar.querySelector('.mobile-share-v13').addEventListener('click',()=>document.querySelector('#share-combination')?.click());bar.querySelector('.mobile-staff-v13').addEventListener('click',()=>document.querySelector('#staff-view')?.click());}bar.querySelector('.mobile-share-v13').textContent=text().mobileShare;bar.querySelector('.mobile-staff-v13').textContent=text().mobileStaff;}
+function ensureStaffPolicy(){const body=document.querySelector('#staff-dialog .staff-dialog-body');if(!body)return;let box=body.querySelector('.staff-policy-v13');if(!box){box=document.createElement('section');box.className='staff-policy-v13';body.append(box);}const value=text();box.innerHTML=`<h3>${value.badge}</h3><ul>${value.items.map(item=>`<li>${item[1]} · ${item[2]}</li>`).join('')}</ul>`;}
 function renderAll(){renderRibbon();ensureGuidance();ensurePolicy();ensureMobileActions();ensureStaffPolicy();}
-
-addEventListener('combinationchange',renderRibbon);
-addEventListener('partchange',renderRibbon);
-document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>setTimeout(renderAll,60)));
-document.querySelector('#staff-view')?.addEventListener('click',()=>setTimeout(ensureStaffPolicy,80));
-const observer=new MutationObserver(()=>{if(document.querySelector('#staff-dialog[open]'))ensureStaffPolicy();});
-observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});
-setTimeout(renderAll,180);
+addEventListener('combinationchange',renderRibbon);addEventListener('partchange',renderRibbon);document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>setTimeout(renderAll,60)));document.querySelector('#staff-view')?.addEventListener('click',()=>setTimeout(ensureStaffPolicy,80));const observer=new MutationObserver(()=>{if(document.querySelector('#staff-dialog[open]'))ensureStaffPolicy();});observer.observe(document.body,{subtree:true,attributes:true,attributeFilter:['open']});setTimeout(renderAll,180);
