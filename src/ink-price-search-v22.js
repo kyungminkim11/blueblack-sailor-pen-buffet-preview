@@ -1,5 +1,5 @@
 import {
-  addColor,addPrice,brandGroups,brandName,clearList,colorById,colorName,copy,currentLang,formatPrice,formatWon,formName,getFavorites,getList,initials,isColorSelected,isPriceSelected,listTotal,matchedGroups,priceFor,priceItemById,removeListItem,seriesName,shareLines,toggleFavorite
+  addColor,addColorPrice,addPrice,brandGroups,brandName,clearList,colorById,colorName,copy,currentLang,formatPrice,formatWon,formName,getFavorites,getList,initials,isColorPriceSelected,isColorSelected,isPriceSelected,listTotal,matchedGroups,priceFor,priceItemById,priceItemForColor,removeListItem,seriesName,shareLines,toggleFavorite
 } from './ink-catalog-model-v22.js';
 
 let directoryOpen=false;
@@ -14,20 +14,34 @@ function toast(message){
 }
 
 function brandMark(group){return`<span class="ink-brand-mark" aria-hidden="true"><svg viewBox="0 0 40 46"><rect x="13" y="2" width="14" height="8" rx="2" fill="#d8c49d"/><path d="M9 10h22c3 0 5 2 5 5v24c0 3-2 5-5 5H9c-3 0-5-2-5-5V15c0-3 2-5 5-5Z" fill="#fff" opacity=".94"/><path d="M7 29h26v9c0 2-2 4-4 4H11c-2 0-4-2-4-4v-9Z" fill="#b58a4b"/></svg><span>${initials(group.brandEn)}</span></span>`;}
+function colorVisual(color,small=false){
+  const classes=`ink-color-image${small?' is-small':''}${color.image?'':' is-swatch'}`;
+  if(color.image)return`<span class="${classes}"><img src="${color.image}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><i style="--swatch:${color.hex||'#d8d2c8'}"></i></span>`;
+  return`<span class="${classes}"><i style="--swatch:${color.hex||'#d8d2c8'}"></i></span>`;
+}
 function refresh(){renderResults();renderList();}
-function handleFavorite(id){toggleFavorite(id);renderResults();}
-function handleColor(color){addColor(color);toast(copy().saved);refresh();}
-function handlePrice(item,volume){addPrice(item,volume);toast(copy().saved);refresh();}
+function saveColor(color){addColor(color);toast(copy().saved);refresh();}
+function saveColorPrice(color,item,volume){addColorPrice(color,item,volume);toast(copy().saved);refresh();}
+function saveSeriesPrice(item,volume){addPrice(item,volume);toast(copy().saved);refresh();}
 
-function colorChip(color){
+function colorPriceButton(color,item,volume){
   const value=copy();
+  const selected=isColorPriceSelected(color.id,volume);
+  return`<button type="button" class="ink-color-price${selected?' is-selected':''}" data-volume="${volume}"><span>${volume}</span><strong>${formatPrice(priceFor(item,volume))}</strong><small>${selected?'✓ '+value.selected:value.addPrice}</small></button>`;
+}
+function colorCard(color,group){
+  const value=copy();
+  const item=priceItemForColor(color,group);
   const selected=isColorSelected(color.id);
-  const button=document.createElement('button');
-  button.type='button';
-  button.className=`ink-color-chip${selected?' is-selected':''}`;
-  button.innerHTML=`<span class="ink-color-dot" style="--swatch:${color.hex}"></span><span class="ink-color-copy"><strong>${colorName(color)}</strong><small>${color.nameEn} · ${formName(color)}${color.volume?' '+color.volume:''}</small></span><span class="ink-color-action">${selected?'✓ '+value.selected:'+ '+value.addColor}</span>`;
-  button.addEventListener('click',()=>handleColor(color));
-  return button;
+  const card=document.createElement('article');
+  card.className=`ink-color-chip${selected?' is-selected':''}`;
+  const priceArea=item
+    ? `<div class="ink-color-price-grid">${colorPriceButton(color,item,'5ml')}${colorPriceButton(color,item,'10ml')}</div><span class="ink-color-series">${seriesName(item)}</span>`
+    : `<button type="button" class="ink-color-add${selected?' is-selected':''}">${selected?'✓ '+value.selected:'+ '+value.addColor}</button><span class="ink-color-series is-unpriced">${value.unknownPrice}</span>`;
+  card.innerHTML=`${colorVisual(color)}<div class="ink-color-copy"><strong>${colorName(color)}</strong><small>${color.nameEn||color.productTitle||colorName(color)} · ${formName(color)}${color.volume?' '+color.volume:''}</small></div>${priceArea}`;
+  if(item){card.querySelectorAll('.ink-color-price').forEach(button=>button.addEventListener('click',()=>saveColorPrice(color,item,button.dataset.volume)));}
+  else card.querySelector('.ink-color-add').addEventListener('click',()=>saveColor(color));
+  return card;
 }
 
 function colorSection(group){
@@ -35,7 +49,7 @@ function colorSection(group){
   const value=copy();
   const section=document.createElement('section');
   section.className='ink-brand-colors';
-  section.innerHTML=`<div class="ink-brand-section-head"><div><span>ECOUNT COLOR DATA</span><h4>${value.registeredColors}</h4></div><b>${group.visibleColors.length}${value.items}</b></div><div class="ink-color-groups"></div><p class="ink-color-disclaimer">${value.colorDisclaimer}</p>`;
+  section.innerHTML=`<div class="ink-brand-section-head"><div><span>STORE COLOR DATA</span><h4>${value.registeredColors}</h4></div><b>${group.visibleColors.length}${value.items}</b></div><div class="ink-color-groups"></div><p class="ink-color-disclaimer">${value.colorDisclaimer}</p>`;
   const root=section.querySelector('.ink-color-groups');
   ['bottle','cartridge'].forEach(form=>{
     const colors=group.visibleColors.filter(color=>color.form===form);
@@ -43,13 +57,13 @@ function colorSection(group){
     const block=document.createElement('div');
     block.className='ink-color-group';
     block.innerHTML=`<div class="ink-color-group-title"><strong>${form==='bottle'?value.bottle:value.cartridge}</strong><span>${colors.length}</span></div><div class="ink-color-grid"></div>`;
-    block.querySelector('.ink-color-grid').replaceChildren(...colors.map(colorChip));
+    block.querySelector('.ink-color-grid').replaceChildren(...colors.map(color=>colorCard(color,group)));
     root.append(block);
   });
   return section;
 }
 
-function priceButton(item,volume){
+function seriesPriceButton(item,volume){
   const value=copy();
   const selected=isPriceSelected(item.id,volume);
   return`<button type="button" class="ink-series-price${selected?' is-selected':''}" data-volume="${volume}"><span>${volume}</span><strong>${formatPrice(priceFor(item,volume))}</strong><small>${selected?'✓ '+value.selected:value.addPrice}</small></button>`;
@@ -57,8 +71,8 @@ function priceButton(item,volume){
 function priceRow(item){
   const row=document.createElement('div');
   row.className='ink-series-row';
-  row.innerHTML=`<div class="ink-series-copy"><strong>${seriesName(item)}</strong><small>${item.productEn}</small></div>${priceButton(item,'5ml')}${priceButton(item,'10ml')}`;
-  row.querySelectorAll('.ink-series-price').forEach(button=>button.addEventListener('click',()=>handlePrice(item,button.dataset.volume)));
+  row.innerHTML=`<div class="ink-series-copy"><strong>${seriesName(item)}</strong><small>${item.productEn}</small></div>${seriesPriceButton(item,'5ml')}${seriesPriceButton(item,'10ml')}`;
+  row.querySelectorAll('.ink-series-price').forEach(button=>button.addEventListener('click',()=>saveSeriesPrice(item,button.dataset.volume)));
   return row;
 }
 function priceSection(group){
@@ -76,7 +90,7 @@ function brandCard(group){
   const card=document.createElement('article');
   card.className=`ink-result ink-brand-card${fav?' is-favorite':''}`;
   card.innerHTML=`<div class="ink-brand-head">${brandMark(group)}<div class="ink-brand-copy"><span class="ink-brand-label">${value.brand}</span><h3>${brandName(group)}</h3><p>${group.brandEn}${group.colors.length?` · ${group.colors.length}${value.items}`:''}${group.priceItems.length?` · ${group.priceItems.length}${value.seriesCount}`:''}</p></div><button type="button" class="ink-brand-fav" aria-label="${value.favorite}">${fav?'★':'☆'}</button></div><div class="ink-brand-content"></div>`;
-  card.querySelector('.ink-brand-fav').addEventListener('click',()=>handleFavorite(group.id));
+  card.querySelector('.ink-brand-fav').addEventListener('click',()=>{toggleFavorite(group.id);renderResults();});
   const content=card.querySelector('.ink-brand-content');
   const colors=colorSection(group);
   if(colors)content.append(colors);
@@ -97,7 +111,7 @@ function filterByBrand(group){query=currentLang()==='ko'?group.brandKo:group.bra
 function renderQuick(){
   const root=document.querySelector('.ink-quick-brands');
   if(!root)return;
-  const preferred=['OMAS','Sailor','Diamine','Pilot','Pelikan','Platinum'];
+  const preferred=['Sailor','Diamine','Pilot','Pelikan','Platinum','Dominant Industry','Wearingeul','OMAS'];
   const groups=brandGroups();
   root.replaceChildren(...preferred.map(name=>groups.find(group=>group.brandEn===name)).filter(Boolean).map(group=>{const button=document.createElement('button');button.type='button';button.textContent=brandName(group);button.addEventListener('click',()=>filterByBrand(group));return button;}));
 }
@@ -121,9 +135,10 @@ function renderList(){
   root.replaceChildren(...items.map((entry,index)=>{
     const row=document.createElement('div');
     row.className='ink-list-item ink-brand-list-item';
-    if(entry.type==='color'){
+    if(entry.type==='color'||entry.type==='color-price'){
       const color=colorById(entry.colorId);
-      row.innerHTML=`<span class="ink-list-color" style="--swatch:${color?.hex||'#888'}"></span><div><b>${color?(currentLang()==='ko'?color.brandKo:color.brandEn)+' · '+colorName(color):entry.colorId}</b><span>${color?formName(color)+(color.volume?' '+color.volume:''):''} · ${value.unknownPrice}</span></div><button type="button" aria-label="${value.remove}">×</button>`;
+      const detail=entry.type==='color-price'?`${entry.volume} · ${formatPrice(entry.price)}`:`${color?formName(color)+(color.volume?' '+color.volume:''):''} · ${value.unknownPrice}`;
+      row.innerHTML=`${color?colorVisual(color,true):'<span class="ink-list-color"></span>'}<div><b>${color?(currentLang()==='ko'?color.brandKo:color.brandEn)+' · '+colorName(color):entry.colorId}</b><span>${detail}</span></div><button type="button" aria-label="${value.remove}">×</button>`;
     }else{
       const item=priceItemById(entry.itemId);
       row.innerHTML=`<span class="ink-list-brand-mark">${item?initials(item.brandEn):'INK'}</span><div><b>${item?(currentLang()==='ko'?item.brandKo:item.brandEn)+' · '+seriesName(item):entry.itemId}</b><span>${entry.volume} · ${formatPrice(entry.price)}</span></div><button type="button" aria-label="${value.remove}">×</button>`;
