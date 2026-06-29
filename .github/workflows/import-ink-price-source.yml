@@ -1,0 +1,67 @@
+name: Import ink price source
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/import-ink-price-source.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import-source:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install browser and image tools
+        run: |
+          npm init -y >/dev/null 2>&1
+          npm install playwright sharp >/dev/null 2>&1
+          npx playwright install --with-deps chromium
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr tesseract-ocr-kor
+      - name: Download the official source image
+        run: |
+          mkdir -p ink-price
+          node <<'NODE'
+          const fs=require('fs');
+          const {chromium}=require('playwright');
+          const sharp=require('sharp');
+          (async()=>{
+            const browser=await chromium.launch({headless:true});
+            const page=await browser.newPage({viewport:{width:1440,height:1100},deviceScaleFactor:2});
+            await page.goto('https://m.site.naver.com/25z4y',{waitUntil:'networkidle',timeout:90000});
+            await page.waitForTimeout(3000);
+            await page.screenshot({path:'ink-price/source-page.png',fullPage:true});
+            const images=await page.locator('img').evaluateAll(nodes=>nodes.map((node,index)=>({index,src:node.currentSrc||node.src,naturalWidth:node.naturalWidth,naturalHeight:node.naturalHeight,alt:node.alt||''})).filter(item=>item.src));
+            fs.writeFileSync('ink-price/source-images.json',JSON.stringify({finalUrl:page.url(),images},null,2));
+            const best=[...images].sort((a,b)=>(b.naturalWidth*b.naturalHeight)-(a.naturalWidth*a.naturalHeight))[0];
+            if(best?.src){
+              const response=await page.request.get(best.src);
+              if(response.ok()){
+                const buffer=await response.body();
+                await sharp(buffer).png().toFile('ink-price/price-list-source.png');
+              }
+            }
+            if(!fs.existsSync('ink-price/price-list-source.png')){
+              await sharp('ink-price/source-page.png').png().toFile('ink-price/price-list-source.png');
+            }
+            await browser.close();
+          })().catch(error=>{console.error(error);process.exit(1);});
+          NODE
+      - name: Extract text for verification
+        run: |
+          tesseract ink-price/price-list-source.png ink-price/price-list-ocr -l kor+eng --psm 6 || true
+      - name: Commit imported source
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ink-price/price-list-source.png ink-price/source-page.png ink-price/source-images.json ink-price/price-list-ocr.txt
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Import official ink decant price list source"
+          git push
