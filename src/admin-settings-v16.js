@@ -4,6 +4,7 @@ import { readAdminSettings } from './admin-store-v16.js';
 let settings = readAdminSettings();
 let idleTimer = 0;
 let observer;
+let mutationFrame = 0;
 
 window.__bbAdminSettings = settings;
 
@@ -32,10 +33,12 @@ function applyInitialQuery() {
     changed = true;
   }
 
-  if (changed) {
-    const suffix = query.toString();
-    history.replaceState(null, '', `${location.pathname}${suffix ? `?${suffix}` : ''}${location.hash}`);
-  }
+  if (!changed) return;
+
+  const suffix = query.toString();
+  const nextUrl = `${location.pathname}${suffix ? `?${suffix}` : ''}${location.hash}`;
+  if (window.blueblackPenApp) location.replace(nextUrl);
+  else history.replaceState(null, '', nextUrl);
 }
 
 function ensureRuntimeStyles() {
@@ -53,7 +56,8 @@ function ensureRuntimeStyles() {
 
 function applyVisibility(selector, visible) {
   document.querySelectorAll(selector).forEach((node) => {
-    node.dataset.adminHidden = visible ? 'false' : 'true';
+    const next = visible ? 'false' : 'true';
+    if (node.dataset.adminHidden !== next) node.dataset.adminHidden = next;
   });
 }
 
@@ -72,7 +76,7 @@ function applyAnnouncement() {
     banner.setAttribute('role', 'status');
     document.querySelector('.app-header')?.insertAdjacentElement('afterend', banner);
   }
-  banner.textContent = settings.announcementText;
+  if (banner && banner.textContent !== settings.announcementText) banner.textContent = settings.announcementText;
 }
 
 function applySettingsToDom() {
@@ -105,7 +109,10 @@ function bindIdleReset() {
 
 function watchDynamicSections() {
   observer?.disconnect();
-  observer = new MutationObserver(() => applySettingsToDom());
+  observer = new MutationObserver(() => {
+    cancelAnimationFrame(mutationFrame);
+    mutationFrame = requestAnimationFrame(applySettingsToDom);
+  });
   observer.observe(document.body, { childList: true, subtree: true });
 }
 
