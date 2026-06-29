@@ -1,0 +1,80 @@
+name: Debug ink catalog sync
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/debug-ink-catalog.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: pip install requests beautifulsoup4
+      - name: Fetch and inspect ink categories
+        run: |
+          python <<'PY'
+          import json, traceback
+          from pathlib import Path
+          import requests
+          from bs4 import BeautifulSoup
+
+          urls = [
+            'https://blueblack.co.kr/product/list.html?cate_no=193',
+            'https://blueblack.co.kr/category/%EB%B3%91-%EC%9E%89%ED%81%AC/286/',
+            'https://blueblack.co.kr/category/%EC%B9%B4%ED%8A%B8%EB%A6%AC%EC%A7%80/201/'
+          ]
+          report=[]
+          headers={'User-Agent':'Mozilla/5.0','Accept-Language':'ko-KR,ko;q=0.9,en;q=0.8'}
+          for url in urls:
+            item={'url':url}
+            try:
+              r=requests.get(url,headers=headers,timeout=30)
+              item.update(status=r.status_code,length=len(r.content),final_url=r.url,encoding=r.apparent_encoding)
+              r.encoding=r.apparent_encoding or 'utf-8'
+              soup=BeautifulSoup(r.text,'html.parser')
+              links=[]
+              for a in soup.select("a[href*='/product/'], a[href*='product_no=']"):
+                title=' '.join(a.get_text(' ',strip=True).split())
+                href=a.get('href','')
+                if title and href:
+                  links.append({'title':title,'href':href})
+              unique=[]
+              seen=set()
+              for link in links:
+                key=(link['title'],link['href'])
+                if key not in seen:
+                  seen.add(key); unique.append(link)
+              item['product_links']=unique[:80]
+              item['product_link_count']=len(unique)
+              item['selectors']={
+                "anchorBoxId":len(soup.select("li[id^='anchorBoxId_']")),
+                "xansRecord":len(soup.select('.xans-product-listnormal li.xans-record-')),
+                "prdListLi":len(soup.select('ul.prdList > li')),
+                "allLi":len(soup.select('.prdList > li')),
+              }
+              item['title']=soup.title.get_text(' ',strip=True) if soup.title else ''
+              Path('ink-price/debug-category.html').write_text(r.text[:500000],encoding='utf-8')
+            except Exception as exc:
+              item['error']=repr(exc)
+              item['traceback']=traceback.format_exc()
+            report.append(item)
+          Path('ink-price/store-catalog-debug.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+          PY
+      - name: Commit diagnostic
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ink-price/store-catalog-debug.json ink-price/debug-category.html
+          git commit -m "Add ink catalog sync diagnostic" || exit 0
+          git push
