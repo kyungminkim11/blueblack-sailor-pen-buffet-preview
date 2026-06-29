@@ -34,7 +34,8 @@ function normalize(value=''){
 
 function currentLanguage(){
   const query=normalize(new URLSearchParams(location.search).get('lang'));
-  const saved=normalize(localStorage.getItem('blueblack-language'));
+  let saved='';
+  try{saved=normalize(localStorage.getItem('blueblack-language'));}catch{}
   const browser=(navigator.languages||[navigator.language]).map(normalize).find(Boolean);
   return LANGUAGES[query]?query:LANGUAGES[saved]?saved:browser||'en';
 }
@@ -64,6 +65,10 @@ function applyExtraTranslations(language){
     if(value)node.textContent=value;
   });
   const type=pageType();
+  if(type==='ink'){
+    const sourceLink=[...document.querySelectorAll('.ink-source a')].find(link=>link.href.includes('m.site.naver.com'));
+    if(sourceLink)sourceLink.textContent=values.naverOriginal;
+  }
   const title=PAGE_TITLES[language]?.[type];
   if(title)document.title=title;
   document.documentElement.lang=language;
@@ -97,7 +102,7 @@ function buildMenu(language){
     button.setAttribute('aria-pressed',String(id===language));
     button.innerHTML=`<span class="detail-language-flag">${item.flag}</span><span class="detail-language-label">${item.label}</span><span class="detail-language-check">✓</span>`;
     button.addEventListener('click',()=>{
-      localStorage.setItem('blueblack-language',id);
+      try{localStorage.setItem('blueblack-language',id);}catch{}
       const url=new URL(location.href);
       url.searchParams.set('lang',id);
       location.assign(url.href);
