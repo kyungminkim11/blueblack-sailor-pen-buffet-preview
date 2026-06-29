@@ -19,6 +19,7 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check src/portal.js
+          node --check src/detail-language.js
           node --check src/portal-ink-live.js
           node --check src/ink-price-viewer.js
           node --check src/ink-price-search.js
@@ -33,6 +34,7 @@ jobs:
       - name: Check platform pages and source assets
         run: |
           test -f index.html
+          test -f detail-language.css
           test -f pen-buffet/index.html
           test -f store-guide/index.html
           test -f ink-price/index.html
