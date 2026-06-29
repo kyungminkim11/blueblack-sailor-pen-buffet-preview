@@ -4,17 +4,67 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
-  <meta name="description" content="블루블랙 펜샵 잉크 소분 금액표 페이지입니다. 공식 가격 데이터가 등록되면 브랜드와 용량별로 검색할 수 있습니다." />
-  <meta name="robots" content="noindex, follow" />
+  <meta name="description" content="블루블랙 펜샵의 공식 잉크 소분 안내와 브랜드별 5ml·10ml 금액표를 확인하세요." />
+  <meta name="robots" content="index, follow, max-image-preview:large" />
+  <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/ink-price/" />
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="BlueBlack Pen Shop" />
+  <meta property="og:title" content="BlueBlack Ink Decant Price List" />
+  <meta property="og:description" content="Official 5ml and 10ml ink decant prices by brand." />
+  <meta property="og:url" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/ink-price/" />
+  <meta property="og:image" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/portal-card.png" />
   <title>블루블랙 잉크 소분 금액표</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../portal.css" />
+  <link rel="stylesheet" href="./ink-price.css" />
 </head>
-<body class="detail-shell">
-  <header class="detail-header"><div class="detail-header-inner"><a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a><h1 data-portal-t="inkPageTitle">잉크 소분 금액표</h1><p data-portal-t="inkPageIntro">소분 가격 데이터가 확정되면 브랜드·용량별 검색 기능으로 제공할 예정입니다.</p></div></header>
-  <main class="detail-main">
-    <section class="detail-card empty-state"><div class="empty-state-icon">◉</div><h2 data-portal-t="inkEmptyTitle">가격 데이터 등록 준비 중</h2><p data-portal-t="inkEmptyBody">정확한 소분 금액표를 전달받은 뒤 가격을 임의로 만들지 않고 공식 데이터만 등록합니다.</p><div class="detail-actions" style="justify-content:center"><a href="tel:027658868" data-portal-t="call">전화하기</a><a class="primary" href="../store-guide/" data-preserve-lang data-portal-t="storeTitle">매장 이용 안내</a></div></section>
+<body class="detail-shell ink-price-page">
+  <header class="detail-header">
+    <div class="detail-header-inner">
+      <a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a>
+      <h1 data-ink-title>공식 잉크 소분 가격표</h1>
+      <p data-ink-intro>매장 소분 안내와 브랜드별 5ml·10ml 가격을 원본 이미지 기준으로 확인할 수 있습니다.</p>
+    </div>
+  </header>
+
+  <main class="ink-price-main">
+    <section class="ink-summary">
+      <div><small>BLUEBLACK INK SERVICE</small><h2 data-ink-title>공식 잉크 소분 가격표</h2><p data-ink-intro>매장 소분 안내와 브랜드별 5ml·10ml 가격을 원본 이미지 기준으로 확인할 수 있습니다.</p></div>
+      <div class="ink-summary-badge"><strong data-ink-badge>공식 원본</strong><span data-ink-sheets>총 4장</span></div>
+    </section>
+
+    <section class="ink-notices" aria-label="Ink decant guidance"></section>
+
+    <section class="ink-viewer" aria-label="Official ink price list viewer">
+      <div class="ink-viewer-head">
+        <div class="ink-tabs" role="tablist" aria-label="Price list pages"></div>
+        <div class="ink-tools">
+          <button type="button" class="ink-zoom-out" aria-label="축소">−</button>
+          <button type="button" class="ink-zoom-in" aria-label="확대">＋</button>
+          <button type="button" class="ink-zoom-reset">맞춤</button>
+          <button type="button" class="ink-fullscreen">크게 보기</button>
+        </div>
+      </div>
+      <div class="ink-canvas">
+        <div class="ink-loading" data-ink-loading>가격표를 불러오는 중입니다.</div>
+        <img class="ink-sheet" alt="블루블랙 잉크 소분 가격표" decoding="async" />
+      </div>
+      <div class="ink-page-meta"><span><span data-ink-page-label>현재 페이지</span> · <strong data-ink-current>이용 안내</strong></span><span>5ml · 10ml</span></div>
+    </section>
+
+    <section class="ink-source">
+      <b data-ink-source-label>원본 안내</b><br />
+      <span data-ink-source-copy>가격과 소분 가능 여부는 변경될 수 있습니다. 결제 전 직원과 색상·용량·금액을 함께 확인해 주세요.</span>
+      <div class="detail-actions"><a href="https://m.site.naver.com/25z4y" target="_blank" rel="noopener noreferrer">NAVER 원본 열기</a><a href="tel:027658868" data-portal-t="call">전화하기</a></div>
+    </section>
   </main>
+
+  <dialog class="ink-image-dialog">
+    <div class="ink-dialog-head"><strong>이용 안내</strong><button type="button" class="ink-dialog-close" aria-label="Close">×</button></div>
+    <div class="ink-dialog-scroll"><img alt="Expanded ink price list" /></div>
+  </dialog>
+
   <script type="module" src="../src/portal.js"></script>
+  <script type="module" src="../src/ink-price-viewer.js"></script>
 </body>
 </html>
