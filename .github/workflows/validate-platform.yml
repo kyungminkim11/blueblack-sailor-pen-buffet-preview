@@ -25,6 +25,7 @@ jobs:
           node --check src/ink-inventory-colors.js
           node --check src/ink-store-colors-generated.js
           node --check src/ink-catalog-i18n-v22.js
+          node --check src/ink-catalog-copy-patch-v23.js
           node --check src/ink-catalog-model-v22.js
           node --check src/ink-price-viewer.js
           node --check src/ink-price-search-v22.js
