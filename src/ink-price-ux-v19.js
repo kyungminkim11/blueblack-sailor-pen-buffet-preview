@@ -1,3 +1,5 @@
+import './detail-language.js';
+
 const COPY={
   ko:{skip:'브랜드 검색으로 바로가기',steps:[['브랜드 찾기','이름으로 검색'],['가격 확인','공식 원본 보기'],['직원 확인','선택 목록 전달']],notice:'소분 이용 전 확인해 주세요',more:'전체 브랜드 결과 보기',less:'추천 결과만 보기',showStaff:'직원에게 보여주기',staffTitle:'잉크 확인 목록',staffNote:'표시된 가격과 소분 가능 여부는 결제 전 직원과 공식 원본에서 다시 확인해 주세요.',staffEmpty:'아직 담은 브랜드가 없습니다. 브랜드와 용량을 선택해 확인 목록에 추가해 주세요.',share:'목록 공유',print:'인쇄',dock:['검색','가격표','확인 목록'],progress:['브랜드 선택','용량 선택'],selected:'개 선택'},
   en:{skip:'Skip to brand search',steps:[['Find a brand','Search by name'],['Check prices','View official sheets'],['Staff check','Show your list']],notice:'Please check before using the decant service',more:'Show all brand results',less:'Show recommended results',showStaff:'Show staff',staffTitle:'Ink check list',staffNote:'Confirm final prices and availability with staff and the official source before payment.',staffEmpty:'Your list is empty. Choose a brand and volume, then add it to the check list.',share:'Share list',print:'Print',dock:['Search','Price sheets','Check list'],progress:['Brand selected','Volume selected'],selected:' selected'},
