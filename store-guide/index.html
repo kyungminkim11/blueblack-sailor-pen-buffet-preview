@@ -35,7 +35,7 @@
       <div class="detail-grid">
         <article class="detail-item">
           <small data-portal-t="address">매장 주소</small>
-          <strong data-map-i18n="addressValue">서울특별시 종로구 사직로 109</strong>
+          <strong data-map-i18n="addressValue">서울특별시 종로구 사직로 109 · B1, 2F, 4F</strong>
           <span data-map-i18n="areaHint">내자동 · 경복궁역 인근</span>
         </article>
         <article class="detail-item">
@@ -60,6 +60,7 @@
         <a href="#store-map" data-map-i18n="openMap">매장 내부 지도</a>
         <button class="store-action-button" type="button" id="copyStoreAddress" data-map-i18n="copyAddress">주소 복사</button>
         <a href="tel:027658868" data-portal-t="call">전화하기</a>
+        <a href="../official-guide/" data-preserve-lang data-official-portal-t="title">공식 홈페이지 정보</a>
         <a href="https://blueblack.co.kr/" target="_blank" rel="noopener" data-portal-t="website">공식 홈페이지</a>
         <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-portal-t="instagram">인스타그램</a>
       </div>
@@ -140,20 +141,28 @@
           <span data-portal-t="penBody">6개 파츠의 색상을 조합하고 완성된 만년필을 3D로 미리 확인합니다.</span>
         </article>
         <article class="detail-item">
-          <small>SERVICE</small>
+          <small>OFFICIAL INFORMATION</small>
+          <strong data-official-portal-t="title">공식 홈페이지 정보</strong>
+          <span data-official-portal-t="body">취급 브랜드, 상품 카테고리, 각인 글꼴, 일반 A/S와 공식 콘텐츠를 확인합니다.</span>
+        </article>
+        <article class="detail-item">
+          <small>PEN BUFFET SERVICE</small>
           <strong data-portal-t="serviceTitle">A/S·구매 안내</strong>
-          <span data-portal-t="serviceBody">A/S 조건, 구성품, 컨버터와 추가 파츠 구매 조건을 안내합니다.</span>
+          <span data-portal-t="serviceBody">펜뷔페 A/S 조건, 구성품, 컨버터와 추가 파츠 구매 조건을 안내합니다.</span>
         </article>
       </div>
       <div class="detail-actions">
         <a class="primary" href="../pen-buffet/" data-preserve-lang data-portal-t="penTitle">세일러 펜뷔페</a>
+        <a href="../official-guide/" data-preserve-lang data-official-portal-t="title">공식 홈페이지 정보</a>
         <a href="../service/" data-preserve-lang data-portal-t="serviceTitle">A/S·구매 안내</a>
       </div>
     </section>
   </main>
 
   <script type="module" src="../src/portal.js"></script>
+  <script type="module" src="../src/official-portal-addon.js"></script>
   <script type="module" src="../src/store-map.js"></script>
   <script type="module" src="../src/store-map-foreign-v20.js"></script>
+  <script type="module" src="../src/store-address-addon.js"></script>
 </body>
 </html>
