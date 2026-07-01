@@ -255,7 +255,7 @@ function filterByBrand(group){query=currentLang()==='ko'?group.brandKo:group.bra
 function renderQuick(){
   const root=document.querySelector('.ink-quick-brands');
   if(!root)return;
-  const preferred=['Sailor','Diamine','Pilot','Pelikan','Platinum','Dominant Industry','Wearingeul','Ferris Wheel Press'];
+  const preferred=['Sailor','Diamine','Pilot','Pelikan','Platinum','Dominant Industry','Lennon Tool Bar','Ferris Wheel Press'];
   const groups=brandGroups().filter(group=>group.priceItems.length);
   root.replaceChildren(...preferred.map(name=>groups.find(group=>group.brandEn===name)).filter(Boolean).map(group=>{const button=document.createElement('button');button.type='button';button.textContent=brandName(group);button.addEventListener('click',()=>filterByBrand(group));return button;}));
 }

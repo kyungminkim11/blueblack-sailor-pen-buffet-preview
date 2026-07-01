@@ -35,7 +35,7 @@ Object.assign(INK_CATALOG_COPY.ko, {
   countryFilterLabel: '국가별 보기',
   typeFilterLabel: '분류별 보기',
   allFilter: '전체',
-  countryNames: {kr:'한국',jp:'일본',de:'독일',fr:'프랑스',it:'이탈리아',uk:'영국',us:'미국',tw:'대만',au:'호주',ca:'캐나다',other:'기타'},
+  countryNames: {kr:'한국',jp:'일본',de:'독일',fr:'프랑스',it:'이탈리아',uk:'영국',us:'미국',tw:'대만',ph:'필리핀',au:'호주',ca:'캐나다',other:'기타'},
   typeNames: {standard:'기본/스탠다드',shimmer:'쉬머·펄',pigment:'피그먼트/방수',scented:'향 잉크',calligraphy:'캘리그라피/아티스트',special:'스페셜 시리즈',other:'기타'},
   detail: '설명',
   detailCountry: '국가',
@@ -52,7 +52,7 @@ Object.assign(INK_CATALOG_COPY.ko, {
     {label: '파이롯트 이로시주쿠', note: '일본 병잉크 인기 시리즈', query: '이로시주쿠'},
     {label: '세일러 만요', note: '다이어리용 섬세한 색감', query: '만요'},
     {label: '화려한 쉬머', note: '펄과 반짝임이 있는 잉크', query: '쉬머'},
-    {label: '문학·감성 색상', note: '글입다와 개성 있는 잉크', query: '글입다'}
+    {label: '대만 감성 색상', note: '레논툴바와 빈타 계열', query: '레논툴바'}
   ]
 });
 Object.assign(INK_CATALOG_COPY.en, {
@@ -90,7 +90,7 @@ Object.assign(INK_CATALOG_COPY.en, {
   countryFilterLabel: 'By country',
   typeFilterLabel: 'By category',
   allFilter: 'All',
-  countryNames: {kr:'Korea',jp:'Japan',de:'Germany',fr:'France',it:'Italy',uk:'United Kingdom',us:'United States',tw:'Taiwan',au:'Australia',ca:'Canada',other:'Other'},
+  countryNames: {kr:'Korea',jp:'Japan',de:'Germany',fr:'France',it:'Italy',uk:'United Kingdom',us:'United States',tw:'Taiwan',ph:'Philippines',au:'Australia',ca:'Canada',other:'Other'},
   typeNames: {standard:'Standard',shimmer:'Shimmer / pearl',pigment:'Pigment / waterproof',scented:'Scented',calligraphy:'Calligraphy / artist',special:'Special series',other:'Other'},
   detail: 'Details',
   detailCountry: 'Country',
@@ -131,7 +131,7 @@ Object.assign(INK_CATALOG_COPY.ja, {
   countryFilterLabel: '国別',
   typeFilterLabel: '分類別',
   allFilter: 'すべて',
-  countryNames: {kr:'韓国',jp:'日本',de:'ドイツ',fr:'フランス',it:'イタリア',uk:'英国',us:'米国',tw:'台湾',au:'オーストラリア',ca:'カナダ',other:'その他'},
+  countryNames: {kr:'韓国',jp:'日本',de:'ドイツ',fr:'フランス',it:'イタリア',uk:'英国',us:'米国',tw:'台湾',ph:'フィリピン',au:'オーストラリア',ca:'カナダ',other:'その他'},
   typeNames: {standard:'スタンダード',shimmer:'シマー/パール',pigment:'顔料/防水',scented:'香り付き',calligraphy:'カリグラフィー/アーティスト',special:'特別シリーズ',other:'その他'},
   detail: '説明',
   detailCountry: '国',
@@ -170,7 +170,7 @@ Object.assign(INK_CATALOG_COPY['zh-Hans'], {
   countryFilterLabel: '按国家',
   typeFilterLabel: '按分类',
   allFilter: '全部',
-  countryNames: {kr:'韩国',jp:'日本',de:'德国',fr:'法国',it:'意大利',uk:'英国',us:'美国',tw:'台湾',au:'澳大利亚',ca:'加拿大',other:'其他'},
+  countryNames: {kr:'韩国',jp:'日本',de:'德国',fr:'法国',it:'意大利',uk:'英国',us:'美国',tw:'台湾',ph:'菲律宾',au:'澳大利亚',ca:'加拿大',other:'其他'},
   typeNames: {standard:'标准',shimmer:'闪粉/珠光',pigment:'颜料/防水',scented:'香味',calligraphy:'书法/艺术家',special:'特别系列',other:'其他'},
   detail: '说明',
   detailCountry: '国家',
@@ -209,7 +209,7 @@ Object.assign(INK_CATALOG_COPY['zh-Hant'], {
   countryFilterLabel: '按國家',
   typeFilterLabel: '按分類',
   allFilter: '全部',
-  countryNames: {kr:'韓國',jp:'日本',de:'德國',fr:'法國',it:'義大利',uk:'英國',us:'美國',tw:'台灣',au:'澳洲',ca:'加拿大',other:'其他'},
+  countryNames: {kr:'韓國',jp:'日本',de:'德國',fr:'法國',it:'義大利',uk:'英國',us:'美國',tw:'台灣',ph:'菲律賓',au:'澳洲',ca:'加拿大',other:'其他'},
   typeNames: {standard:'標準',shimmer:'閃粉/珠光',pigment:'顏料/防水',scented:'香味',calligraphy:'書法/藝術家',special:'特別系列',other:'其他'},
   detail: '說明',
   detailCountry: '國家',

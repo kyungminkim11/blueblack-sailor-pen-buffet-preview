@@ -55,16 +55,21 @@ const BRAND_COUNTRIES={
   'Colorverse':'kr',
   IWI:'tw',
   'Ink Institute':'tw',
+  'Lennon Tool Bar':'tw',
+  Laban:'tw',
   Sailor:'jp',
   Pilot:'jp',
   Platinum:'jp',
   Kakimori:'jp',
+  'Kyoto Ink':'jp',
   Pelikan:'de',
+  LAMY:'de',
   Kaweco:'de',
   'Faber-Castell':'de',
   'Graf von Faber-Castell':'de',
   Super5:'de',
   Diamine:'uk',
+  Inkvent:'uk',
   'J. Herbin':'fr',
   'Jacques Herbin':'fr',
   Waterman:'fr',
@@ -77,9 +82,11 @@ const BRAND_COUNTRIES={
   Conklin:'us',
   Parker:'us',
   'Robert Oster':'au',
-  'Ferris Wheel Press':'ca'
+  'Ferris Wheel Press':'ca',
+  Vinta:'ph',
+  'Ink House':'kr'
 };
-export const COUNTRY_KEYS=['kr','jp','de','fr','it','uk','us','tw','au','ca','other'];
+export const COUNTRY_KEYS=['kr','jp','de','fr','it','uk','us','tw','ph','au','ca','other'];
 export const TYPE_KEYS=['standard','shimmer','pigment','scented','calligraphy','special','other'];
 export function groupCountryKey(group){return BRAND_COUNTRIES[group?.brandEn]||'other';}
 export function itemTypeKeys(item){
