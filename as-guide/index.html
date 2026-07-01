@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10233f" />
+  <meta name="description" content="블루블랙 공식 안내를 기준으로 브랜드별 만년필 A/S 접수처, 연락처, 주소, 비용과 준비사항을 확인하세요." />
+  <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/as-guide/" />
+  <title>블루블랙 브랜드 A/S 안내</title>
+  <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../portal.css" />
+  <link rel="stylesheet" href="./as-guide.css" />
+</head>
+<body class="detail-shell as-shell">
+  <header class="detail-header">
+    <div class="detail-header-inner">
+      <div class="as-topbar">
+        <a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a>
+        <div class="portal-language detail-language" role="group" aria-label="Language / 언어">
+          <button type="button" data-portal-lang="ko" aria-pressed="true">🇰🇷 <span>한국어</span></button>
+          <button type="button" data-portal-lang="en" aria-pressed="false">🇺🇸 <span>English</span></button>
+          <button type="button" data-portal-lang="ja" aria-pressed="false">🇯🇵 <span>日本語</span></button>
+          <button type="button" data-portal-lang="zh-Hans" aria-pressed="false">🇨🇳 <span>简体</span></button>
+          <button type="button" data-portal-lang="zh-Hant" aria-pressed="false">🇹🇼 <span>繁體</span></button>
+        </div>
+      </div>
+      <span class="as-kicker">AFTER SALES SERVICE</span>
+      <h1 data-as-t="pageTitle">브랜드별 A/S 안내</h1>
+      <p data-as-t="pageIntro">사용 중인 브랜드를 검색하면 공식 접수처, 연락처, 주소와 비용 관련 주의사항을 확인할 수 있습니다.</p>
+    </div>
+  </header>
+
+  <main class="detail-main as-main">
+    <section class="as-source-card">
+      <div class="as-source-icon">✓</div>
+      <div>
+        <strong data-as-t="sourceTitle">블루블랙 공식 A/S 안내 기준</strong>
+        <p data-as-t="sourceBody">2026년 7월 1일 확인한 blueblack.co.kr의 제조사별 안내를 매장 상담용으로 정리했습니다. 접수 전 공식 페이지와 해당 센터에 최신 정보를 다시 확인해 주세요.</p>
+      </div>
+      <a href="https://blueblack.co.kr/jwgbox/add_page/as.html" target="_blank" rel="noopener" data-as-t="sourceButton">공식 원문 보기</a>
+    </section>
+
+    <section class="detail-card as-precheck">
+      <div class="as-section-heading">
+        <div><small>BEFORE SERVICE</small><h2 data-as-t="beforeTitle">접수 전 꼭 확인하세요</h2></div>
+        <p data-as-t="beforeBody">보증서와 접수 방식에 따라 A/S 가능 여부, 비용과 처리 기간이 달라질 수 있습니다.</p>
+      </div>
+      <div class="as-rule-grid">
+        <article><span>01</span><strong data-as-t="ruleWarrantyTitle">보증서 필수</strong><p data-as-t="ruleWarrantyBody">구매 시 동봉된 보증서를 제품과 함께 보내야 합니다. 펜샵 구매이력만으로 보증서를 대신할 수 없습니다.</p></article>
+        <article><span>02</span><strong data-as-t="ruleRejectTitle">보증서 미지참</strong><p data-as-t="ruleRejectBody">보증서가 없으면 제조사 또는 수입사에서 A/S 접수를 거부할 수 있습니다.</p></article>
+        <article><span>03</span><strong data-as-t="ruleDirectTitle">직접 접수 원칙</strong><p data-as-t="ruleDirectBody">브랜드별 공식 에이전시가 있는 경우 해당 센터로 직접 선불 택배 접수하는 것이 원칙입니다.</p></article>
+        <article><span>04</span><strong data-as-t="ruleShopTitle">펜샵 대행 접수</strong><p data-as-t="ruleShopBody">블루블랙을 통해 접수하면 왕복 택배비 6,000원이 추가될 수 있고 처리 기간이 3~5일 더 소요될 수 있습니다.</p></article>
+      </div>
+    </section>
+
+    <section class="detail-card" id="as-finder">
+      <div class="as-section-heading">
+        <div><small>BRAND FINDER</small><h2 data-as-t="finderTitle">내 브랜드 접수처 찾기</h2></div>
+        <p data-as-t="finderBody">한국어·영어·일본어·중국어 브랜드명으로 검색할 수 있습니다.</p>
+      </div>
+      <label class="as-search">
+        <span data-as-t="searchLabel">브랜드 검색</span>
+        <span class="as-search-field"><input id="asBrandSearch" type="search" autocomplete="off" enterkeyhint="search" placeholder="예: 라미, Lamy, セーラー, 写乐" data-as-placeholder="searchPlaceholder" /><button type="button" id="asBrandClear" aria-label="검색 지우기">×</button></span>
+      </label>
+      <div class="as-quick-brands" id="asQuickBrands"></div>
+      <p class="as-result-summary" id="asResultSummary" aria-live="polite"></p>
+      <div class="as-center-grid" id="asCenterGrid"></div>
+    </section>
+
+    <section class="detail-card as-special-note">
+      <div class="as-section-heading">
+        <div><small>SPECIAL COSTS</small><h2 data-as-t="costTitle">별도 비용 안내</h2></div>
+      </div>
+      <div class="as-cost-grid">
+        <article><span>PILOT</span><strong data-as-t="pilotCostTitle">파이롯트 기본 A/S 비용</strong><p data-as-t="pilotCostBody">기본 A/S 비용 36,500원이 부과되며 실제 수리 내용에 따라 실비가 추가될 수 있습니다.</p></article>
+        <article><span>VISCONTI</span><strong data-as-t="viscontiCostTitle">비스콘티 이탈리아 발송</strong><p data-as-t="viscontiCostBody">본사 수리를 위해 이탈리아로 발송하며 EMS 비용 33,000원이 기본 청구됩니다.</p></article>
+      </div>
+    </section>
+
+    <section class="detail-card as-related">
+      <h2 data-as-t="relatedTitle">다른 A/S 안내</h2>
+      <p data-as-t="relatedBody">세일러 펜뷔페 제품은 일반 브랜드 접수 절차와 별도의 블루블랙 전용 기준을 적용합니다.</p>
+      <div class="detail-actions">
+        <a class="primary" href="../service/" data-preserve-lang data-as-t="penBuffetButton">펜뷔페 A/S·구매 안내</a>
+        <a href="tel:027658868" data-as-t="callStore">블루블랙 전화 문의</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../src/portal.js"></script>
+  <script type="module" src="../src/as-guide.js"></script>
+</body>
+</html>
