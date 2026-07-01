@@ -71,7 +71,7 @@ body.ink-price-page .detail-header p{
 .ink-summary{
   position:relative;
   display:grid;
-  grid-template-columns:minmax(0,1fr) auto;
+  grid-template-columns:1fr;
   gap:22px;
   align-items:center;
   margin-bottom:14px;
@@ -109,8 +109,7 @@ body.ink-price-page .detail-header p{
   background:radial-gradient(circle, rgba(255,255,255,.10), rgba(255,255,255,0) 70%);
 }
 
-.ink-summary > div:first-child,
-.ink-summary-badge{
+.ink-summary > div:first-child{
   position:relative;
   z-index:1;
 }
@@ -138,34 +137,6 @@ body.ink-price-page .detail-header p{
   color:#d8e3ed;
   font-size:14px;
   line-height:1.8;
-}
-
-.ink-summary-badge{
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  min-width:160px;
-  min-height:110px;
-  padding:14px 16px;
-  border:1px solid rgba(181,138,75,.28);
-  border-radius:22px;
-  background:linear-gradient(180deg,rgba(251,247,240,.97),rgba(244,238,228,.95));
-  box-shadow:0 12px 26px rgba(9,23,40,.16);
-  color:var(--ink-text);
-}
-
-.ink-summary-badge strong{
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:32px;
-  letter-spacing:-.04em;
-}
-
-.ink-summary-badge span{
-  margin-top:4px;
-  color:var(--ink-sub);
-  font-size:11px;
-  font-weight:800;
 }
 
 .ink-notices{
@@ -438,16 +409,6 @@ body.ink-price-page .detail-header p{
   }
 
   .ink-summary p{font-size:13px}
-
-  .ink-summary-badge{
-    flex-direction:row;
-    justify-content:space-between;
-    min-height:56px;
-    min-width:0;
-    width:100%;
-  }
-
-  .ink-summary-badge strong{font-size:22px}
 
   .ink-notices{grid-template-columns:1fr}
 
