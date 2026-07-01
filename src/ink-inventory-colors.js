@@ -1,8 +1,40 @@
-export const INK_INVENTORY_COLORS = [
-  {id:'omas-bottle-violet',brandKo:'오마스',brandEn:'OMAS',form:'bottle',volume:'75ml',nameKo:'바이올렛',nameEn:'Violet',nameJa:'バイオレット',nameZhHans:'紫罗兰',nameZhHant:'紫羅蘭',hex:'#6F4A8E',itemCode:'OMO00E000800-00',productTitle:'오마스 병잉크 75ml 바이올렛',source:'uploaded-sales-list'},
-  {id:'omas-bottle-green',brandKo:'오마스',brandEn:'OMAS',form:'bottle',volume:'75ml',nameKo:'그린',nameEn:'Green',nameJa:'グリーン',nameZhHans:'绿色',nameZhHant:'綠色',hex:'#3F704D',itemCode:'OMO00E000900-00',productTitle:'오마스 병잉크 75ml 그린',source:'uploaded-sales-list'},
-  {id:'omas-bottle-sepia',brandKo:'오마스',brandEn:'OMAS',form:'bottle',volume:'75ml',nameKo:'세피아',nameEn:'Sepia',nameJa:'セピア',nameZhHans:'棕褐色',nameZhHant:'棕褐色',hex:'#704A35',itemCode:'OMO00E001100-00',productTitle:'오마스 병잉크 75ml 세피아',source:'uploaded-sales-list'},
-  {id:'omas-bottle-red',brandKo:'오마스',brandEn:'OMAS',form:'bottle',volume:'75ml',nameKo:'레드',nameEn:'Red',nameJa:'レッド',nameZhHans:'红色',nameZhHant:'紅色',hex:'#A84045',itemCode:'OMO00E002100-00',productTitle:'오마스 병잉크 75ml 레드',source:'uploaded-sales-list'},
-  {id:'omas-bottle-turquoise',brandKo:'오마스',brandEn:'OMAS',form:'bottle',volume:'75ml',nameKo:'터키옥',nameEn:'Turquoise',nameJa:'ターコイズ',nameZhHans:'绿松石色',nameZhHant:'綠松石色',hex:'#2F8D91',itemCode:'OMO00E002200-00',productTitle:'오마스 병잉크 75ml 터키옥',source:'uploaded-sales-list'},
-  {id:'omas-bottle-grey',brandKo:'오마스',brandEn:'OMAS',form:'bottle',volume:'75ml',nameKo:'그레이',nameEn:'Grey',nameJa:'グレー',nameZhHans:'灰色',nameZhHant:'灰色',hex:'#626B74',itemCode:'OMO00E002300-00',productTitle:'오마스 병잉크 75ml 그레이',source:'uploaded-sales-list'}
-];
+import { INK_INVENTORY_COLORS_PART as PART1 } from './ink-inventory-colors-v26-part1.js';
+import { INK_INVENTORY_COLORS_PART as PART2 } from './ink-inventory-colors-v26-part2.js';
+
+function cleanInventoryColorName(value = '') {
+  return String(value)
+    .replace(/\bPer nkle\b/gi, 'Periwinkle')
+    .replace(/^미니\s+/i, '')
+    .replace(/^(?:150주년|160주년)\s+/i, '')
+    .replace(/^\(\s*\)\s*/, '')
+    .replace(/\s*·\s*13-9121-231\s*$/i, '')
+    .replace(/\*/g, '')
+    .replace(/\(\s*\)/g, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isActualDecantColor(item) {
+  const text = `${item.nameKo || ''} ${item.productTitle || ''}`;
+  return !/(?:^|\s)SET(?:\s|$)|만년필|볼펜|샤프|수성펜|프리젠터|디스플레이|트래블링|펜레스트겸용/i.test(text);
+}
+
+const seen = new Set();
+export const INK_INVENTORY_COLORS = [...PART1, ...PART2]
+  .map((item) => {
+    const name = cleanInventoryColorName(item.nameKo || item.nameEn);
+    return {
+      ...item,
+      nameKo: name,
+      nameEn: name,
+      productTitle: `${item.brandKo || item.brandEn} ${name}`,
+    };
+  })
+  .filter((item) => item.nameKo && isActualDecantColor(item))
+  .filter((item) => {
+    const key = `${item.priceItemId}|${item.nameKo.toLocaleLowerCase()}`;
+    if (seen.has(key)) return false;
+    seen.add(key);
+    return true;
+  })
+  .map((item, index) => ({ ...item, id: `inventory-decant-${index}` }));
