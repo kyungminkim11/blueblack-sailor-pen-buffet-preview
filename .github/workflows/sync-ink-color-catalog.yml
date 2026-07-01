@@ -1,54 +1,14 @@
-name: Sync all ink color names
+name: Legacy ink color crawler disabled
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/sync-ink-color-catalog.yml'
-      - '.github/scripts/build_ink_color_catalog.py'
   workflow_dispatch:
-  schedule:
-    - cron: '20 19 * * 1'
 
 permissions:
-  contents: write
-
-concurrency:
-  group: sync-ink-color-catalog
-  cancel-in-progress: true
+  contents: read
 
 jobs:
-  sync:
+  notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-      - name: Install crawler dependencies
-        run: pip install requests beautifulsoup4
-      - name: Build ink color catalog from BlueBlack store
-        run: python .github/scripts/build_ink_color_catalog.py
-      - name: Validate generated module
-        run: |
-          node --check src/ink-store-colors-generated.js
-          python - <<'PY'
-          import json
-          from pathlib import Path
-          report=json.loads(Path('ink-price/store-catalog-report.json').read_text(encoding='utf-8'))
-          print(report)
-          if report['colors'] < 100:
-              raise SystemExit('Too few color entries were generated')
-          PY
-      - name: Commit updated catalog
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add src/ink-store-colors-generated.js ink-price/store-catalog-report.json
-          if git diff --cached --quiet; then
-            echo "Catalog is already current"
-            exit 0
-          fi
-          git commit -m "Sync all BlueBlack ink color names"
-          git push
+      - name: Inventory CSV is authoritative
+        run: echo "Decant ink colors are managed from the verified inventory CSV and are not auto-crawled from the full store catalog."
