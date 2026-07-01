@@ -8,6 +8,7 @@
   <title>펜뷔페 관리자 · BlueBlack Pen Shop</title>
   <link rel="icon" href="./app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./admin-v16.css" />
+  <link rel="stylesheet" href="./admin-ink-v1.css" />
 </head>
 <body>
   <header class="admin-header">
@@ -116,6 +117,131 @@
           <button class="admin-button primary" type="button" id="save-combination">기본 조합 저장</button>
           <button class="admin-button" type="button" id="use-current-combination">현재 고객 조합 불러오기</button>
           <button class="admin-button" type="button" id="copy-preview-link">기본 조합 링크 복사</button>
+        </div>
+      </section>
+
+      <section class="admin-card full ink-admin-card">
+        <div class="admin-card-head">
+          <div>
+            <small>INK DECANT CATALOG</small>
+            <h2>소분 잉크 카탈로그 관리</h2>
+            <p>고객 주문서에서 검색·선택할 잉크 브랜드, 색상, 5ml·10ml 가격을 설정합니다.</p>
+          </div>
+        </div>
+
+        <div class="ink-admin-layout">
+          <form class="ink-admin-panel" id="ink-price-form">
+            <div class="ink-admin-panel-head">
+              <b>가격 구분</b>
+              <span>기존 항목을 선택해 가격을 수정하거나 새 항목을 추가합니다.</span>
+            </div>
+            <div class="field-grid">
+              <div class="field full">
+                <label for="ink-price-template">기존 가격 구분 불러오기</label>
+                <select id="ink-price-template"></select>
+              </div>
+              <div class="field">
+                <label for="ink-price-brand-ko">브랜드명</label>
+                <input id="ink-price-brand-ko" type="text" placeholder="예: 파이롯트" />
+              </div>
+              <div class="field">
+                <label for="ink-price-brand-en">브랜드 영문</label>
+                <input id="ink-price-brand-en" type="text" placeholder="예: Pilot" />
+              </div>
+              <div class="field">
+                <label for="ink-price-series-ko">시리즈명</label>
+                <input id="ink-price-series-ko" type="text" placeholder="예: 이로시주쿠" />
+              </div>
+              <div class="field">
+                <label for="ink-price-series-en">시리즈 영문</label>
+                <input id="ink-price-series-en" type="text" placeholder="예: Iroshizuku" />
+              </div>
+              <div class="field">
+                <label for="ink-price-5">5ml 가격</label>
+                <input id="ink-price-5" type="number" min="0" step="100" />
+              </div>
+              <div class="field">
+                <label for="ink-price-10">10ml 가격</label>
+                <input id="ink-price-10" type="number" min="0" step="100" />
+              </div>
+              <div class="field full">
+                <label for="ink-price-keywords">검색 키워드</label>
+                <input id="ink-price-keywords" type="text" placeholder="쉼표로 구분 · 예: 파일럿, 이로시즈쿠" />
+              </div>
+            </div>
+            <div class="admin-actions">
+              <button class="admin-button primary" type="submit">가격 구분 저장</button>
+              <button class="admin-button" type="button" id="ink-price-new">새 가격 구분</button>
+            </div>
+          </form>
+
+          <form class="ink-admin-panel" id="ink-color-form">
+            <div class="ink-admin-panel-head">
+              <b>색상 선택 후보</b>
+              <span>고객이 검색 후 선택할 정확한 색상명을 등록합니다.</span>
+            </div>
+            <div class="field-grid">
+              <div class="field">
+                <label for="ink-color-brand-ko">브랜드명</label>
+                <input id="ink-color-brand-ko" type="text" placeholder="예: 세일러" />
+              </div>
+              <div class="field">
+                <label for="ink-color-brand-en">브랜드 영문</label>
+                <input id="ink-color-brand-en" type="text" placeholder="예: Sailor" />
+              </div>
+              <div class="field full">
+                <label for="ink-color-price-item">연결할 가격 구분</label>
+                <select id="ink-color-price-item"></select>
+              </div>
+              <div class="field">
+                <label for="ink-color-name-ko">색상명</label>
+                <input id="ink-color-name-ko" type="text" placeholder="예: 하하 Haha" />
+              </div>
+              <div class="field">
+                <label for="ink-color-name-en">색상 영문</label>
+                <input id="ink-color-name-en" type="text" placeholder="예: Haha" />
+              </div>
+              <div class="field">
+                <label for="ink-color-hex">참고색</label>
+                <input id="ink-color-hex" type="color" value="#6d7484" />
+              </div>
+              <div class="field">
+                <label for="ink-color-volume">본병 용량</label>
+                <input id="ink-color-volume" type="text" placeholder="예: 50ml" />
+              </div>
+              <div class="field full">
+                <label for="ink-color-url">자사몰 상품 링크</label>
+                <input id="ink-color-url" type="text" placeholder="https://blueblack.co.kr/..." />
+              </div>
+            </div>
+            <input id="ink-color-id" type="hidden" />
+            <div class="admin-actions">
+              <button class="admin-button primary" type="submit">색상 저장</button>
+              <button class="admin-button" type="button" id="ink-color-new">새 색상</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="ink-admin-manage">
+          <div>
+            <div class="ink-admin-panel-head">
+              <b>관리자 수정 가격</b>
+              <span id="ink-price-count">0개</span>
+            </div>
+            <div class="ink-admin-list" id="ink-price-list"></div>
+          </div>
+          <div>
+            <div class="ink-admin-panel-head">
+              <b>관리자 등록 색상</b>
+              <span id="ink-color-count">0개</span>
+            </div>
+            <div class="ink-admin-list" id="ink-color-list"></div>
+          </div>
+        </div>
+
+        <div class="admin-actions">
+          <button class="admin-button" type="button" id="open-ink-preview">소분 페이지에서 확인</button>
+          <button class="admin-button danger" type="button" id="reset-ink-catalog">잉크 설정 초기화</button>
         </div>
       </section>
 

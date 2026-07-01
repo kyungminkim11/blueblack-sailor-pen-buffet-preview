@@ -315,6 +315,65 @@ button.ink-series-copy {
   margin: 0 8px;
 }
 
+.ink-series-color-suggestions {
+  display: grid;
+  gap: 6px;
+  margin: 7px 8px 0;
+  max-height: 168px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+
+.ink-series-color-suggestion {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 44px;
+  padding: 7px 8px;
+  border: 1px solid #dfd4c4;
+  border-radius: 11px;
+  background: #fff;
+  color: #10233f;
+  text-align: left;
+}
+
+.ink-series-color-suggestion:hover,
+.ink-series-color-suggestion:focus-visible,
+.ink-series-color-suggestion.is-selected {
+  border-color: #10233f;
+  background: #f2f6fb;
+  outline: none;
+}
+
+.ink-series-color-suggestion span,
+.ink-series-color-suggestion strong,
+.ink-series-color-suggestion small {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ink-series-color-suggestion strong {
+  font-size: 9px;
+}
+
+.ink-series-color-suggestion small {
+  margin-top: 2px;
+  color: #788493;
+  font-size: 7px;
+}
+
+.ink-series-color-suggestion b {
+  padding: 3px 7px;
+  border-radius: 999px;
+  background: #10233f;
+  color: #fff;
+  font-size: 7px;
+}
+
 .ink-series-picker-head {
   display: flex;
   align-items: baseline;

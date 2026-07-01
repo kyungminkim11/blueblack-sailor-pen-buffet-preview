@@ -3,6 +3,7 @@ import { INK_INVENTORY_COLORS } from './ink-inventory-colors.js';
 import { INK_SAMPLE_COLORS } from './ink-sample-colors-v24.js';
 import { INK_STORE_COLORS } from './ink-store-colors-generated.js';
 import { INK_CATALOG_COPY } from './ink-catalog-i18n-v22.js';
+import { applyInkAdminCatalog } from './ink-admin-catalog.js';
 
 const LIST_KEY='blueblack-ink-check-list-v6';
 const FAV_KEY='blueblack-ink-brand-favorites-v4';
@@ -39,7 +40,7 @@ export function colorProductUrl(color){
 export function formatPrice(value){return value==null?copy().unknownPrice:formatWon(value);}
 export function priceFor(item,volume){return volume==='10ml'?item.price10:item.price5;}
 export function getFavorites(){return new Set(read(FAV_KEY));}
-export function priceItemById(id){return INK_PRODUCTS.find(item=>item.id===id);}
+export function priceItemById(id){return PRICE_ITEMS.find(item=>item.id===id);}
 export function getList(){
   const values=read(LIST_KEY);
   const filtered=values.filter(validListEntry);
@@ -116,10 +117,14 @@ function cleanedBottleColor(color){
   return {...color,nameKo:derived,nameEn:derived,nameJa:derived,nameZhHans:derived,nameZhHant:derived};
 }
 
+const ADMIN_APPLIED=applyInkAdminCatalog(INK_PRODUCTS,[...INK_SAMPLE_COLORS,...INK_INVENTORY_COLORS,...INK_STORE_COLORS]);
+const PRICE_ITEMS=ADMIN_APPLIED.priceItems;
+const SOURCE_COLORS=ADMIN_APPLIED.colors;
+
 const ALL_COLORS=(()=>{
   const result=[];
   const seen=new Set();
-  for(const source of [...INK_SAMPLE_COLORS,...INK_INVENTORY_COLORS,...INK_STORE_COLORS]){
+  for(const source of SOURCE_COLORS){
     const color=cleanedBottleColor(source);
     if(!color)continue;
     const key=[normalize(color.brandEn||color.brandKo),color.form,normalize(color.nameKo||color.nameEn)].join('|');
@@ -132,6 +137,7 @@ const ALL_COLORS=(()=>{
 
 export function colorById(id){return ALL_COLORS.find(item=>item.id===id);}
 export function colorCount(){return ALL_COLORS.length;}
+export function allColors(){return ALL_COLORS.slice();}
 
 function validListEntry(entry){
   if(!entry||typeof entry!=='object')return false;
@@ -148,7 +154,7 @@ export function brandGroups(){
     if(!map.has(key))map.set(key,{id:normalize(key),brandKo:brandKo||brandEn,brandEn:brandEn||brandKo,priceItems:[],colors:[],keywords:[]});
     return map.get(key);
   };
-  INK_PRODUCTS.forEach(item=>{const group=ensure(item.brandKo,item.brandEn);group.priceItems.push(item);group.keywords.push(...(item.keywords||[]));});
+  PRICE_ITEMS.forEach(item=>{const group=ensure(item.brandKo,item.brandEn);group.priceItems.push(item);group.keywords.push(...(item.keywords||[]));});
   ALL_COLORS.forEach(color=>{
     const group=ensure(color.brandKo,color.brandEn);
     group.colors.push(color);
@@ -210,6 +216,10 @@ function itemText(item){return normalize([item.productKo,item.productEn,...(item
 export function priceItemForColor(color,group){
   const items=group?.priceItems||brandGroups().find(candidate=>normalize(candidate.brandEn)===normalize(color.brandEn))?.priceItems||[];
   if(!items.length)return null;
+  if(color.priceItemId){
+    const direct=items.find(item=>item.id===color.priceItemId)||priceItemById(color.priceItemId);
+    if(direct)return direct;
+  }
   if(items.length===1)return items[0];
   const source=normalize([color.productTitle,color.nameKo,color.nameEn,color.volume].join(' '));
   for(const rule of PRICE_RULES){
@@ -224,10 +234,10 @@ export function priceItemForColor(color,group){
 
 export function toggleFavorite(id){const values=getFavorites();values.has(id)?values.delete(id):values.add(id);write(FAV_KEY,[...values]);}
 export function isColorSelected(id){return getList().some(entry=>entry.type==='color'&&entry.colorId===id);}
-export function isColorPriceSelected(id,volume){return getList().some(entry=>entry.type==='color-price'&&entry.colorId===id&&entry.volume===volume);}
-export function isPriceSelected(id,volume){return getList().some(entry=>entry.type==='price'&&entry.itemId===id&&entry.volume===volume&&!entry.colorName);}
+export function isColorPriceSelected(id,volume,itemId=''){return getList().some(entry=>entry.type==='color-price'&&entry.colorId===id&&entry.volume===volume&&(!itemId||entry.itemId===itemId));}
+export function isPriceSelected(id,volume,colorName=''){const wanted=normalize(colorName);return getList().some(entry=>entry.type==='price'&&entry.itemId===id&&entry.volume===volume&&normalize(entry.colorName||'')===wanted);}
 export function addColor(color){const values=getList();if(!values.some(entry=>entry.type==='color'&&entry.colorId===color.id))values.push({type:'color',colorId:color.id,addedAt:Date.now()});write(LIST_KEY,values);}
-export function addColorPrice(color,item,volume){const values=getList();if(!values.some(entry=>entry.type==='color-price'&&entry.colorId===color.id&&entry.volume===volume))values.push({type:'color-price',colorId:color.id,itemId:item.id,volume,price:priceFor(item,volume),addedAt:Date.now()});write(LIST_KEY,values);}
+export function addColorPrice(color,item,volume){const values=getList();if(!values.some(entry=>entry.type==='color-price'&&entry.colorId===color.id&&entry.itemId===item.id&&entry.volume===volume))values.push({type:'color-price',colorId:color.id,itemId:item.id,volume,price:priceFor(item,volume),addedAt:Date.now()});write(LIST_KEY,values);}
 export function addPrice(item,volume,colorName=''){const values=getList();const normalizedColor=normalize(colorName);if(!values.some(entry=>entry.type==='price'&&entry.itemId===item.id&&entry.volume===volume&&normalize(entry.colorName||'')===normalizedColor))values.push({type:'price',itemId:item.id,colorName:String(colorName||'').trim(),volume,price:priceFor(item,volume),addedAt:Date.now()});write(LIST_KEY,values);}
 export function removeListItem(index){const values=getList();values.splice(index,1);write(LIST_KEY,values);}
 export function clearList(){write(LIST_KEY,[]);}
@@ -243,4 +253,5 @@ export function shareLines(){
     const item=priceItemById(entry.itemId);return`${index+1}. ${item?.brandKo||''} · ${item?.productKo||entry.itemId}${entry.colorName?' · '+entry.colorName:''} · ${entry.volume} · ${formatPrice(entry.price)}`;
   });
 }
+export function priceItems(){return PRICE_ITEMS.slice();}
 export{formatWon};

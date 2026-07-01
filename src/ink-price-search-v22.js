@@ -1,5 +1,5 @@
 import {
-  COUNTRY_KEYS,TYPE_KEYS,addColor,addColorPrice,addPrice,brandGroups,brandName,clearList,colorById,colorName,colorProductUrl,copy,currentLang,formatPrice,formatWon,formName,getFavorites,getList,groupCountryKey,initials,isColorPriceSelected,isColorSelected,isPriceSelected,itemTypeKeys,listTotal,matchedGroups,priceFor,priceItemById,priceItemForColor,removeListItem,seriesName,shareLines,toggleFavorite
+  COUNTRY_KEYS,TYPE_KEYS,addColor,addColorPrice,addPrice,allColors,brandGroups,brandName,clearList,colorById,colorName,colorProductUrl,copy,currentLang,formatPrice,formatWon,formName,getFavorites,getList,groupCountryKey,initials,isColorPriceSelected,isColorSelected,isPriceSelected,itemTypeKeys,listTotal,matchedGroups,normalize,priceFor,priceItemById,priceItemForColor,removeListItem,seriesName,shareLines,toggleFavorite
 } from './ink-catalog-model-v22.js';
 
 let directoryOpen=false;
@@ -85,7 +85,7 @@ function saveSeriesPrice(item,volume,colorValue=''){addPrice(item,volume,colorVa
 
 function colorPriceButton(color,item,volume){
   const value=copy();
-  const selected=isColorPriceSelected(color.id,volume);
+  const selected=isColorPriceSelected(color.id,volume,item.id);
   return`<button type="button" class="ink-color-price${selected?' is-selected':''}" data-volume="${volume}"><span>${volume}</span><strong>${formatPrice(priceFor(item,volume))}</strong><small>${selected?'✓ '+value.selected:value.addPrice}</small></button>`;
 }
 function colorCard(color,group){
@@ -129,10 +129,52 @@ function seriesPriceButton(item,volume){
 }
 function seriesColorEntry(){
   const value=copy();
-  return`<label class="ink-series-color-entry"><span>${value.colorEntryLabel}</span><input type="text" class="ink-series-color-input" autocomplete="off" spellcheck="false" placeholder="${value.colorEntryPlaceholder}"></label>`;
+  return`<label class="ink-series-color-entry"><span>${value.colorEntryLabel}</span><input type="text" class="ink-series-color-input" autocomplete="off" spellcheck="false" placeholder="${value.colorEntryPlaceholder}"></label><div class="ink-series-color-suggestions" hidden></div>`;
 }
 function colorsForPriceItem(item,group){
   return group.colors.filter(color=>priceItemForColor(color,group)?.id===item.id);
+}
+function colorSearchText(color){return normalize([color.brandKo,color.brandEn,color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.productTitle||''].join(' '));}
+function colorSuggestionScore(color,item,group,term){
+  const haystack=colorSearchText(color);
+  const value=normalize(term);
+  const sameBrand=normalize(color.brandEn||color.brandKo)===normalize(group.brandEn||group.brandKo);
+  const sameSeries=priceItemForColor(color,group)?.id===item.id||color.priceItemId===item.id;
+  if(value&&!haystack.includes(value))return -1;
+  return(sameSeries?80:0)+(sameBrand?35:0)+(normalize(colorName(color)).startsWith(value)?20:0)+(color.productUrl?4:0);
+}
+function manualColorSuggestions(item,group,term){
+  const pool=new Map();
+  const brandKey=normalize(group.brandEn||group.brandKo);
+  [...group.colors,...allColors().filter(color=>normalize(color.brandEn||color.brandKo)===brandKey)].forEach(color=>pool.set(color.id,color));
+  return[...pool.values()]
+    .map(color=>({color,score:colorSuggestionScore(color,item,group,term)}))
+    .filter(entry=>entry.score>=0)
+    .sort((a,b)=>b.score-a.score||colorName(a.color).localeCompare(colorName(b.color)))
+    .slice(0,8)
+    .map(entry=>entry.color);
+}
+function renderManualColorSuggestions(row,item,group,term=''){
+  const root=row.querySelector('.ink-series-color-suggestions');
+  if(!root)return;
+  const colors=manualColorSuggestions(item,group,term);
+  if(!colors.length){root.hidden=true;root.innerHTML='';return;}
+  const value=copy();
+  root.hidden=false;
+  root.replaceChildren(...colors.map(color=>{
+    const button=document.createElement('button');
+    button.type='button';
+    button.className='ink-series-color-suggestion';
+    button.dataset.colorId=color.id;
+    button.innerHTML=`<i style="--swatch:${color.hex||'#d8d2c8'}"></i><span><strong>${colorName(color)}</strong><small>${color.brandKo||color.brandEn}${color.productTitle?' · '+color.productTitle:''}</small></span><b>${value.selectColor||'선택'}</b>`;
+    button.addEventListener('click',()=>{
+      row.dataset.selectedColorId=color.id;
+      const input=row.querySelector('.ink-series-color-input');
+      if(input)input.value=colorName(color);
+      root.querySelectorAll('.ink-series-color-suggestion').forEach(node=>node.classList.toggle('is-selected',node===button));
+    });
+    return button;
+  }));
 }
 function seriesColorPicker(item,group,colors=colorsForPriceItem(item,group)){
   const value=copy();
@@ -152,6 +194,15 @@ function priceRow(item,group){
     row.querySelectorAll('.ink-series-color-choice').forEach(choice=>choice.classList.toggle('is-selected',choice.dataset.colorId===button.dataset.colorId));
     row.querySelectorAll('.ink-series-color-select').forEach(choice=>choice.setAttribute('aria-pressed',String(choice===button)));
   }));
+  const manualInput=row.querySelector('.ink-series-color-input');
+  if(manualInput&&!colors.length){
+    renderManualColorSuggestions(row,item,group,'');
+    manualInput.addEventListener('input',()=>{
+      delete row.dataset.selectedColorId;
+      renderManualColorSuggestions(row,item,group,manualInput.value);
+    });
+    manualInput.addEventListener('focus',()=>renderManualColorSuggestions(row,item,group,manualInput.value));
+  }
   row.querySelectorAll('.ink-series-price').forEach(button=>button.addEventListener('click',()=>{
     const color=row.dataset.selectedColorId?colorById(row.dataset.selectedColorId):null;
     if(color)saveColorPrice(color,item,button.dataset.volume);

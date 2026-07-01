@@ -1,4 +1,5 @@
 import { parts, colors, defaultSelection } from './data.js';
+import { INK_PRODUCTS, formatWon } from './ink-products-data.js';
 import {
   DEFAULT_ADMIN_SETTINGS,
   buildCombinationUrl,
@@ -7,12 +8,21 @@ import {
   sanitizeAdminSettings,
   writeAdminSettings,
 } from './admin-store-v16.js';
+import {
+  normalizeInkId,
+  readInkAdminCatalog,
+  resetInkAdminCatalog,
+  sanitizeInkColor,
+  sanitizeInkPriceItem,
+  writeInkAdminCatalog,
+} from './ink-admin-catalog.js';
 
 const $ = (selector) => document.querySelector(selector);
 const form = $('#admin-form');
 const editor = $('#combination-editor');
 const toastNode = $('#admin-toast');
 let settings = readAdminSettings();
+let inkCatalog = readInkAdminCatalog();
 
 function showToast(message) {
   toastNode.textContent = message;
@@ -200,12 +210,136 @@ async function copyText(value, message) {
   }
 }
 
+function inkPriceMap() {
+  const map = new Map(INK_PRODUCTS.map((item) => [item.id, { ...item }]));
+  inkCatalog.priceItems.forEach((item) => map.set(item.id, { ...map.get(item.id), ...item }));
+  return map;
+}
+
+function inkPriceItems() {
+  return [...inkPriceMap().values()].sort((a, b) => `${a.brandKo} ${a.productKo}`.localeCompare(`${b.brandKo} ${b.productKo}`));
+}
+
+function inkPriceLabel(item) {
+  return `${item.brandKo} · ${item.productKo} · 5ml ${formatWon(item.price5)} / 10ml ${formatWon(item.price10)}`;
+}
+
+function fillInkPriceForm(item = null) {
+  $('#ink-price-template').value = item?.id || '';
+  $('#ink-price-brand-ko').value = item?.brandKo || '';
+  $('#ink-price-brand-en').value = item?.brandEn || '';
+  $('#ink-price-series-ko').value = item?.productKo || '';
+  $('#ink-price-series-en').value = item?.productEn || '';
+  $('#ink-price-5').value = item?.price5 ?? '';
+  $('#ink-price-10').value = item?.price10 ?? '';
+  $('#ink-price-keywords').value = (item?.keywords || []).join(', ');
+}
+
+function fillInkColorForm(color = null) {
+  $('#ink-color-id').value = color?.id || '';
+  $('#ink-color-brand-ko').value = color?.brandKo || '';
+  $('#ink-color-brand-en').value = color?.brandEn || '';
+  $('#ink-color-price-item').value = color?.priceItemId || inkPriceItems()[0]?.id || '';
+  $('#ink-color-name-ko').value = color?.nameKo || '';
+  $('#ink-color-name-en').value = color?.nameEn || '';
+  $('#ink-color-hex').value = color?.hex || '#6d7484';
+  $('#ink-color-volume').value = color?.volume || '50ml';
+  $('#ink-color-url').value = color?.productUrl || '';
+}
+
+function renderInkSelects() {
+  const items = inkPriceItems();
+  $('#ink-price-template').innerHTML = `<option value="">새 가격 구분 만들기</option>${items.map((item) => `<option value="${item.id}">${inkPriceLabel(item)}</option>`).join('')}`;
+  $('#ink-color-price-item').innerHTML = items.map((item) => `<option value="${item.id}">${item.brandKo} · ${item.productKo}</option>`).join('');
+}
+
+function renderInkPriceList() {
+  const root = $('#ink-price-list');
+  $('#ink-price-count').textContent = `${inkCatalog.priceItems.length}개`;
+  if (!inkCatalog.priceItems.length) {
+    root.innerHTML = '<div class="ink-admin-empty">아직 관리자에서 수정한 가격 구분이 없습니다.</div>';
+    return;
+  }
+  root.replaceChildren(...inkCatalog.priceItems.map((item) => {
+    const row = document.createElement('div');
+    row.className = 'ink-admin-row';
+    row.innerHTML = `<div><strong>${item.brandKo} · ${item.productKo}</strong><small>${item.productEn} · 5ml ${formatWon(item.price5)} / 10ml ${formatWon(item.price10)}</small></div><div class="ink-admin-row-actions"><button type="button">수정</button><button type="button" class="danger">삭제</button></div>`;
+    row.querySelector('button').addEventListener('click', () => fillInkPriceForm(item));
+    row.querySelector('.danger').addEventListener('click', () => {
+      inkCatalog = writeInkAdminCatalog({ ...inkCatalog, priceItems: inkCatalog.priceItems.filter((candidate) => candidate.id !== item.id) });
+      renderInkCatalog();
+      showToast('가격 구분을 삭제했습니다.');
+    });
+    return row;
+  }));
+}
+
+function renderInkColorList() {
+  const root = $('#ink-color-list');
+  $('#ink-color-count').textContent = `${inkCatalog.colors.length}개`;
+  if (!inkCatalog.colors.length) {
+    root.innerHTML = '<div class="ink-admin-empty">아직 관리자에서 등록한 색상이 없습니다.</div>';
+    return;
+  }
+  root.replaceChildren(...inkCatalog.colors.map((color) => {
+    const item = inkPriceMap().get(color.priceItemId);
+    const row = document.createElement('div');
+    row.className = 'ink-admin-row';
+    row.innerHTML = `<div><strong>${color.brandKo} · ${color.nameKo}</strong><small>${item ? item.productKo + ' · ' : ''}${color.productUrl || '상품 링크 없음'}</small></div><div class="ink-admin-row-actions"><button type="button">수정</button><button type="button" class="danger">삭제</button></div>`;
+    row.querySelector('button').addEventListener('click', () => fillInkColorForm(color));
+    row.querySelector('.danger').addEventListener('click', () => {
+      inkCatalog = writeInkAdminCatalog({ ...inkCatalog, colors: inkCatalog.colors.filter((candidate) => candidate.id !== color.id) });
+      renderInkCatalog();
+      showToast('색상을 삭제했습니다.');
+    });
+    return row;
+  }));
+}
+
+function renderInkCatalog() {
+  renderInkSelects();
+  renderInkPriceList();
+  renderInkColorList();
+}
+
+function collectInkPriceForm() {
+  const id = $('#ink-price-template').value || normalizeInkId([$('#ink-price-brand-en').value, $('#ink-price-series-en').value || $('#ink-price-series-ko').value].join('-'));
+  return sanitizeInkPriceItem({
+    id,
+    brandKo: $('#ink-price-brand-ko').value,
+    brandEn: $('#ink-price-brand-en').value,
+    productKo: $('#ink-price-series-ko').value,
+    productEn: $('#ink-price-series-en').value,
+    price5: $('#ink-price-5').value,
+    price10: $('#ink-price-10').value,
+    keywords: $('#ink-price-keywords').value,
+  });
+}
+
+function collectInkColorForm() {
+  const item = inkPriceMap().get($('#ink-color-price-item').value);
+  const id = $('#ink-color-id').value || normalizeInkId([$('#ink-color-brand-en').value || item?.brandEn, $('#ink-color-price-item').value, $('#ink-color-name-en').value || $('#ink-color-name-ko').value].join('-'));
+  return sanitizeInkColor({
+    id,
+    brandKo: $('#ink-color-brand-ko').value || item?.brandKo,
+    brandEn: $('#ink-color-brand-en').value || item?.brandEn,
+    priceItemId: $('#ink-color-price-item').value,
+    nameKo: $('#ink-color-name-ko').value,
+    nameEn: $('#ink-color-name-en').value,
+    hex: $('#ink-color-hex').value,
+    volume: $('#ink-color-volume').value,
+    productUrl: $('#ink-color-url').value,
+    productTitle: [$('#ink-color-brand-ko').value || item?.brandKo, $('#ink-color-name-ko').value].filter(Boolean).join(' '),
+  });
+}
+
 function downloadJson() {
   const payload = JSON.stringify({
     product: 'BlueBlack Sailor Pen Buffet Preview',
     version: 1,
     exportedAt: new Date().toISOString(),
     settings: collectForm(),
+    inkCatalog,
   }, null, 2);
   const blob = new Blob([payload], { type: 'application/json' });
   const link = document.createElement('a');
@@ -223,7 +357,9 @@ async function importJson(file) {
     const payload = JSON.parse(await file.text());
     const imported = sanitizeAdminSettings(payload.settings || payload);
     settings = writeAdminSettings(imported);
+    if (payload.inkCatalog) inkCatalog = writeInkAdminCatalog(payload.inkCatalog);
     populateForm(settings);
+    renderInkCatalog();
     showToast('설정 파일을 불러왔습니다.');
   } catch {
     showToast('올바른 관리자 설정 파일이 아닙니다.');
@@ -292,6 +428,47 @@ $('#import-file').addEventListener('change', (event) => {
   event.target.value = '';
 });
 
+$('#ink-price-template').addEventListener('change', () => {
+  const item = inkPriceItems().find((candidate) => candidate.id === $('#ink-price-template').value);
+  fillInkPriceForm(item || null);
+});
+
+$('#ink-price-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const item = collectInkPriceForm();
+  inkCatalog = writeInkAdminCatalog({
+    ...inkCatalog,
+    priceItems: [...inkCatalog.priceItems.filter((candidate) => candidate.id !== item.id), item],
+  });
+  renderInkCatalog();
+  fillInkPriceForm(item);
+  showToast('잉크 가격 구분을 저장했습니다.');
+});
+
+$('#ink-color-form').addEventListener('submit', (event) => {
+  event.preventDefault();
+  const color = collectInkColorForm();
+  inkCatalog = writeInkAdminCatalog({
+    ...inkCatalog,
+    colors: [...inkCatalog.colors.filter((candidate) => candidate.id !== color.id), color],
+  });
+  renderInkCatalog();
+  fillInkColorForm(color);
+  showToast('잉크 색상을 저장했습니다.');
+});
+
+$('#ink-price-new').addEventListener('click', () => fillInkPriceForm(null));
+$('#ink-color-new').addEventListener('click', () => fillInkColorForm(null));
+$('#open-ink-preview').addEventListener('click', () => window.open('./ink-price/?lang=ko', '_blank', 'noopener'));
+$('#reset-ink-catalog').addEventListener('click', () => {
+  if (!confirm('관리자에서 수정한 잉크 가격과 색상을 모두 초기화할까요?')) return;
+  inkCatalog = resetInkAdminCatalog();
+  renderInkCatalog();
+  fillInkPriceForm(null);
+  fillInkColorForm(null);
+  showToast('잉크 설정을 초기화했습니다.');
+});
+
 window.addEventListener('online', renderStatus);
 window.addEventListener('offline', renderStatus);
 window.addEventListener('resize', () => {
@@ -300,3 +477,6 @@ window.addEventListener('resize', () => {
 });
 
 populateForm(settings || DEFAULT_ADMIN_SETTINGS);
+renderInkCatalog();
+fillInkPriceForm(null);
+fillInkColorForm(null);

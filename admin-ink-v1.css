@@ -1,0 +1,127 @@
+.ink-admin-layout{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+}
+
+.ink-admin-panel{
+  min-width:0;
+  padding:16px;
+  border:1px solid #e0e6ed;
+  border-radius:18px;
+  background:#fafbfc;
+}
+
+.ink-admin-panel-head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:12px;
+}
+
+.ink-admin-panel-head b{
+  color:var(--navy);
+  font-size:.88rem;
+}
+
+.ink-admin-panel-head span{
+  color:var(--muted);
+  font-size:.7rem;
+  line-height:1.45;
+  text-align:right;
+}
+
+.ink-admin-manage{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:14px;
+  margin-top:16px;
+}
+
+.ink-admin-list{
+  display:grid;
+  gap:8px;
+  max-height:360px;
+  overflow:auto;
+  padding:10px;
+  border:1px solid #e0e6ed;
+  border-radius:16px;
+  background:#fafbfc;
+}
+
+.ink-admin-row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:10px;
+  align-items:center;
+  padding:11px;
+  border:1px solid #dfe5ec;
+  border-radius:14px;
+  background:#fff;
+}
+
+.ink-admin-row strong,
+.ink-admin-row small{
+  display:block;
+  min-width:0;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+.ink-admin-row strong{
+  color:var(--navy);
+  font-size:.78rem;
+}
+
+.ink-admin-row small{
+  margin-top:4px;
+  color:var(--muted);
+  font-size:.66rem;
+}
+
+.ink-admin-row-actions{
+  display:flex;
+  gap:6px;
+}
+
+.ink-admin-row button{
+  min-height:32px;
+  padding:0 9px;
+  border:1px solid #d9e0e8;
+  border-radius:9px;
+  background:#fff;
+  color:var(--navy);
+  font-size:.68rem;
+  font-weight:850;
+}
+
+.ink-admin-row button.danger{
+  border-color:#e4c8c8;
+  color:var(--danger);
+}
+
+.ink-admin-empty{
+  padding:22px 12px;
+  color:var(--muted);
+  font-size:.76rem;
+  line-height:1.55;
+  text-align:center;
+}
+
+.field input[type=color]{
+  width:100%;
+  min-height:46px;
+  padding:5px;
+  border:1px solid #d7dfe8;
+  border-radius:12px;
+  background:#fbfcfd;
+}
+
+@media(max-width:900px){
+  .ink-admin-layout,
+  .ink-admin-manage{
+    grid-template-columns:1fr;
+  }
+}

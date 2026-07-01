@@ -1,10 +1,13 @@
-const CACHE_NAME = 'blueblack-store-guide-v27-20260701';
+const CACHE_NAME = 'blueblack-store-guide-v28-20260701';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
   './index.html',
   './portal.css',
   './platform-shell.css',
+  './admin.html',
+  './admin-v16.css',
+  './admin-ink-v1.css',
   './portal-card.svg',
   './portal-card.png',
   './store-guide/',
@@ -59,6 +62,7 @@ const CORE_PATHS = [
   './src/ink-store-colors-generated.js',
   './src/ink-catalog-i18n-v22.js',
   './src/ink-catalog-copy-patch-v23.js',
+  './src/ink-admin-catalog.js',
   './src/ink-catalog-model-v22.js',
   './src/ink-price-viewer.js',
   './src/ink-price-search-v22.js',
@@ -82,6 +86,9 @@ const CORE_PATHS = [
   './src/store-actions-v12.js',
   './src/store-recovery-v12.js',
   './src/consultation-polish-v13.js',
+  './src/admin-v16.js',
+  './src/admin-store-v16.js',
+  './src/admin-settings-v16.js',
   'https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js',
   'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/controls/OrbitControls.js',
   'https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/environments/RoomEnvironment.js',
