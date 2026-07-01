@@ -1,4 +1,5 @@
 import { isAuthorized, showToast } from './product-finder-ui.js';
+import './product-finder-scan.js';
 
 const openImport = document.querySelector('#openImport');
 const importDialog = document.querySelector('#importDialog');
