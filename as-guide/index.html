@@ -25,66 +25,95 @@
         </div>
       </div>
       <span class="as-kicker">AFTER SALES SERVICE</span>
-      <h1 data-as-t="pageTitle">브랜드별 A/S 안내</h1>
-      <p data-as-t="pageIntro">사용 중인 브랜드를 검색하면 공식 접수처, 연락처, 주소와 비용 관련 주의사항을 확인할 수 있습니다.</p>
+      <h1 data-as-title>브랜드별 A/S 안내</h1>
+      <p data-as-intro>사용 중인 브랜드를 검색하면 공식 접수처, 연락처, 주소와 비용 관련 주의사항을 확인할 수 있습니다.</p>
     </div>
   </header>
 
   <main class="detail-main as-main">
     <section class="as-source-card">
       <div class="as-source-icon">✓</div>
-      <div>
-        <strong data-as-t="sourceTitle">블루블랙 공식 A/S 안내 기준</strong>
-        <p data-as-t="sourceBody">2026년 7월 1일 확인한 blueblack.co.kr의 제조사별 안내를 매장 상담용으로 정리했습니다. 접수 전 공식 페이지와 해당 센터에 최신 정보를 다시 확인해 주세요.</p>
-      </div>
-      <a href="https://blueblack.co.kr/jwgbox/add_page/as.html" target="_blank" rel="noopener" data-as-t="sourceButton">공식 원문 보기</a>
+      <div><strong>블루블랙 공식 A/S 안내 기준</strong><p>2026년 7월 1일 확인한 blueblack.co.kr의 제조사별 안내를 매장 상담용으로 정리했습니다. 접수 전 공식 페이지와 해당 센터에 최신 정보를 다시 확인해 주세요.</p></div>
+      <a href="https://blueblack.co.kr/jwgbox/add_page/as.html" target="_blank" rel="noopener">공식 원문 보기</a>
     </section>
 
     <section class="detail-card as-precheck">
-      <div class="as-section-heading">
-        <div><small>BEFORE SERVICE</small><h2 data-as-t="beforeTitle">접수 전 꼭 확인하세요</h2></div>
-        <p data-as-t="beforeBody">보증서와 접수 방식에 따라 A/S 가능 여부, 비용과 처리 기간이 달라질 수 있습니다.</p>
-      </div>
+      <div class="as-section-heading"><div><small>BEFORE SERVICE</small><h2>접수 전 꼭 확인하세요</h2></div><p>보증서와 접수 방식에 따라 A/S 가능 여부, 비용과 처리 기간이 달라질 수 있습니다.</p></div>
       <div class="as-rule-grid">
-        <article><span>01</span><strong data-as-t="ruleWarrantyTitle">보증서 필수</strong><p data-as-t="ruleWarrantyBody">구매 시 동봉된 보증서를 제품과 함께 보내야 합니다. 펜샵 구매이력만으로 보증서를 대신할 수 없습니다.</p></article>
-        <article><span>02</span><strong data-as-t="ruleRejectTitle">보증서 미지참</strong><p data-as-t="ruleRejectBody">보증서가 없으면 제조사 또는 수입사에서 A/S 접수를 거부할 수 있습니다.</p></article>
-        <article><span>03</span><strong data-as-t="ruleDirectTitle">직접 접수 원칙</strong><p data-as-t="ruleDirectBody">브랜드별 공식 에이전시가 있는 경우 해당 센터로 직접 선불 택배 접수하는 것이 원칙입니다.</p></article>
-        <article><span>04</span><strong data-as-t="ruleShopTitle">펜샵 대행 접수</strong><p data-as-t="ruleShopBody">블루블랙을 통해 접수하면 왕복 택배비 6,000원이 추가될 수 있고 처리 기간이 3~5일 더 소요될 수 있습니다.</p></article>
+        <article><span>01</span><strong>보증서 필수</strong><p>구매 시 동봉된 보증서를 제품과 함께 보내야 합니다. 펜샵 구매이력만으로 보증서를 대신할 수 없습니다.</p></article>
+        <article><span>02</span><strong>보증서 미지참</strong><p>보증서가 없으면 제조사 또는 수입사에서 A/S 접수를 거부할 수 있습니다.</p></article>
+        <article><span>03</span><strong>직접 접수 원칙</strong><p>브랜드별 공식 에이전시가 있는 경우 해당 센터로 직접 선불 택배 접수하는 것이 원칙입니다.</p></article>
+        <article><span>04</span><strong>펜샵 대행 접수</strong><p>블루블랙을 통해 접수하면 왕복 택배비 6,000원이 추가될 수 있고 처리 기간이 3~5일 더 소요될 수 있습니다.</p></article>
       </div>
     </section>
 
     <section class="detail-card" id="as-finder">
-      <div class="as-section-heading">
-        <div><small>BRAND FINDER</small><h2 data-as-t="finderTitle">내 브랜드 접수처 찾기</h2></div>
-        <p data-as-t="finderBody">한국어·영어·일본어·중국어 브랜드명으로 검색할 수 있습니다.</p>
+      <div class="as-section-heading"><div><small>BRAND FINDER</small><h2>내 브랜드 접수처 찾기</h2></div><p>한국어·영어·일본어·중국어 브랜드명으로 검색할 수 있습니다.</p></div>
+      <label class="as-search"><span data-as-search-label>브랜드 검색</span><span class="as-search-field"><input id="asBrandSearch" type="search" autocomplete="off" enterkeyhint="search" placeholder="예: 라미, Lamy, 세일러, Sailor" /><button type="button" id="asBrandClear" aria-label="검색 지우기">×</button></span></label>
+      <div class="as-quick-brands">
+        <button type="button" data-as-quick="라미">라미</button><button type="button" data-as-quick="세일러">세일러</button><button type="button" data-as-quick="파이롯트">파이롯트</button><button type="button" data-as-quick="펠리칸">펠리칸</button><button type="button" data-as-quick="파카">파카</button><button type="button" data-as-quick="트위스비">트위스비</button><button type="button" data-as-quick="플래티넘">플래티넘</button><button type="button" data-as-quick="비스콘티">비스콘티</button>
       </div>
-      <label class="as-search">
-        <span data-as-t="searchLabel">브랜드 검색</span>
-        <span class="as-search-field"><input id="asBrandSearch" type="search" autocomplete="off" enterkeyhint="search" placeholder="예: 라미, Lamy, セーラー, 写乐" data-as-placeholder="searchPlaceholder" /><button type="button" id="asBrandClear" aria-label="검색 지우기">×</button></span>
-      </label>
-      <div class="as-quick-brands" id="asQuickBrands"></div>
       <p class="as-result-summary" id="asResultSummary" aria-live="polite"></p>
-      <div class="as-center-grid" id="asCenterGrid"></div>
+      <div class="as-center-grid" id="asCenterGrid">
+        <article class="as-center-card" data-as-search="파카 parker パーカー 派克 워터맨 waterman ウォーターマン 威迪文">
+          <div class="as-center-card-head"><div><small>SERVICE CENTER</small><h3>(주)항소 · Hangso</h3></div></div>
+          <div class="as-brand-list"><span>파카 / Parker</span><span>워터맨 / Waterman</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:0220179654">02-2017-9654~5</a></div><div><b>주소</b><strong>서울특별시 강남구 도산대로 507 대신빌딩 5층 (주)항소 고객센터<br>5F Daesin Building, 507 Dosan-daero, Gangnam-gu, Seoul</strong></div></div>
+          <div class="as-center-actions"><a class="primary" href="http://parker.co.kr/shop/page.html?id=5" target="_blank" rel="noopener">공식 안내</a><a href="tel:0220179654">전화하기</a></div>
+        </article>
+
+        <article class="as-center-card" data-as-search="세일러 sailor セーラー 写乐 寫樂 카웨코 kaweco カヴェコ 디플로마트 diplomat iwi 콘클린 conklin 몬테베르데 monteverde">
+          <div class="as-center-card-head"><div><small>SERVICE CENTER</small><h3>(주)퍼스트메이트 · First Mate</h3></div></div>
+          <div class="as-brand-list"><span>세일러 / Sailor</span><span>카웨코 / Kaweco</span><span>디플로마트 / Diplomat</span><span>IWI</span><span>콘클린 / Conklin</span><span>몬테베르데 / Monteverde</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:01027369413">010-2736-9413</a></div><div><b>주소</b><strong>서울특별시 구로구 디지털로31길 53 이엔씨벤처드림타워 5차 212호 (주)퍼스트메이트 A/S센터<br>Room 212, E&amp;C Venture Dream Tower 5, 53 Digital-ro 31-gil, Guro-gu, Seoul</strong></div></div>
+          <div class="as-center-actions"><a class="primary" href="http://firstmate.co.kr/helpdesk.php" target="_blank" rel="noopener">공식 안내</a><a href="tel:01027369413">전화하기</a></div>
+        </article>
+
+        <article class="as-center-card" data-as-search="오로라 aurora アウロラ 奥罗拉 奧羅拉 플래티넘 platinum プラチナ 白金 펠리칸 pelikan ペリカン 百利金 크로스 cross 쉐퍼 sheaffer 로트링 rotring">
+          <div class="as-center-card-head"><div><small>SERVICE CENTER</small><h3>(주)신한커머스 · Shinhan Commerce</h3></div></div>
+          <div class="as-brand-list"><span>오로라 / Aurora</span><span>플래티넘 / Platinum</span><span>펠리칸 / Pelikan</span><span>크로스 / Cross</span><span>쉐퍼 / Sheaffer</span><span>로트링 / Rotring</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:0326788017">032-678-8017</a></div><div><b>주소</b><strong>경기도 부천시 오정구 삼작로144번길 31 (주)신한커머스<br>31 Samjak-ro 144beon-gil, Ojeong-gu, Bucheon-si, Gyeonggi-do</strong></div></div>
+          <div class="as-center-actions"><a class="primary" href="http://www.sinhancorp.co.kr/DR5001/FN5004LS.php" target="_blank" rel="noopener">공식 안내</a><a href="tel:0326788017">전화하기</a></div>
+        </article>
+
+        <article class="as-center-card" data-as-search="파이롯트 pilot パイロット 百乐 百樂">
+          <div class="as-center-card-head"><div><small>SERVICE CENTER</small><h3>한국파이롯트(주) · Korea Pilot</h3></div><span class="as-center-badge">기본비용</span></div>
+          <div class="as-brand-list"><span>파이롯트 / Pilot</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:15770627">1577-0627</a></div><div><b>이메일</b><a href="mailto:support@koreapilot.com">support@koreapilot.com</a></div><div><b>주소</b><strong>서울특별시 종로구 돈화문로 98 고함빌딩 4층 한국파이롯트 A/S담당자 앞<br>4F Goham Building, 98 Donhwamun-ro, Jongno-gu, Seoul</strong></div></div>
+          <div class="as-center-note">기본 A/S 비용 36,500원이 부과되며 실제 수리 내용에 따라 실비가 추가될 수 있습니다.</div>
+          <div class="as-center-actions"><a class="primary" href="http://www.pilotpen.co.kr/board/board.php?bo_table=service&amp;idx=4" target="_blank" rel="noopener">공식 안내</a><a href="tel:15770627">전화하기</a></div>
+        </article>
+
+        <article class="as-center-card" data-as-search="파버카스텔 faber castell faber-castell ファーバーカステル 辉柏嘉 輝柏嘉 그라폰 graf von faber castell">
+          <div class="as-center-card-head"><div><small>SERVICE CENTER</small><h3>코모스유통(주) · Comos Distribution</h3></div></div>
+          <div class="as-brand-list"><span>파버카스텔 / Faber-Castell</span><span>그라폰파버카스텔 / Graf von Faber-Castell</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:027121350">02-712-1350</a></div><div><b>주소</b><strong>서울특별시 용산구 청파로 56, 2층 코모스유통(주)<br>2F, 56 Cheongpa-ro, Yongsan-gu, Seoul</strong></div></div>
+          <div class="as-center-actions"><a class="primary" href="http://www.faber-castell.co.kr/%ec%84%9c%eb%b9%84%ec%8a%a4/as-%eb%ac%b8%ec%9d%98/" target="_blank" rel="noopener">공식 안내</a><a href="tel:027121350">전화하기</a></div>
+        </article>
+
+        <article class="as-center-card" data-as-search="모나미 monami モナミ">
+          <div class="as-center-card-head"><div><small>SERVICE CENTER</small><h3>(주)모나미 · Monami</h3></div></div>
+          <div class="as-brand-list"><span>모나미 / Monami</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:0800220153">080-022-0153</a></div><div><b>접수</b><strong>공식 문의 페이지에서 접수 방법을 확인해 주세요.</strong></div></div>
+          <div class="as-center-actions"><a class="primary" href="http://www.monami.com/customer/inquiry.php" target="_blank" rel="noopener">공식 문의</a><a href="tel:0800220153">전화하기</a></div>
+        </article>
+
+        <article class="as-center-card is-blueblack" data-as-search="라미 lamy ラミー 凌美 트위스비 twsbi ツイスビー 三文堂 오퍼스88 opus88 opus 88 라반 laban 비스콘티 visconti ビスコンティ">
+          <div class="as-center-card-head"><div><small>BLUEBLACK SERVICE</small><h3>블루블랙 펜샵 · (주)순</h3></div><span class="as-center-badge">블루블랙 접수</span></div>
+          <div class="as-brand-list"><span>라미 / Lamy</span><span>트위스비 / TWSBI</span><span>오퍼스88 / Opus 88</span><span>라반 / Laban</span><span>비스콘티 / Visconti</span></div>
+          <div class="as-center-meta"><div><b>전화</b><a href="tel:027658868">02-765-8868</a></div><div><b>주소</b><strong>서울특별시 종로구 사직로 109 4층 (주)순 A/S담당자 앞<br>4F, 109 Sajik-ro, Jongno-gu, Seoul</strong></div></div>
+          <div class="as-center-note">블루블랙 자사 수입·유통 상품으로 구매이력 또는 보증서 확인 후 서비스를 진행합니다. 비스콘티는 이탈리아 본사로 발송하며 EMS 비용 33,000원이 기본 청구됩니다.</div>
+          <div class="as-center-actions"><a class="primary" href="https://blueblack.co.kr/jwgbox/add_page/as.html" target="_blank" rel="noopener">공식 안내</a><a href="tel:027658868">전화하기</a></div>
+        </article>
+      </div>
     </section>
 
     <section class="detail-card as-special-note">
-      <div class="as-section-heading">
-        <div><small>SPECIAL COSTS</small><h2 data-as-t="costTitle">별도 비용 안내</h2></div>
-      </div>
-      <div class="as-cost-grid">
-        <article><span>PILOT</span><strong data-as-t="pilotCostTitle">파이롯트 기본 A/S 비용</strong><p data-as-t="pilotCostBody">기본 A/S 비용 36,500원이 부과되며 실제 수리 내용에 따라 실비가 추가될 수 있습니다.</p></article>
-        <article><span>VISCONTI</span><strong data-as-t="viscontiCostTitle">비스콘티 이탈리아 발송</strong><p data-as-t="viscontiCostBody">본사 수리를 위해 이탈리아로 발송하며 EMS 비용 33,000원이 기본 청구됩니다.</p></article>
-      </div>
+      <div class="as-section-heading"><div><small>SPECIAL COSTS</small><h2>별도 비용 안내</h2></div></div>
+      <div class="as-cost-grid"><article><span>PILOT</span><strong>파이롯트 기본 A/S 비용</strong><p>기본 A/S 비용 36,500원이 부과되며 실제 수리 내용에 따라 실비가 추가될 수 있습니다.</p></article><article><span>VISCONTI</span><strong>비스콘티 이탈리아 발송</strong><p>본사 수리를 위해 이탈리아로 발송하며 EMS 비용 33,000원이 기본 청구됩니다.</p></article></div>
     </section>
 
-    <section class="detail-card as-related">
-      <h2 data-as-t="relatedTitle">다른 A/S 안내</h2>
-      <p data-as-t="relatedBody">세일러 펜뷔페 제품은 일반 브랜드 접수 절차와 별도의 블루블랙 전용 기준을 적용합니다.</p>
-      <div class="detail-actions">
-        <a class="primary" href="../service/" data-preserve-lang data-as-t="penBuffetButton">펜뷔페 A/S·구매 안내</a>
-        <a href="tel:027658868" data-as-t="callStore">블루블랙 전화 문의</a>
-      </div>
-    </section>
+    <section class="detail-card as-related"><h2>다른 A/S 안내</h2><p>세일러 펜뷔페 제품은 일반 브랜드 접수 절차와 별도의 블루블랙 전용 기준을 적용합니다.</p><div class="detail-actions"><a class="primary" href="../service/" data-preserve-lang>펜뷔페 A/S·구매 안내</a><a href="tel:027658868">블루블랙 전화 문의</a></div></section>
   </main>
 
   <script type="module" src="../src/portal.js"></script>
