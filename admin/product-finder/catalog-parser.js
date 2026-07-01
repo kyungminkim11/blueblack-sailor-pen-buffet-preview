@@ -1,4 +1,4 @@
-import { cleanCell, normalize, parseNumber } from './catalog-utils.js';
+import { cleanCell } from './catalog-utils.js';
 
 export function parseCsv(text) {
   const rows = [];
@@ -44,117 +44,87 @@ export function parseCsv(text) {
   return rows;
 }
 
-function findColumn(headers, patterns, excludedPatterns = []) {
-  return headers.findIndex((header) => {
-    const matches = patterns.some((pattern) => pattern.test(header));
-    const excluded = excludedPatterns.some((pattern) => pattern.test(header));
-    return matches && !excluded;
-  });
+function findColumn(headers, patterns) {
+  return headers.findIndex((header) => patterns.some((pattern) => pattern.test(header)));
 }
 
-function isValidEan13(value) {
-  if (!/^\d{13}$/.test(value)) return false;
+function isValidGtin(value) {
+  if (!/^\d{8}$|^\d{12}$|^\d{13}$|^\d{14}$/.test(value)) return false;
+
   const digits = [...value].map(Number);
-  const total = digits.slice(0, 12).reduce((sum, digit, index) => {
-    return sum + digit * (index % 2 === 0 ? 1 : 3);
-  }, 0);
-  const checkDigit = (10 - (total % 10)) % 10;
-  return checkDigit === digits[12];
+  const checkDigit = digits.pop();
+  const total = digits
+    .reverse()
+    .reduce((sum, digit, index) => sum + digit * (index % 2 === 0 ? 3 : 1), 0);
+
+  return (10 - (total % 10)) % 10 === checkDigit;
 }
 
-function extractAliases(name) {
-  const aliases = [];
+function verifiedBarcode(value) {
+  const digits = cleanCell(value).replace(/[^0-9]/g, '');
+  return isValidGtin(digits) ? digits : '';
+}
 
-  for (const match of name.matchAll(/\[([^\]]+)\]/g)) {
-    const value = cleanCell(match[1]);
-    if (value && !aliases.includes(value)) aliases.push(value);
+function barcodeFromName(name) {
+  for (const match of name.matchAll(/(?<!\d)(\d{8}|\d{12,14})(?!\d)/g)) {
+    const barcode = verifiedBarcode(match[1]);
+    if (barcode) return barcode;
   }
+  return '';
+}
 
-  for (const match of name.matchAll(/(?<!\d)\d{13}(?!\d)/g)) {
-    if (isValidEan13(match[0]) && !aliases.includes(match[0])) {
-      aliases.push(match[0]);
-    }
-  }
-
-  return aliases;
+export function sourceDateFromRows(rows) {
+  const firstLines = rows.slice(0, 5).flat().map(cleanCell).join(' ');
+  const match = firstLines.match(/(20\d{2})[/.\-](\d{1,2})[/.\-](\d{1,2})/);
+  if (!match) return '';
+  return `${match[1]}-${match[2].padStart(2, '0')}-${match[3].padStart(2, '0')}`;
 }
 
 export function buildProducts(rows) {
   const headerIndex = rows.findIndex((row) => {
     const joined = row.map(cleanCell).join('|');
-    const hasCode = /(품목코드|상품코드|제품코드|바코드|barcode|sku)/i.test(joined);
-    const hasName = /(품명|상품명|제품명|name)/i.test(joined);
-    return hasCode && hasName;
+    return /(품명\s*및\s*규격|상품명|제품명|^name$)/i.test(joined);
   });
 
   if (headerIndex < 0) {
-    throw new Error('품목코드와 상품명 열을 찾지 못했습니다.');
+    throw new Error('상품명 열을 찾지 못했습니다.');
   }
 
   const headers = rows[headerIndex].map(cleanCell);
-  const columns = {
-    code: findColumn(headers, [/품목코드/i, /상품코드/i, /제품코드/i, /^sku$/i, /^code$/i]),
-    barcode: findColumn(headers, [/바코드/i, /barcode/i, /jan/i, /ean/i]),
-    brand: findColumn(headers, [/품목그룹1명/i, /브랜드/i, /brand/i, /제조사/i]),
-    name: findColumn(headers, [/품명\s*및\s*규격/i, /상품명/i, /제품명/i, /^name$/i, /품명/i]),
-    stock: findColumn(headers, [/재고수량/i, /현재재고/i, /^재고$/i, /stock/i]),
-    retail: findColumn(headers, [/소비자가/i, /정가/i, /retail/i]),
-    sale: findColumn(headers, [/판매가/i, /할인가/i, /sale/i, /price/i], [/소비자/i]),
-    location: findColumn(headers, [/재고\s*위치/i, /보관\s*위치/i, /location/i]),
-    note: findColumn(headers, [/적요/i, /메모/i, /비고/i, /note/i]),
-    url: findColumn(headers, [/상품\s*링크/i, /상품\s*url/i, /product\s*url/i, /^url$/i]),
-    image: findColumn(headers, [/이미지/i, /image/i, /사진/i])
-  };
+  const nameColumn = findColumn(headers, [
+    /품명\s*및\s*규격/i,
+    /상품명/i,
+    /제품명/i,
+    /^name$/i,
+    /품명/i
+  ]);
+  const barcodeColumn = findColumn(headers, [/바코드/i, /barcode/i, /jan/i, /ean/i, /gtin/i]);
+  const locationColumn = findColumn(headers, [/재고\s*위치/i, /보관\s*위치/i, /^위치$/i, /location/i]);
 
-  if (columns.name < 0) {
+  if (nameColumn < 0) {
     throw new Error('상품명 열을 찾지 못했습니다.');
   }
 
   const products = [];
   const seen = new Set();
 
-  rows.slice(headerIndex + 1).forEach((row, rowIndex) => {
-    const name = cleanCell(row[columns.name]);
-    const code = columns.code >= 0 ? cleanCell(row[columns.code]) : '';
-    const sourceBarcode = columns.barcode >= 0 ? cleanCell(row[columns.barcode]) : '';
+  rows.slice(headerIndex + 1).forEach((row) => {
+    const productName = cleanCell(row[nameColumn]);
+    if (!productName) return;
 
-    if (!name || (!code && !sourceBarcode)) return;
-
-    const aliases = extractAliases(name);
-    const derivedBarcode = aliases.find((value) => isValidEan13(value)) || '';
-    const barcode = sourceBarcode || derivedBarcode;
-    const uniqueKey = `${code}|${barcode}|${name}`;
+    const barcodeInColumn = barcodeColumn >= 0 ? verifiedBarcode(row[barcodeColumn]) : '';
+    const barcode = barcodeInColumn || barcodeFromName(productName) || null;
+    const location = locationColumn >= 0 ? cleanCell(row[locationColumn]) || null : null;
+    const uniqueKey = `${barcode || ''}\u001f${productName}\u001f${location || ''}`;
 
     if (seen.has(uniqueKey)) return;
     seen.add(uniqueKey);
 
-    const product = {
-      id: `product-${rowIndex}-${normalize(code || barcode || name).slice(0, 28)}`,
-      code,
+    products.push({
       barcode,
-      brand: columns.brand >= 0 ? cleanCell(row[columns.brand]) : '',
-      name,
-      stock: columns.stock >= 0 ? parseNumber(row[columns.stock]) : null,
-      retailPrice: columns.retail >= 0 ? parseNumber(row[columns.retail]) : null,
-      salePrice: columns.sale >= 0 ? parseNumber(row[columns.sale]) : null,
-      location: columns.location >= 0 ? cleanCell(row[columns.location]) : '',
-      note: columns.note >= 0 ? cleanCell(row[columns.note]) : '',
-      url: columns.url >= 0 ? cleanCell(row[columns.url]) : '',
-      image: columns.image >= 0 ? cleanCell(row[columns.image]) : '',
-      aliases
-    };
-
-    product.searchText = normalize([
-      product.code,
-      product.barcode,
-      product.brand,
-      product.name,
-      product.location,
-      product.note,
-      ...product.aliases
-    ].join(' '));
-
-    products.push(product);
+      product_name: productName,
+      location
+    });
   });
 
   return products;
