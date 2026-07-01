@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v30-20260701';
+const CACHE_NAME = 'blueblack-store-guide-v32-20260701';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -17,6 +17,9 @@ const CORE_PATHS = [
   './official-guide/',
   './official-guide/index.html',
   './official-guide/official-guide.css',
+  './as-guide/',
+  './as-guide/index.html',
+  './as-guide/as-guide.css',
   './ink-price/',
   './ink-price/index.html',
   './ink-price/ink-price.css',
@@ -57,16 +60,21 @@ const CORE_PATHS = [
   './sitemap.xml',
   './src/portal.js',
   './src/official-portal-addon.js',
+  './src/as-portal-addon.js',
   './src/official-guide.js',
+  './src/as-guide.js',
   './src/store-map.js',
   './src/store-map-foreign-v20.js',
   './src/store-address-addon.js',
   './src/detail-language.js',
   './src/portal-ink-live.js',
   './src/ink-products-data.js',
+  './src/ink-inventory-colors-v26-part1.js',
+  './src/ink-inventory-colors-v26-part2.js',
   './src/ink-inventory-colors.js',
   './src/ink-sample-colors-v24.js',
   './src/ink-store-colors-generated.js',
+  './src/ink-waterproof-types-v27.js',
   './src/ink-catalog-i18n-v22.js',
   './src/ink-catalog-copy-patch-v23.js',
   './src/ink-admin-catalog.js',
