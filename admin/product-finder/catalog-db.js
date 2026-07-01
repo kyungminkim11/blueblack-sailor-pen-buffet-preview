@@ -1,22 +1,5 @@
-const DATABASE_NAME = 'blueblack-product-finder';
-const DATABASE_VERSION = 1;
-const STORE_NAME = 'catalog';
-
-export const CATALOG_KEY = 'products-v1';
-export const META_KEY = 'meta-v1';
-
-function openDatabase() {
-  return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DATABASE_NAME, DATABASE_VERSION);
-
-    request.onupgradeneeded = () => {
-      const database = request.result;
-      if (!database.objectStoreNames.contains(STORE_NAME)) {
-        database.createObjectStore(STORE_NAME);
-      }
-    };
-
-    request.onsuccess = () => resolve(request.result);
-    request.onerror = () => reject(request.error);
-  });
+export async function loadBuiltInCatalog() {
+  const response = await fetch('./product-catalog.json');
+  if (!response.ok) throw new Error('기본 상품 DB를 불러오지 못했습니다.');
+  return response.json();
 }
