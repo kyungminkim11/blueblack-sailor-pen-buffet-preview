@@ -40,6 +40,19 @@ jobs:
           node --check src/consultation-polish-v13.js
           node --check src/store-session-v12.js
           node --check src/store-actions-v12.js
+      - name: Validate inventory-derived decant colors
+        run: |
+          printf '{"type":"module"}\n' > package.json
+          node <<'NODE'
+          import { INK_INVENTORY_COLORS } from './src/ink-inventory-colors.js';
+          const forbidden = /OMAS|오마스|카트리지|만년필|볼펜|샤프|프리젠터|트래블링|캘린더\s*20\d{2}/i;
+          const keys = INK_INVENTORY_COLORS.map((item) => `${item.priceItemId}|${item.nameKo.toLocaleLowerCase()}`);
+          console.log(`Validated ${INK_INVENTORY_COLORS.length} decant ink colors`);
+          if (INK_INVENTORY_COLORS.length < 1000) throw new Error('Too few inventory-derived decant colors');
+          if (INK_INVENTORY_COLORS.some((item) => !item.priceItemId || !item.nameKo)) throw new Error('Missing series or color name');
+          if (INK_INVENTORY_COLORS.some((item) => forbidden.test(`${item.brandKo} ${item.nameKo}`))) throw new Error('Non-decant product leaked into catalog');
+          if (new Set(keys).size !== keys.length) throw new Error('Duplicate decant color entries');
+          NODE
       - name: Check platform pages and source assets
         run: |
           test -f index.html
