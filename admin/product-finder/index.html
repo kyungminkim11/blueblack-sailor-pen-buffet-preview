@@ -26,7 +26,7 @@
       </div>
 
       <div class="finder-panel active" data-panel="text">
-        <label class="main-search-label" for="productSearch">상품명, 브랜드, 품목코드 또는 바코드를 입력하세요.</label>
+        <label class="main-search-label" for="productSearch">상품명, 브랜드, 품목코드, 모델코드 또는 바코드를 입력하세요.</label>
         <div class="main-search-row">
           <input id="productSearch" type="search" autocomplete="off" placeholder="예: 라미 사파리, 트위스비 에코, 품목코드" />
           <button type="button" class="primary" id="searchButton">검색</button>
@@ -37,13 +37,13 @@
       <div class="finder-panel" data-panel="barcode">
         <div class="scanner-layout">
           <div class="camera-stage"><video id="barcodeVideo" playsinline muted></video><div class="camera-frame"><span></span></div><div class="camera-empty" id="cameraEmpty">카메라를 시작하면 바코드를 화면 중앙에 맞춰 주세요.</div></div>
-          <div class="scanner-controls"><button type="button" class="primary" id="startCamera">카메라 스캔 시작</button><button type="button" id="stopCamera" disabled>카메라 중지</button><label class="file-button">바코드 사진 선택<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label><p id="scannerMessage">CSV에 바코드·JAN·EAN 열이 있거나 스캔값이 품목코드와 같을 때 즉시 검색됩니다.</p></div>
+          <div class="scanner-controls"><button type="button" class="primary" id="startCamera">카메라 스캔 시작</button><button type="button" id="stopCamera" disabled>카메라 중지</button><label class="file-button">바코드 사진 선택<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label><p id="scannerMessage">현재 재고 파일에는 별도 바코드 열이 없습니다. 스캔값이 품목코드와 같거나, 이후 CSV에 바코드·JAN·EAN 열이 포함되면 즉시 검색됩니다.</p></div>
         </div>
       </div>
 
       <div class="finder-panel" data-panel="photo">
         <div class="photo-search-layout">
-          <label class="photo-drop" id="photoDrop"><input id="photoInput" type="file" accept="image/*" capture="environment" /><span class="photo-icon">▧</span><strong>제품 또는 포장 사진 촬영</strong><small>사진 속 바코드를 먼저 찾고, 없으면 상품명·모델명을 문자로 인식합니다.</small></label>
+          <label class="photo-drop" id="photoDrop"><input id="photoInput" type="file" accept="image/*" capture="environment" /><span class="photo-icon">▧</span><strong>제품 또는 포장 사진 촬영</strong><small>사진 속 바코드를 먼저 찾고, 없으면 상품명·브랜드·모델코드를 문자로 인식합니다.</small></label>
           <div class="photo-preview" id="photoPreview"><span>선택한 사진이 여기에 표시됩니다.</span></div>
         </div>
         <div class="photo-actions"><button type="button" class="primary" id="runPhotoSearch" disabled>사진으로 검색</button><button type="button" id="clearPhoto" disabled>사진 지우기</button></div>
@@ -53,7 +53,7 @@
 
     <section class="finder-toolbar">
       <div><strong id="resultTitle">상품 검색</strong><span id="resultSummary">상품 DB를 불러와 주세요.</span></div>
-      <div class="finder-toolbar-actions"><button type="button" id="openImport">재고 CSV 불러오기</button><button type="button" id="exportCatalog">JSON 백업</button><button type="button" class="danger" id="clearCatalog">현재 DB 지우기</button></div>
+      <div class="finder-toolbar-actions"><button type="button" id="openImport">재고 CSV 불러오기</button><button type="button" id="exportCatalog">JSON 백업</button><button type="button" class="danger" id="clearCatalog">저장 DB 삭제</button></div>
     </section>
 
     <section class="finder-workspace">
@@ -65,9 +65,9 @@
   <dialog id="importDialog" class="finder-dialog">
     <form method="dialog" class="dialog-card" id="importForm">
       <div class="dialog-head"><div><small>PRODUCT DATABASE</small><h2>재고 CSV 불러오기</h2></div><button type="submit" value="cancel" aria-label="닫기">×</button></div>
-      <p>재고현황 CSV의 열 이름을 자동으로 인식해 현재 탭의 상품 DB를 만듭니다. 새 파일을 불러오면 기존 목록을 교체합니다.</p>
+      <p>2026년 6월 23일 재고현황과 같은 CSV 형식을 자동으로 인식합니다. 자료는 외부 서버에 업로드되지 않고 현재 브라우저에만 저장되며, 새 파일을 불러오면 기존 DB를 교체합니다.</p>
       <label class="import-drop"><input id="catalogFile" type="file" accept=".csv,text/csv,.json,application/json" /><strong>CSV 또는 백업 JSON 선택</strong><span>품목코드 · 품목그룹1명 · 품명 및 규격 · 재고수량 · 소비자가 · 판매가 · 재고 위치 · 적요 · 바코드(선택)</span></label>
-      <div class="import-progress" id="importProgress" hidden><span></span><strong>파일을 처리하고 있습니다.</strong><small>창을 닫지 마세요.</small></div>
+      <div class="import-progress" id="importProgress" hidden><span></span><strong>약 1만 개 상품을 처리하고 있습니다.</strong><small>창을 닫지 마세요.</small></div>
       <div class="dialog-actions"><button type="submit" value="cancel">취소</button><button type="button" class="primary" id="importCatalog" disabled>상품 DB 만들기</button></div>
     </form>
   </dialog>
