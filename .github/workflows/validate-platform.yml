@@ -20,6 +20,10 @@ jobs:
         run: |
           node --check src/portal.js
           node --check src/detail-language.js
+          node --check src/official-portal-addon.js
+          node --check src/engraving-portal-addon.js
+          node --check src/as-portal-addon.js
+          node --check src/engraving-guide.js
           node --check src/portal-ink-live.js
           node --check src/ink-products-data.js
           node --check src/ink-inventory-colors-v26-part1.js
@@ -64,6 +68,10 @@ jobs:
           test -f detail-language.css
           test -f pen-buffet/index.html
           test -f store-guide/index.html
+          test -f official-guide/index.html
+          test -f engraving-guide/index.html
+          test -f engraving-guide/engraving-guide.css
+          test -f as-guide/index.html
           test -f ink-price/index.html
           test -f ink-price/ink-price.css
           test -f ink-price/ink-search.css
