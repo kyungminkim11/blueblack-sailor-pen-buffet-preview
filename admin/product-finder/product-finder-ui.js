@@ -111,14 +111,97 @@ export function activateMode(mode) {
   document.dispatchEvent(new CustomEvent('finder-mode-change', { detail: { mode } }));
 }
 
-export async function runSearch() {
-  return [];
+function showProduct(product) {
+  ui.detail.replaceChildren();
+  const title = document.createElement('h2');
+  const barcode = document.createElement('p');
+  const location = document.createElement('p');
+  const link = document.createElement('a');
+  title.textContent = product.product_name;
+  barcode.textContent = `바코드: ${product.barcode || '등록 없음'}`;
+  location.textContent = `위치: ${product.location || '등록 없음'}`;
+  link.textContent = '자사몰에서 검색';
+  link.className = 'primary';
+  link.target = '_blank';
+  link.rel = 'noopener';
+  link.href = `https://blueblack.co.kr/product/search.html?keyword=${encodeURIComponent(product.product_name)}`;
+  ui.detail.append(title, barcode, location, link);
 }
 
-export async function handleScannedCode() {
-  return [];
+function renderResults(items, label) {
+  currentResults = items;
+  ui.resultList.replaceChildren();
+  ui.resultTitle.textContent = `${label} 검색 결과`;
+  ui.resultSummary.textContent = `${items.length}개 후보 · 최대 50개 조회`;
+
+  items.forEach((product) => {
+    const button = document.createElement('button');
+    const name = document.createElement('strong');
+    const info = document.createElement('span');
+    button.type = 'button';
+    button.className = 'result-item';
+    name.textContent = product.product_name;
+    info.textContent = [product.barcode && `바코드 ${product.barcode}`, product.location && `위치 ${product.location}`].filter(Boolean).join(' · ') || '추가 정보 없음';
+    button.append(name, info);
+    button.addEventListener('click', () => showProduct(product));
+    ui.resultList.append(button);
+  });
+
+  if (items[0]) showProduct(items[0]);
 }
 
+export async function runSearch(value, options = {}) {
+  const query = String(value || '').trim();
+  if (!query) return [];
+  if (!isAuthorized()) {
+    openAccess('상품 검색을 사용하려면 관리자 접근키가 필요합니다.');
+    return [];
+  }
+
+  ui.searchButton.disabled = true;
+  ui.resultSummary.textContent = 'Supabase에서 검색하고 있습니다.';
+  try {
+    const items = await searchCatalog(query, options);
+    renderResults(items, options.label || `‘${query}’`);
+    return items;
+  } catch (error) {
+    showToast(error.message || '상품 검색에 실패했습니다.');
+    return [];
+  } finally {
+    ui.searchButton.disabled = false;
+  }
+}
+
+export async function handleScannedCode(code, source = '바코드') {
+  const value = String(code || '').trim();
+  if (!value) return [];
+  activateMode('text');
+  ui.search.value = value;
+  return runSearch(value, { label: `${source}: ${value}` });
+}
+
+ui.searchButton?.addEventListener('click', () => runSearch(ui.search.value));
+ui.search?.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    runSearch(ui.search.value);
+  }
+});
+ui.search?.addEventListener('input', () => {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(() => {
+    if (ui.search.value.trim().length >= 2) runSearch(ui.search.value);
+  }, 300);
+});
+ui.focusScanner?.addEventListener('click', () => {
+  activateMode('text');
+  ui.search.value = '';
+  ui.search.focus();
+  showToast('USB 바코드 스캐너 입력을 기다립니다.');
+});
+document.querySelectorAll('[data-mode]').forEach((button) => {
+  button.addEventListener('click', () => activateMode(button.dataset.mode));
+});
 ui.unlockAccess?.addEventListener('click', unlock);
 ui.accessKey?.addEventListener('keydown', (event) => {
   if (event.key === 'Enter') {
