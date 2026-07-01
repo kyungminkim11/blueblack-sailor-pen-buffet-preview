@@ -16,7 +16,7 @@ function currentLanguage(){
 }
 
 function cleanPublicPortal(){
-  document.querySelectorAll('a[href="./staff/"],a[href$="/staff/"]').forEach(node=>node.remove());
+  document.querySelectorAll('a[href="./staff/"],a[href$="/staff/"],a[href="./service/"],a[href$="/service/"]').forEach(node=>node.remove());
   const intro=document.querySelector('[data-portal-t="portalIntro"]');
   if(intro)intro.textContent=publicPortalIntro[currentLanguage()]||publicPortalIntro.ko;
 }
