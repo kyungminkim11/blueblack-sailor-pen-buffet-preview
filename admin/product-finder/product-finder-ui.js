@@ -1,4 +1,8 @@
-import { loadBuiltInCatalog } from './catalog-db.js';
+import {
+  loadBuiltInCatalog,
+  removeCatalog,
+  saveCatalog
+} from './catalog-db.js';
 import { buildProducts, parseCsv } from './catalog-parser.js';
 import { searchCatalog } from './catalog-search.js';
 import {
@@ -13,6 +17,7 @@ import {
 let products = [];
 let selectedProductId = '';
 let searchTimer = 0;
+let catalogMeta = {};
 
 const select = (selector, root = document) => root.querySelector(selector);
 const selectAll = (selector, root = document) => [...root.querySelectorAll(selector)];
@@ -54,12 +59,13 @@ function updateDatabaseStatus(meta = {}) {
     return;
   }
 
+  const sourceDate = meta.sourceDate ? ` · 기준 ${meta.sourceDate}` : '';
   const updated = meta.updatedAt
     ? new Date(meta.updatedAt).toLocaleString('ko-KR')
-    : '현재 세션';
+    : '저장 날짜 확인 불가';
 
   ui.dbStatus.classList.add('ready');
-  ui.dbStatus.innerHTML = `<span></span><strong>${products.length.toLocaleString('ko-KR')}개 상품</strong><small>업데이트 ${updated}</small>`;
+  ui.dbStatus.innerHTML = `<span></span><strong>${products.length.toLocaleString('ko-KR')}개 상품${sourceDate}</strong><small>브라우저 저장 · ${updated}</small>`;
 }
 
 export function activateMode(mode) {
@@ -91,7 +97,7 @@ export function renderResults(items, label = '') {
 
   if (!items.length) {
     ui.resultList.innerHTML = products.length
-      ? renderEmpty('일치하는 상품이 없습니다.', '상품명 일부, 브랜드 또는 품목코드로 다시 검색해 보세요.')
+      ? renderEmpty('일치하는 상품이 없습니다.', '상품명 일부, 브랜드, 모델코드 또는 품목코드로 다시 검색해 보세요.')
       : renderEmpty('상품 데이터가 필요합니다.', '‘재고 CSV 불러오기’를 눌러 최신 파일을 등록해 주세요.');
     return;
   }
@@ -121,14 +127,19 @@ export function renderResults(items, label = '') {
 }
 
 function renderProductDetail(product) {
+  const aliases = Array.isArray(product.aliases) ? product.aliases : [];
   const fields = [
     ['판매가', formatPrice(product.salePrice)],
     ['소비자가', formatPrice(product.retailPrice)],
     ['재고수량', formatStock(product.stock)],
     ['재고 위치', product.location || '미등록'],
     ['품목코드', product.code || '미등록'],
-    ['바코드', product.barcode || product.code || '미등록']
+    ['바코드', product.barcode || '미등록']
   ];
+
+  if (aliases.length) {
+    fields.push(['모델·옵션 코드', aliases.join(' · ')]);
+  }
 
   const image = product.image
     ? `<img src="${escapeHtml(product.image)}" alt="${escapeHtml(product.name)}">`
@@ -211,9 +222,26 @@ function prepareProducts(items) {
       product.brand,
       product.name,
       product.location,
-      product.note
+      product.note,
+      ...(Array.isArray(product.aliases) ? product.aliases : [])
     ].join(' '))
   }));
+}
+
+function inventoryMetadata(rows, file) {
+  const sourceLine = String(rows[0]?.[0] || '');
+  const dateMatch = sourceLine.match(/(20\d{2})[/.\-](\d{1,2})[/.\-](\d{1,2})/);
+  const sourceDate = dateMatch
+    ? `${dateMatch[1]}-${dateMatch[2].padStart(2, '0')}-${dateMatch[3].padStart(2, '0')}`
+    : '';
+
+  return {
+    version: 1,
+    updatedAt: new Date().toISOString(),
+    sourceName: file.name,
+    sourceLabel: sourceLine.replace(/^"|"$/g, '').trim(),
+    sourceDate
+  };
 }
 
 async function importSelectedFile() {
@@ -225,25 +253,37 @@ async function importSelectedFile() {
 
   try {
     let importedProducts;
+    let meta;
 
     if (file.name.toLowerCase().endsWith('.json')) {
       const data = JSON.parse(await file.text());
       const items = Array.isArray(data) ? data : data.products;
       if (!Array.isArray(items)) throw new Error('올바른 상품 DB 백업 파일이 아닙니다.');
       importedProducts = prepareProducts(items);
+      meta = {
+        version: data.version || 1,
+        updatedAt: data.updatedAt || data.exportedAt || new Date().toISOString(),
+        sourceName: data.sourceName || file.name,
+        sourceLabel: data.sourceLabel || '',
+        sourceDate: data.sourceDate || ''
+      };
     } else {
-      importedProducts = buildProducts(parseCsv(await file.text()));
+      const rows = parseCsv(await file.text());
+      importedProducts = prepareProducts(buildProducts(rows));
+      meta = inventoryMetadata(rows, file);
     }
 
     if (!importedProducts.length) throw new Error('등록 가능한 상품이 없습니다.');
 
     products = importedProducts;
     selectedProductId = '';
-    updateDatabaseStatus({ updatedAt: new Date().toISOString() });
+    catalogMeta = meta;
+    await saveCatalog({ ...meta, products });
+    updateDatabaseStatus(meta);
     ui.importDialog.close();
     ui.catalogFile.value = '';
     renderResults(products.slice(0, 50), '불러온 상품');
-    showToast(`${products.length.toLocaleString('ko-KR')}개 상품을 불러왔습니다.`);
+    showToast(`${products.length.toLocaleString('ko-KR')}개 상품을 브라우저에 저장했습니다.`);
   } catch (error) {
     console.error(error);
     showToast(error.message || '상품 DB를 만들지 못했습니다.');
@@ -260,6 +300,7 @@ function exportCatalog() {
   }
 
   const data = {
+    ...catalogMeta,
     version: 1,
     exportedAt: new Date().toISOString(),
     products
@@ -273,16 +314,18 @@ function exportCatalog() {
   URL.revokeObjectURL(url);
 }
 
-function clearCatalog() {
+async function clearCatalog() {
   if (!products.length) return;
-  if (!confirm('현재 화면에 불러온 상품 DB를 지울까요?')) return;
+  if (!confirm('이 브라우저에 저장된 상품 DB를 삭제할까요?')) return;
 
+  await removeCatalog();
   products = [];
   selectedProductId = '';
+  catalogMeta = {};
   updateDatabaseStatus();
   renderResults([]);
   ui.detail.innerHTML = renderEmpty('상품을 선택해 주세요.', '검색 결과에서 상품을 누르면 상세 정보가 표시됩니다.');
-  showToast('현재 세션의 상품 DB를 지웠습니다.');
+  showToast('브라우저에 저장된 상품 DB를 삭제했습니다.');
 }
 
 function bindEvents() {
@@ -325,12 +368,20 @@ async function initialize() {
   bindEvents();
 
   try {
-    const builtIn = await loadBuiltInCatalog();
-    products = prepareProducts(builtIn.products || []);
-    updateDatabaseStatus(builtIn);
+    const savedCatalog = await loadBuiltInCatalog();
+    products = prepareProducts(savedCatalog.products || []);
+    catalogMeta = savedCatalog;
+    updateDatabaseStatus(savedCatalog);
+
+    if (products.length) {
+      const source = savedCatalog.sourceDate ? `${savedCatalog.sourceDate} 기준` : '저장된 재고자료';
+      ui.resultSummary.textContent = `${source} ${products.length.toLocaleString('ko-KR')}개 상품을 검색할 수 있습니다.`;
+      ui.resultList.innerHTML = renderEmpty('상품 검색 준비 완료', '상품명, 브랜드, 모델코드 또는 품목코드를 입력해 주세요.');
+    }
   } catch (error) {
     console.error(error);
     updateDatabaseStatus();
+    showToast('저장된 상품 DB를 읽지 못했습니다. CSV를 다시 불러와 주세요.');
   }
 }
 
