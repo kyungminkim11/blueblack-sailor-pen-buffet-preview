@@ -4,9 +4,12 @@ import { INK_INVENTORY_COLORS_PART as PART2 } from './ink-inventory-colors-v26-p
 function cleanInventoryColorName(value = '') {
   return String(value)
     .replace(/\bPer nkle\b/gi, 'Periwinkle')
+    .replace(/\bIRIS SAGESS\b/gi, 'IRIS SAGESSE')
     .replace(/^미니\s+/i, '')
     .replace(/^(?:150주년|160주년)\s+/i, '')
     .replace(/^\(\s*\)\s*/, '')
+    .replace(/^오너먼트 글라스 병\s+/i, '')
+    .replace(/\s*·\s*미니병\s*·\s*문서보존용\s*$/i, '')
     .replace(/\s*·\s*13-9121-231\s*$/i, '')
     .replace(/\*/g, '')
     .replace(/\(\s*\)/g, '')
@@ -16,7 +19,7 @@ function cleanInventoryColorName(value = '') {
 
 function isActualDecantColor(item) {
   const text = `${item.nameKo || ''} ${item.productTitle || ''}`;
-  return !/(?:^|\s)SET(?:\s|$)|만년필|볼펜|샤프|수성펜|프리젠터|디스플레이|트래블링|펜레스트겸용/i.test(text);
+  return !/(?:^|\s)SET(?:\s|$)|세트|캘린더\s*20\d{2}|만년필|볼펜|샤프|수성펜|프리젠터|디스플레이|트래블링|펜레스트겸용/i.test(text);
 }
 
 const seen = new Set();
