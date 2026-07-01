@@ -45,6 +45,25 @@ jobs:
           node --check src/consultation-polish-v13.js
           node --check src/store-session-v12.js
           node --check src/store-actions-v12.js
+          node --check admin/product-finder/catalog-db.js
+          node --check admin/product-finder/catalog-utils.js
+          node --check admin/product-finder/catalog-parser.js
+          node --check admin/product-finder/catalog-search.js
+          node --check admin/product-finder/product-finder-ui.js
+          node --check admin/product-finder/product-finder-scan.js
+          node --check admin/product-finder/product-finder.js
+      - name: Validate product finder CSV parser
+        run: |
+          printf '{"type":"module"}\n' > package.json
+          node <<'NODE'
+          import { buildProducts, parseCsv } from './admin/product-finder/catalog-parser.js';
+          import { searchCatalog } from './admin/product-finder/catalog-search.js';
+          const csv = '품목코드,품목그룹1명,품명 및 규격,재고수량,소비자가,판매가,재고 위치,적요\n123456,LAMY,라미 사파리 만년필 차콜 F,3,"54,000","43,200",2층,레이저 각인 가능';
+          const products = buildProducts(parseCsv(csv));
+          if (products.length !== 1) throw new Error('Product CSV parser failed');
+          if (searchCatalog(products, '사파리').length !== 1) throw new Error('Product text search failed');
+          if (searchCatalog(products, '123456').length !== 1) throw new Error('Product code search failed');
+          NODE
       - name: Validate inventory-derived decant colors
         run: |
           printf '{"type":"module"}\n' > package.json
@@ -66,6 +85,11 @@ jobs:
         run: |
           test -f index.html
           test -f detail-language.css
+          test -f admin/index.html
+          test -f admin/admin.css
+          test -f admin/product-finder/index.html
+          test -f admin/product-finder/product-finder.css
+          test -f admin/product-finder/product-finder.js
           test -f pen-buffet/index.html
           test -f store-guide/index.html
           test -f official-guide/index.html
