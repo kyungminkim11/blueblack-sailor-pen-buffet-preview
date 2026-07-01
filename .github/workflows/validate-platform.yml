@@ -27,6 +27,7 @@ jobs:
           node --check src/ink-inventory-colors.js
           node --check src/ink-sample-colors-v24.js
           node --check src/ink-store-colors-generated.js
+          node --check src/ink-waterproof-types-v27.js
           node --check src/ink-catalog-i18n-v22.js
           node --check src/ink-catalog-copy-patch-v23.js
           node --check src/ink-catalog-model-v22.js
@@ -45,13 +46,17 @@ jobs:
           printf '{"type":"module"}\n' > package.json
           node <<'NODE'
           import { INK_INVENTORY_COLORS } from './src/ink-inventory-colors.js';
+          import { INK_PRODUCTS } from './src/ink-products-data.js';
+          await import('./src/ink-waterproof-types-v27.js');
           const forbidden = /OMAS|오마스|카트리지|만년필|볼펜|샤프|프리젠터|트래블링|캘린더\s*20\d{2}/i;
           const keys = INK_INVENTORY_COLORS.map((item) => `${item.priceItemId}|${item.nameKo.toLocaleLowerCase()}`);
+          const super5 = INK_PRODUCTS.find((item) => item.id === 'super5-standard');
           console.log(`Validated ${INK_INVENTORY_COLORS.length} decant ink colors`);
           if (INK_INVENTORY_COLORS.length < 1000) throw new Error('Too few inventory-derived decant colors');
           if (INK_INVENTORY_COLORS.some((item) => !item.priceItemId || !item.nameKo)) throw new Error('Missing series or color name');
           if (INK_INVENTORY_COLORS.some((item) => forbidden.test(`${item.brandKo} ${item.nameKo}`))) throw new Error('Non-decant product leaked into catalog');
           if (new Set(keys).size !== keys.length) throw new Error('Duplicate decant color entries');
+          if (!super5?.keywords?.includes('피그먼트') || !super5.keywords.includes('방수')) throw new Error('SUPER5 waterproof classification missing');
           NODE
       - name: Check platform pages and source assets
         run: |
