@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v32-20260701';
+const CACHE_NAME = 'blueblack-store-guide-v33-20260701';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -17,6 +17,9 @@ const CORE_PATHS = [
   './official-guide/',
   './official-guide/index.html',
   './official-guide/official-guide.css',
+  './engraving-guide/',
+  './engraving-guide/index.html',
+  './engraving-guide/engraving-guide.css',
   './as-guide/',
   './as-guide/index.html',
   './as-guide/as-guide.css',
@@ -60,8 +63,10 @@ const CORE_PATHS = [
   './sitemap.xml',
   './src/portal.js',
   './src/official-portal-addon.js',
+  './src/engraving-portal-addon.js',
   './src/as-portal-addon.js',
   './src/official-guide.js',
+  './src/engraving-guide.js',
   './src/as-guide.js',
   './src/store-map.js',
   './src/store-map-foreign-v20.js',
