@@ -52,6 +52,33 @@ function findColumn(headers, patterns, excludedPatterns = []) {
   });
 }
 
+function isValidEan13(value) {
+  if (!/^\d{13}$/.test(value)) return false;
+  const digits = [...value].map(Number);
+  const total = digits.slice(0, 12).reduce((sum, digit, index) => {
+    return sum + digit * (index % 2 === 0 ? 1 : 3);
+  }, 0);
+  const checkDigit = (10 - (total % 10)) % 10;
+  return checkDigit === digits[12];
+}
+
+function extractAliases(name) {
+  const aliases = [];
+
+  for (const match of name.matchAll(/\[([^\]]+)\]/g)) {
+    const value = cleanCell(match[1]);
+    if (value && !aliases.includes(value)) aliases.push(value);
+  }
+
+  for (const match of name.matchAll(/(?<!\d)\d{13}(?!\d)/g)) {
+    if (isValidEan13(match[0]) && !aliases.includes(match[0])) {
+      aliases.push(match[0]);
+    }
+  }
+
+  return aliases;
+}
+
 export function buildProducts(rows) {
   const headerIndex = rows.findIndex((row) => {
     const joined = row.map(cleanCell).join('|');
@@ -89,11 +116,15 @@ export function buildProducts(rows) {
   rows.slice(headerIndex + 1).forEach((row, rowIndex) => {
     const name = cleanCell(row[columns.name]);
     const code = columns.code >= 0 ? cleanCell(row[columns.code]) : '';
-    const barcode = columns.barcode >= 0 ? cleanCell(row[columns.barcode]) : '';
+    const sourceBarcode = columns.barcode >= 0 ? cleanCell(row[columns.barcode]) : '';
 
-    if (!name || (!code && !barcode)) return;
+    if (!name || (!code && !sourceBarcode)) return;
 
+    const aliases = extractAliases(name);
+    const derivedBarcode = aliases.find((value) => isValidEan13(value)) || '';
+    const barcode = sourceBarcode || derivedBarcode;
     const uniqueKey = `${code}|${barcode}|${name}`;
+
     if (seen.has(uniqueKey)) return;
     seen.add(uniqueKey);
 
@@ -109,7 +140,8 @@ export function buildProducts(rows) {
       location: columns.location >= 0 ? cleanCell(row[columns.location]) : '',
       note: columns.note >= 0 ? cleanCell(row[columns.note]) : '',
       url: columns.url >= 0 ? cleanCell(row[columns.url]) : '',
-      image: columns.image >= 0 ? cleanCell(row[columns.image]) : ''
+      image: columns.image >= 0 ? cleanCell(row[columns.image]) : '',
+      aliases
     };
 
     product.searchText = normalize([
@@ -118,7 +150,8 @@ export function buildProducts(rows) {
       product.brand,
       product.name,
       product.location,
-      product.note
+      product.note,
+      ...product.aliases
     ].join(' '));
 
     products.push(product);
