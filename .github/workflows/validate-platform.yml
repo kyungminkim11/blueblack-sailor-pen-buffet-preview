@@ -22,7 +22,10 @@ jobs:
           node --check src/detail-language.js
           node --check src/portal-ink-live.js
           node --check src/ink-products-data.js
+          node --check src/ink-inventory-colors-v26-part1.js
+          node --check src/ink-inventory-colors-v26-part2.js
           node --check src/ink-inventory-colors.js
+          node --check src/ink-sample-colors-v24.js
           node --check src/ink-store-colors-generated.js
           node --check src/ink-catalog-i18n-v22.js
           node --check src/ink-catalog-copy-patch-v23.js
