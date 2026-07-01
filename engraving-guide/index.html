@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#10233f" />
+  <meta name="description" content="블루블랙 공식 각인 안내를 기준으로 12가지 글꼴, 지원 문자와 각인 전 확인사항을 안내합니다." />
+  <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/engraving-guide/" />
+  <title>블루블랙 각인 안내</title>
+  <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="../portal.css" />
+  <link rel="stylesheet" href="./engraving-guide.css" />
+</head>
+<body class="detail-shell engraving-shell">
+  <header class="detail-header">
+    <div class="detail-header-inner">
+      <div class="engraving-topbar">
+        <a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a>
+        <div class="portal-language detail-language" role="group" aria-label="Language / 언어">
+          <button type="button" data-portal-lang="ko" aria-pressed="true">🇰🇷 <span>한국어</span></button>
+          <button type="button" data-portal-lang="en" aria-pressed="false">🇺🇸 <span>English</span></button>
+          <button type="button" data-portal-lang="ja" aria-pressed="false">🇯🇵 <span>日本語</span></button>
+          <button type="button" data-portal-lang="zh-Hans" aria-pressed="false">🇨🇳 <span>简体</span></button>
+          <button type="button" data-portal-lang="zh-Hant" aria-pressed="false">🇹🇼 <span>繁體</span></button>
+        </div>
+      </div>
+      <span class="engraving-kicker">ENGRAVING GUIDE</span>
+      <h1 data-engraving-t="pageTitle">각인 안내</h1>
+      <p data-engraving-t="pageIntro">공식 안내에 등록된 12가지 글꼴과 지원 문자를 확인하고, 각인 문구를 직원과 함께 최종 점검해 보세요.</p>
+    </div>
+  </header>
+
+  <main class="detail-main engraving-main">
+    <section class="engraving-source-card">
+      <div class="engraving-source-mark">✓</div>
+      <div>
+        <strong data-engraving-t="sourceTitle">블루블랙 공식 각인 안내 기준</strong>
+        <p data-engraving-t="sourceBody">공식 페이지에서 확인되는 글꼴명, 지원 문자와 필기체 주의사항을 매장 상담용으로 정리했습니다.</p>
+      </div>
+      <a href="https://blueblack.co.kr/jwgbox/add_page/engrave.html" target="_blank" rel="noopener" data-engraving-t="openOfficial">공식 샘플 보기</a>
+    </section>
+
+    <section class="detail-card engraving-facts">
+      <div class="engraving-section-heading">
+        <div><small>OFFICIAL INFORMATION</small><h2 data-engraving-t="factsTitle">공식 페이지에서 확인된 내용</h2></div>
+        <p data-engraving-t="factsBody">공식 페이지에는 총 12가지 글꼴과 각 글꼴이 지원하는 문자 종류가 안내되어 있습니다.</p>
+      </div>
+      <div class="engraving-fact-grid">
+        <article><span>12</span><strong data-engraving-t="fontCountTitle">각인 글꼴</strong><p data-engraving-t="fontCountBody">돋움부터 모노타입까지 12가지 선택지가 있습니다.</p></article>
+        <article><span>4</span><strong data-engraving-t="scriptTitle">지원 문자 종류</strong><p data-engraving-t="scriptBody">한글, 한문, 영어, 숫자 지원 여부가 글꼴마다 다릅니다.</p></article>
+        <article><span>!</span><strong data-engraving-t="cursiveTitle">필기체 주의</strong><p data-engraving-t="cursiveBody">필기체는 영어와 숫자를 지원하지만 연속 대문자는 사용할 수 없습니다.</p></article>
+      </div>
+    </section>
+
+    <section class="detail-card" id="font-guide">
+      <div class="engraving-section-heading">
+        <div><small>FONT FINDER</small><h2 data-engraving-t="finderTitle">각인 글꼴 찾기</h2></div>
+        <p data-engraving-t="finderBody">각인하려는 문자 종류를 선택하면 사용할 수 있는 글꼴만 볼 수 있습니다.</p>
+      </div>
+
+      <div class="engraving-filter" id="engravingFilter" role="group" aria-label="Character filter"></div>
+
+      <label class="engraving-preview-input">
+        <span data-engraving-t="previewLabel">미리 볼 문구</span>
+        <input id="engravingPreviewText" type="text" maxlength="40" autocomplete="off" value="BlueBlack 2026" />
+        <small data-engraving-t="previewHelp">화면 미리보기는 글꼴 분위기 참고용입니다. 실제 각인 형태는 공식 샘플과 완성품을 기준으로 확인해 주세요.</small>
+      </label>
+
+      <p class="engraving-result-summary" id="engravingResultSummary" aria-live="polite"></p>
+      <div class="engraving-font-grid" id="engravingFontGrid"></div>
+    </section>
+
+    <section class="detail-card engraving-flow">
+      <div class="engraving-section-heading">
+        <div><small>STORE CHECK</small><h2 data-engraving-t="flowTitle">각인 전 확인 순서</h2></div>
+        <p data-engraving-t="flowBody">아래 순서는 매장 상담을 빠르게 진행하기 위한 확인 흐름입니다.</p>
+      </div>
+      <div class="engraving-step-grid">
+        <article><b>01</b><strong data-engraving-t="step1Title">제품 확인</strong><p data-engraving-t="step1Body">선택한 제품의 각인 가능 여부와 위치를 직원에게 확인합니다.</p></article>
+        <article><b>02</b><strong data-engraving-t="step2Title">글꼴 선택</strong><p data-engraving-t="step2Body">입력할 문자 종류를 지원하는 글꼴을 선택합니다.</p></article>
+        <article><b>03</b><strong data-engraving-t="step3Title">문구 확인</strong><p data-engraving-t="step3Body">철자, 띄어쓰기, 대문자와 소문자를 그대로 확인합니다.</p></article>
+        <article><b>04</b><strong data-engraving-t="step4Title">최종 확인</strong><p data-engraving-t="step4Body">직원과 각인 내용 및 제품별 적용 가능 여부를 최종 확인합니다.</p></article>
+      </div>
+    </section>
+
+    <section class="detail-card engraving-caution">
+      <h2 data-engraving-t="cautionTitle">꼭 확인해 주세요</h2>
+      <ul>
+        <li data-engraving-t="caution1">공식 페이지에는 가격, 글자 수, 소요 기간이 별도로 안내되어 있지 않습니다.</li>
+        <li data-engraving-t="caution2">제품마다 각인 가능 여부와 위치가 다를 수 있으므로 직원 확인이 우선입니다.</li>
+        <li data-engraving-t="caution3">완료 후 수정이 어려울 수 있으므로 철자와 대소문자를 신중하게 확인해 주세요.</li>
+        <li data-engraving-t="caution4">필기체는 연속 대문자를 사용할 수 없습니다.</li>
+      </ul>
+      <div class="detail-actions">
+        <a class="primary" href="https://blueblack.co.kr/jwgbox/add_page/engrave.html" target="_blank" rel="noopener" data-engraving-t="officialButton">공식 글꼴 샘플 보기</a>
+        <a href="tel:027658868" data-engraving-t="callStore">매장 전화 문의</a>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="../src/portal.js"></script>
+  <script type="module" src="../src/engraving-guide.js"></script>
+</body>
+</html>
