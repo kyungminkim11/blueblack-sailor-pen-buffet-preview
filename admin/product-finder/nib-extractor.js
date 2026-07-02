@@ -1,5 +1,5 @@
 const FOUNTAIN_PEN_PATTERN = /만년필|(?<![A-Za-z])FP(?![A-Za-z])|fountain\s*pen/i;
-const ACCESSORY_PATTERN = /(A\/S|세척\s*(키트|액|제)|펜\s*솝|만년필\s*파우치|마스킹\s*테이프.*만년필|루즈\s*시트|와시\s*노트|종이\s*컬렉션|서랍장|카웨코\s*클립|만년필\s*잉크\s*세트|FP[^\n]*잉크\s*세트|만년필[^\n]*잉크세트|만년필용|만년필\s*제작\s*샘플)/i;
+const ACCESSORY_PATTERN = /(A\/S|세척\s*(키트|액|제)|펜\s*솝|만년필\s*파우치|마스킹\s*테이프.*만년필|루즈\s*시트|와시\s*노트|종이\s*컬렉션|서랍장|카웨코\s*클립|만년필\s*잉크\s*세트|헌터스\s*FP[^\n]*잉크\s*세트|만년필용|만년필\s*제작\s*샘플)/i;
 const MULTI_NIB_PATTERN = /(\[SET\]|(?:^|\s)SET(?:$|\s)|\d+\s*닙|트리오\s*이탤릭)/i;
 
 const NAMED_NIBS = [
