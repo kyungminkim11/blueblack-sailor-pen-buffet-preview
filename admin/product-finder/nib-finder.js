@@ -1,85 +1,187 @@
-const MALL_SEARCH_BASE = 'https://blueblack.co.kr/product/search.html?keyword=';
+const SUPABASE_URL = 'https://jnciddblcndmthmmvqrz.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_UUzSE7O9wqI0WN9cKG9OAQ_VleRkL4I';
+const ACCESS_KEY = 'blueblack-product-access-key';
 
 const nibButtons = [...document.querySelectorAll('[data-nib]')];
 const brandButtons = [...document.querySelectorAll('[data-brand]')];
 const keywordInput = document.querySelector('#nibKeyword');
 const searchButton = document.querySelector('#nibSearchButton');
-const resultCard = document.querySelector('#resultCard');
-const resultHeading = document.querySelector('#resultHeading');
-const productIdentity = document.querySelector('#productIdentity');
-const recognizedQuery = document.querySelector('#recognizedQuery');
-const recognizedRaw = document.querySelector('#recognizedRaw');
-const mallLink = document.querySelector('#mallLink');
-const webLookupLink = document.querySelector('#webLookupLink');
-const resultNote = document.querySelector('#resultNote');
+const nibPanel = document.querySelector('[data-panel="nib"]');
 const toast = document.querySelector('#finderToast');
+const selectedNibs = new Set();
+let searchTimer = 0;
 
-let selectedNib = '';
+const labelMap = {
+  EF: 'EF', F: 'F', MF: 'MF', M: 'M', B: 'B', BB: 'BB',
+  ZOOM: 'Zoom', MUSIC: 'Music', UEF: 'UEF', SEF: 'SEF', SF: 'SF',
+  SFM: 'SFM', SM: 'SM', COARSE: 'C', STUB: 'Stub',
+  'STUB_1.1': '1.1', 'STUB_1.5': '1.5', 'STUB_1.9': '1.9'
+};
 
-function showNibToast(message) {
+const style = document.createElement('style');
+style.textContent = `
+  .nib-result-area{margin-top:18px;border-top:1px solid #e0e6ec;padding-top:18px}
+  .nib-result-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:11px}
+  .nib-result-head strong{color:#10233f;font-size:15px}.nib-result-head small{color:#718093;font-size:9px}
+  .nib-result-list{display:grid;gap:9px}.nib-product-card{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:14px;border:1px solid #d9e1e8;border-radius:14px;background:#fff}
+  .nib-product-card h3{margin:0;color:#10233f;font-size:13px;line-height:1.45}.nib-product-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}.nib-product-meta span{padding:4px 7px;border-radius:999px;background:#f1f4f7;color:#5f7083;font-size:8px;font-weight:850}
+  .nib-product-sizes{display:flex;align-content:flex-start;justify-content:flex-end;gap:5px;flex-wrap:wrap;max-width:100px}.nib-product-sizes b{display:grid;place-items:center;min-width:34px;height:30px;padding:0 7px;border-radius:9px;background:#102b4c;color:#fff;font-size:9px}
+  .nib-result-empty{padding:24px 15px;border:1px dashed #cbd6e0;border-radius:14px;text-align:center;color:#65768a;font-size:10px;line-height:1.7}
+  .nib-size-button.active::before{content:'✓';margin-right:5px}.nib-access-note{margin-bottom:10px;padding:10px 12px;border-radius:10px;background:#fff8eb;color:#795d35;font-size:9px;line-height:1.6}
+  @media(max-width:600px){.nib-product-card{grid-template-columns:1fr}.nib-product-sizes{justify-content:flex-start;max-width:none}}
+`;
+document.head.append(style);
+
+const resultArea = document.createElement('div');
+resultArea.className = 'nib-result-area';
+resultArea.innerHTML = '<div class="nib-result-head"><strong>펜촉 상품 목록</strong><small id="nibResultCount">촉을 선택해 주세요.</small></div><div id="nibAccessNote" class="nib-access-note" hidden></div><div id="nibResultList" class="nib-result-list"><div class="nib-result-empty">한 개 이상의 펜촉을 선택하면 실제 등록 상품이 여기에 표시됩니다.<br>EF와 F처럼 여러 촉을 동시에 선택할 수 있습니다.</div></div>';
+nibPanel?.querySelector('.nib-finder')?.append(resultArea);
+
+const resultList = resultArea.querySelector('#nibResultList');
+const resultCount = resultArea.querySelector('#nibResultCount');
+const accessNote = resultArea.querySelector('#nibAccessNote');
+
+nibButtons.forEach((button) => {
+  button.setAttribute('role', 'checkbox');
+  button.setAttribute('aria-checked', 'false');
+});
+
+function showToast(message) {
   if (!toast) return;
   toast.textContent = message;
   toast.classList.add('show');
-  clearTimeout(showNibToast.timer);
-  showNibToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
+  clearTimeout(showToast.timer);
+  showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
-function mallUrl(query) {
-  return `${MALL_SEARCH_BASE}${encodeURIComponent(String(query || '').trim())}`;
+function getToken() {
+  return sessionStorage.getItem(ACCESS_KEY) || '';
 }
 
-function setSelectedNib(value) {
-  selectedNib = value;
-  nibButtons.forEach((button) => {
-    const active = button.dataset.nib === value;
-    button.classList.toggle('active', active);
-    button.setAttribute('aria-checked', String(active));
+function requestToken() {
+  const current = getToken();
+  const value = window.prompt('비공개 상품 DB 접근키를 입력해 주세요.', current);
+  if (value === null) return '';
+  const clean = value.trim();
+  if (clean) sessionStorage.setItem(ACCESS_KEY, clean);
+  return clean;
+}
+
+async function fetchProducts() {
+  if (!selectedNibs.size) return [];
+  let token = getToken();
+  if (!token) token = requestToken();
+  if (!token) throw new Error('상품 DB 접근키가 필요합니다.');
+
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/internal_nib_search`, {
+    method: 'POST',
+    headers: {
+      apikey: SUPABASE_KEY,
+      Authorization: `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      p_token: token,
+      p_nib_sizes: [...selectedNibs],
+      p_query: keywordInput?.value.trim() || '',
+      p_limit: 500
+    })
   });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok) {
+    if (response.status === 401 || /authorized|42501|permission/i.test(String(data?.message || data?.error || ''))) {
+      sessionStorage.removeItem(ACCESS_KEY);
+      throw new Error('접근키가 올바르지 않습니다. 다시 검색해 주세요.');
+    }
+    throw new Error(data?.message || '펜촉 상품을 불러오지 못했습니다.');
+  }
+  return Array.isArray(data) ? data : [];
 }
 
-function buildNibQuery() {
-  const keyword = keywordInput?.value.trim() || '';
-  return [keyword, selectedNib].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
-}
+function renderProducts(products) {
+  resultList.replaceChildren();
+  const selectedText = [...selectedNibs].map((value) => labelMap[value] || value).join(' · ');
+  resultCount.textContent = `${selectedText} · ${products.length.toLocaleString('ko-KR')}개 표시`;
+  accessNote.hidden = true;
 
-function submitNibSearch() {
-  if (!selectedNib) {
-    showNibToast('먼저 찾을 펜촉 규격을 선택해 주세요.');
-    nibButtons[0]?.focus();
+  if (!products.length) {
+    const empty = document.createElement('div');
+    empty.className = 'nib-result-empty';
+    empty.textContent = '선택한 촉과 검색어에 맞는 등록 상품이 없습니다.';
+    resultList.append(empty);
     return;
   }
 
-  const query = buildNibQuery();
-  if (!query) return;
+  products.forEach((product) => {
+    const card = document.createElement('article');
+    card.className = 'nib-product-card';
+    const copy = document.createElement('div');
+    const title = document.createElement('h3');
+    const meta = document.createElement('div');
+    const sizes = document.createElement('div');
+    title.textContent = product.product_name;
+    meta.className = 'nib-product-meta';
+    sizes.className = 'nib-product-sizes';
 
-  if (productIdentity) productIdentity.hidden = true;
-  if (resultHeading) resultHeading.textContent = `${selectedNib}촉 상품 검색 준비 완료`;
-  if (recognizedQuery) recognizedQuery.value = query;
-  if (recognizedRaw) {
-    recognizedRaw.textContent = `선택 촉: ${selectedNib}\n추가 검색어: ${keywordInput?.value.trim() || '전체 브랜드'}`;
-    recognizedRaw.hidden = false;
+    if (product.item_code) {
+      const code = document.createElement('span');
+      code.textContent = `품목코드 ${product.item_code}`;
+      meta.append(code);
+    }
+    const location = document.createElement('span');
+    location.textContent = product.location ? `위치 ${product.location}` : '위치 미등록';
+    meta.append(location);
+
+    (product.nib_sizes || []).forEach((size) => {
+      const badge = document.createElement('b');
+      badge.textContent = labelMap[size] || size;
+      sizes.append(badge);
+    });
+    copy.append(title, meta);
+    card.append(copy, sizes);
+    resultList.append(card);
+  });
+}
+
+async function searchProducts() {
+  if (!selectedNibs.size) {
+    resultCount.textContent = '촉을 선택해 주세요.';
+    resultList.innerHTML = '<div class="nib-result-empty">한 개 이상의 펜촉을 선택해 주세요.</div>';
+    return;
   }
-  if (webLookupLink) webLookupLink.hidden = true;
-  if (mallLink) {
-    mallLink.href = mallUrl(query);
-    mallLink.setAttribute('aria-disabled', 'false');
+
+  searchButton.disabled = true;
+  resultCount.textContent = '상품을 불러오는 중…';
+  resultList.innerHTML = '<div class="nib-result-empty">비공개 상품 DB에서 실제 상품을 조회하고 있습니다.</div>';
+  try {
+    const products = await fetchProducts();
+    renderProducts(products);
+  } catch (error) {
+    resultCount.textContent = '조회 실패';
+    accessNote.hidden = false;
+    accessNote.textContent = error.message;
+    resultList.innerHTML = '<div class="nib-result-empty">접근키를 확인한 뒤 다시 검색해 주세요.</div>';
+    showToast(error.message);
+  } finally {
+    searchButton.disabled = false;
   }
-  if (resultNote) {
-    resultNote.textContent = `${selectedNib} 촉 표기가 상품명에 포함된 상품을 찾습니다. 검색 결과에서 실제 촉 옵션과 판매 상태를 최종 확인해 주세요.`;
-  }
-  if (resultCard) {
-    resultCard.hidden = false;
-    resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }
-  showNibToast(`${selectedNib}촉 검색어를 만들었습니다.`);
+}
+
+function scheduleSearch() {
+  clearTimeout(searchTimer);
+  searchTimer = setTimeout(searchProducts, 220);
 }
 
 nibButtons.forEach((button) => {
   button.addEventListener('click', () => {
-    setSelectedNib(button.dataset.nib || '');
-    if (window.matchMedia('(max-width: 600px)').matches && keywordInput && !keywordInput.value) {
-      keywordInput.focus({ preventScroll: true });
-    }
+    const value = button.dataset.nib || '';
+    if (selectedNibs.has(value)) selectedNibs.delete(value);
+    else selectedNibs.add(value);
+    const active = selectedNibs.has(value);
+    button.classList.toggle('active', active);
+    button.setAttribute('aria-checked', String(active));
+    scheduleSearch();
   });
 });
 
@@ -87,11 +189,12 @@ brandButtons.forEach((button) => {
   button.addEventListener('click', () => {
     if (!keywordInput) return;
     keywordInput.value = button.dataset.brand || '';
-    keywordInput.focus();
+    scheduleSearch();
   });
 });
 
-searchButton?.addEventListener('click', submitNibSearch);
+searchButton?.addEventListener('click', searchProducts);
+keywordInput?.addEventListener('input', scheduleSearch);
 keywordInput?.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') submitNibSearch();
+  if (event.key === 'Enter') searchProducts();
 });
