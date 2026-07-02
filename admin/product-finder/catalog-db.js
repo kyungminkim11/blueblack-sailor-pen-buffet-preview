@@ -30,6 +30,9 @@ function rpcError(error) {
   if (/not authorized|42501|permission/i.test(message)) {
     return new Error('관리자 접근키가 올바르지 않습니다.');
   }
+  if (/row count mismatch/i.test(message)) {
+    return new Error('업로드된 상품 수가 원본과 일치하지 않아 기존 DB를 유지했습니다. 다시 시도해 주세요.');
+  }
   return new Error(message);
 }
 
@@ -71,25 +74,46 @@ export async function searchRemoteProducts(query, limit = 30, token = getAccessT
 }
 
 export async function replaceRemoteCatalog(products, sourceDate, onProgress, token = getAccessToken()) {
-  await callRpc('internal_product_replace_start', { p_token: token });
+  let importId = null;
 
-  const batchSize = 400;
-  let uploaded = 0;
-
-  for (let index = 0; index < products.length; index += batchSize) {
-    const batch = products.slice(index, index + batchSize);
-    await callRpc('internal_product_insert_batch', {
+  try {
+    importId = await callRpc('internal_product_import_start', {
       p_token: token,
-      p_rows: batch
+      p_source_date: sourceDate || null,
+      p_expected_count: products.length
     });
-    uploaded += batch.length;
-    onProgress?.(uploaded, products.length);
+
+    const batchSize = 400;
+    let uploaded = 0;
+
+    for (let index = 0; index < products.length; index += batchSize) {
+      const batch = products.slice(index, index + batchSize);
+      await callRpc('internal_product_import_batch', {
+        p_token: token,
+        p_import_id: importId,
+        p_rows: batch
+      });
+      uploaded += batch.length;
+      onProgress?.(uploaded, products.length);
+    }
+
+    const total = await callRpc('internal_product_import_finish', {
+      p_token: token,
+      p_import_id: importId
+    });
+
+    return Number(total) || products.length;
+  } catch (error) {
+    if (importId) {
+      try {
+        await callRpc('internal_product_import_abort', {
+          p_token: token,
+          p_import_id: importId
+        });
+      } catch {
+        // The temporary import expires automatically. Keep the original error.
+      }
+    }
+    throw error;
   }
-
-  const total = await callRpc('internal_product_replace_finish', {
-    p_token: token,
-    p_source_date: sourceDate || null
-  });
-
-  return Number(total) || products.length;
 }
