@@ -10,15 +10,22 @@
   <link rel="stylesheet" href="./product-finder.css" />
   <style>
     .finder-result-card{margin-top:14px;padding:18px;border:1px solid #d7e0e9;border-radius:18px;background:#fff}
-    .finder-result-card[hidden]{display:none}
-    .finder-result-card small{display:block;color:#a77a3d;font-size:8px;font-weight:900;letter-spacing:.08em}
+    .finder-result-card[hidden],.product-identity[hidden]{display:none}
+    .finder-result-card>small{display:block;color:#a77a3d;font-size:8px;font-weight:900;letter-spacing:.08em}
     .finder-result-card h2{margin:7px 0 12px;font-size:18px}
+    .product-identity{display:grid;grid-template-columns:92px minmax(0,1fr);gap:14px;align-items:center;margin:0 0 14px;padding:14px;border:1px solid #dbe3ea;border-radius:15px;background:#f7f9fb}
+    .product-identity-image{display:grid;place-items:center;width:92px;height:92px;border-radius:12px;background:#e9eef3;overflow:hidden;color:#6d7b89;font-size:10px;font-weight:850;text-align:center}
+    .product-identity-image img{width:100%;height:100%;object-fit:contain;background:#fff}
+    .product-identity-copy small{display:block;color:#a77a3d;font-size:8px;font-weight:900}
+    .product-identity-copy h3{margin:6px 0 5px;color:#10233f;font-size:17px;line-height:1.4}
+    .product-identity-copy p{margin:0;color:#68788b;font-size:9px;line-height:1.6}
+    .recognized-label{display:block;margin:0 0 7px;color:#506176;font-size:9px;font-weight:850}
     .recognized-input{width:100%;min-height:54px;padding:12px 14px;border:1px solid #cad5df;border-radius:12px;font:inherit;font-size:14px;resize:vertical}
     .recognized-raw{margin-top:10px;padding:11px;border-radius:10px;background:#f3f6f8;color:#627184;font-size:9px;line-height:1.6;white-space:pre-wrap;max-height:150px;overflow:auto}
     .result-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
     .result-actions a,.result-actions button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 14px;border:1px solid #d2dce6;border-radius:11px;background:#fff;color:#10233f;font-size:10px;font-weight:900;text-decoration:none}
     .simple-note{margin-top:12px;padding:12px 14px;border-left:3px solid #a77a3d;border-radius:10px;background:#fffaf2;color:#6c5a45;font-size:9px;line-height:1.7}
-    @media(max-width:600px){.result-actions>*{width:100%}}
+    @media(max-width:600px){.result-actions>*{width:100%}.product-identity{grid-template-columns:72px minmax(0,1fr)}.product-identity-image{width:72px;height:72px}.product-identity-copy h3{font-size:15px}}
   </style>
 </head>
 <body>
@@ -28,9 +35,9 @@
         <a class="finder-back" href="../">← 관리자 도구</a>
         <small>BLUEBLACK PEN SHOP · INTERNAL</small>
         <h1>상품 빠른찾기</h1>
-        <p>바코드나 상품명을 읽어 블루블랙몰 검색 링크를 바로 만듭니다.</p>
+        <p>바코드를 읽어 제품명을 확인하고 블루블랙몰 검색 링크를 만듭니다.</p>
       </div>
-      <div class="finder-db-status ready"><span></span><strong>바로 사용 가능</strong><small>상품 DB 업로드가 필요하지 않습니다.</small></div>
+      <div class="finder-db-status ready"><span></span><strong>바로 사용 가능</strong><small>바코드 상품명 조회 기능이 연결돼 있습니다.</small></div>
     </div>
   </header>
 
@@ -46,7 +53,7 @@
         <label class="main-search-label" for="productSearch">상품명, 모델명 또는 바코드를 입력하세요.</label>
         <div class="main-search-row">
           <input id="productSearch" type="search" autocomplete="off" placeholder="예: 라미 사파리, L17, 4014519..." />
-          <button type="button" class="primary" id="searchButton">자사몰 링크 만들기</button>
+          <button type="button" class="primary" id="searchButton">상품 확인</button>
         </div>
       </div>
 
@@ -61,7 +68,7 @@
             <button type="button" class="primary" id="startCamera">카메라 스캔 시작</button>
             <button type="button" id="stopCamera" disabled>카메라 중지</button>
             <label class="file-button">바코드 사진 선택<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label>
-            <p id="scannerMessage">인식된 바코드로 블루블랙몰 검색 링크를 만듭니다. 사파리에서도 대체 스캐너를 사용합니다.</p>
+            <p id="scannerMessage">바코드를 읽은 뒤 상품명과 브랜드를 조회합니다.</p>
           </div>
         </div>
       </div>
@@ -85,16 +92,26 @@
     </section>
 
     <section class="finder-result-card" id="resultCard" hidden>
-      <small>RECOGNIZED SEARCH KEYWORD</small>
-      <h2 id="resultHeading">인식 결과</h2>
+      <small>PRODUCT LOOKUP RESULT</small>
+      <h2 id="resultHeading">상품 확인 결과</h2>
+      <div class="product-identity" id="productIdentity" hidden>
+        <div class="product-identity-image" id="productImage">이미지 없음</div>
+        <div class="product-identity-copy">
+          <small id="productBrand">상품 정보</small>
+          <h3 id="productName"></h3>
+          <p id="productMeta"></p>
+        </div>
+      </div>
+      <label class="recognized-label" for="recognizedQuery">블루블랙몰 검색어</label>
       <textarea class="recognized-input" id="recognizedQuery" rows="2" aria-label="검색어 수정"></textarea>
       <div class="recognized-raw" id="recognizedRaw" hidden></div>
       <div class="result-actions">
         <a class="primary" id="mallLink" href="#" target="_blank" rel="noopener">블루블랙몰에서 검색</a>
+        <a id="webLookupLink" href="#" target="_blank" rel="noopener" hidden>웹에서 바코드 찾기</a>
         <button type="button" id="copyMallLink">검색 링크 복사</button>
         <button type="button" id="resetResult">다시 인식</button>
       </div>
-      <div class="simple-note">인식이 조금 다르면 위 검색어만 수정한 뒤 버튼을 누르면 됩니다. 바코드가 자사몰 검색에 등록되지 않은 상품은 사진 OCR로 상품명이나 모델명을 읽어 검색하세요.</div>
+      <div class="simple-note" id="resultNote">인식된 상품명이 다르면 위 검색어를 수정한 뒤 블루블랙몰 검색 버튼을 눌러 주세요.</div>
     </section>
   </main>
 
