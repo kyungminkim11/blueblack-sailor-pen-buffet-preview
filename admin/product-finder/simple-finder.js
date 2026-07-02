@@ -1,4 +1,6 @@
 const MALL_SEARCH_BASE = 'https://blueblack.co.kr/product/search.html?keyword=';
+const LOOKUP_ENDPOINT = 'https://jnciddblcndmthmmvqrz.supabase.co/functions/v1/blueblack-product-lookup';
+const LOOKUP_CLIENT = 'blueblack-finder-v1';
 
 const ui = {
   tabs: [...document.querySelectorAll('[data-mode]')],
@@ -18,11 +20,18 @@ const ui = {
   recognitionStatus: document.querySelector('#recognitionStatus'),
   resultCard: document.querySelector('#resultCard'),
   resultHeading: document.querySelector('#resultHeading'),
+  productIdentity: document.querySelector('#productIdentity'),
+  productImage: document.querySelector('#productImage'),
+  productBrand: document.querySelector('#productBrand'),
+  productName: document.querySelector('#productName'),
+  productMeta: document.querySelector('#productMeta'),
   recognizedQuery: document.querySelector('#recognizedQuery'),
   recognizedRaw: document.querySelector('#recognizedRaw'),
   mallLink: document.querySelector('#mallLink'),
+  webLookupLink: document.querySelector('#webLookupLink'),
   copyMallLink: document.querySelector('#copyMallLink'),
   resetResult: document.querySelector('#resetResult'),
+  resultNote: document.querySelector('#resultNote'),
   toast: document.querySelector('#finderToast')
 };
 
@@ -52,10 +61,28 @@ function mallUrl(query) {
   return `${MALL_SEARCH_BASE}${encodeURIComponent(String(query || '').trim())}`;
 }
 
+function webBarcodeUrl(barcode) {
+  return `https://www.google.com/search?q=${encodeURIComponent(`바코드 ${barcode}`)}`;
+}
+
 function updateMallLink() {
   const query = ui.recognizedQuery.value.trim();
   ui.mallLink.href = query ? mallUrl(query) : '#';
   ui.mallLink.setAttribute('aria-disabled', query ? 'false' : 'true');
+}
+
+function resetProductIdentity() {
+  ui.productIdentity.hidden = true;
+  ui.productBrand.textContent = '상품 정보';
+  ui.productName.textContent = '';
+  ui.productMeta.textContent = '';
+  ui.productImage.replaceChildren('이미지 없음');
+}
+
+function setRawText(text) {
+  const value = String(text || '').trim();
+  ui.recognizedRaw.textContent = value;
+  ui.recognizedRaw.hidden = !value;
 }
 
 function showResult(query, source, rawText = '') {
@@ -64,13 +91,107 @@ function showResult(query, source, rawText = '') {
     showToast('인식된 검색어가 없습니다. 다시 촬영해 주세요.');
     return;
   }
+  resetProductIdentity();
   ui.resultHeading.textContent = `${source} 인식 결과`;
   ui.recognizedQuery.value = clean;
-  ui.recognizedRaw.textContent = rawText.trim();
-  ui.recognizedRaw.hidden = !rawText.trim() || rawText.trim() === clean;
+  setRawText(rawText);
+  ui.webLookupLink.hidden = true;
+  ui.resultNote.textContent = '인식된 상품명이 다르면 위 검색어를 수정한 뒤 블루블랙몰 검색 버튼을 눌러 주세요.';
   ui.resultCard.hidden = false;
   updateMallLink();
   ui.resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildResolvedQuery(data) {
+  const brand = String(data?.brand || '').trim();
+  const title = String(data?.title || '').trim();
+  const model = String(data?.model || '').trim();
+  const parts = [];
+  if (brand && !title.toLowerCase().includes(brand.toLowerCase())) parts.push(brand);
+  if (title) parts.push(title);
+  if (model && !title.toLowerCase().includes(model.toLowerCase())) parts.push(model);
+  return parts.join(' ').replace(/\s+/g, ' ').trim();
+}
+
+function renderResolvedProduct(data, barcode) {
+  const query = buildResolvedQuery(data) || barcode;
+  ui.productIdentity.hidden = false;
+  ui.productBrand.textContent = data.brand || '바코드 상품 정보';
+  ui.productName.textContent = data.title || query;
+  ui.productMeta.textContent = [data.model && `모델 ${data.model}`, `바코드 ${barcode}`].filter(Boolean).join(' · ');
+  ui.productImage.replaceChildren();
+
+  if (data.image) {
+    const image = new Image();
+    image.alt = data.title || '상품 이미지';
+    image.referrerPolicy = 'no-referrer';
+    image.onload = () => ui.productImage.replaceChildren(image);
+    image.onerror = () => ui.productImage.replaceChildren('이미지 없음');
+    image.src = data.image;
+  } else {
+    ui.productImage.append('이미지 없음');
+  }
+
+  ui.resultHeading.textContent = '상품 확인 완료';
+  ui.recognizedQuery.value = query;
+  setRawText(`인식 바코드: ${barcode}\n조회 상품명: ${data.title || '등록 없음'}${data.brand ? `\n브랜드: ${data.brand}` : ''}${data.model ? `\n모델: ${data.model}` : ''}`);
+  ui.webLookupLink.hidden = true;
+  ui.resultNote.textContent = '위 상품명이 실제 상품과 맞는지 확인한 뒤 블루블랙몰에서 검색해 주세요. 색상이나 촉 규격은 검색 결과에서 다시 확인합니다.';
+  updateMallLink();
+}
+
+async function fetchBarcodeProduct(barcode) {
+  const response = await fetch(`${LOOKUP_ENDPOINT}?barcode=${encodeURIComponent(barcode)}`, {
+    headers: { 'x-blueblack-client': LOOKUP_CLIENT }
+  });
+  if (!response.ok) throw new Error('상품명 조회 서버에 연결하지 못했습니다.');
+  return response.json();
+}
+
+async function resolveBarcode(barcode, source = '바코드') {
+  const clean = String(barcode || '').replace(/\D/g, '');
+  if (!/^\d{8,14}$/.test(clean)) {
+    showResult(barcode, source);
+    return;
+  }
+
+  resetProductIdentity();
+  ui.resultCard.hidden = false;
+  ui.resultHeading.textContent = '상품명을 확인하고 있습니다…';
+  ui.recognizedQuery.value = clean;
+  setRawText(`인식 바코드: ${clean}`);
+  ui.webLookupLink.hidden = true;
+  ui.resultNote.textContent = '바코드 등록정보를 조회하고 있습니다.';
+  updateMallLink();
+  ui.resultCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  try {
+    const data = await fetchBarcodeProduct(clean);
+    if (data?.found && data?.title) {
+      renderResolvedProduct(data, clean);
+      ui.scannerMessage.textContent = `${data.title} 상품을 확인했습니다.`;
+      showToast('바코드에서 상품명을 확인했습니다.');
+      return;
+    }
+
+    ui.resultHeading.textContent = '상품명을 찾지 못했어요';
+    ui.recognizedQuery.value = clean;
+    setRawText(`인식 바코드: ${clean}\n외부 바코드 등록정보에서 상품명이 확인되지 않았습니다.`);
+    ui.webLookupLink.href = webBarcodeUrl(clean);
+    ui.webLookupLink.hidden = false;
+    ui.resultNote.textContent = '이 바코드가 공개 상품 DB에 등록되지 않았을 수 있습니다. 웹 검색을 확인하거나 사진 OCR에서 상자의 상품명·모델명을 촬영해 주세요.';
+    updateMallLink();
+    ui.scannerMessage.textContent = '바코드는 읽었지만 상품명 등록정보를 찾지 못했습니다.';
+  } catch (error) {
+    ui.resultHeading.textContent = '상품명 조회 연결 오류';
+    ui.recognizedQuery.value = clean;
+    setRawText(`인식 바코드: ${clean}\n${error.message}`);
+    ui.webLookupLink.href = webBarcodeUrl(clean);
+    ui.webLookupLink.hidden = false;
+    ui.resultNote.textContent = '바코드는 정상적으로 읽었습니다. 잠시 후 다시 시도하거나 사진 OCR로 상품명을 읽어 주세요.';
+    updateMallLink();
+    ui.scannerMessage.textContent = error.message;
+  }
 }
 
 function scoreOcrLine(line) {
@@ -100,9 +221,7 @@ function bestOcrQuery(text) {
 }
 
 async function loadZXing() {
-  if (!zxingPromise) {
-    zxingPromise = import('https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/+esm');
-  }
+  if (!zxingPromise) zxingPromise = import('https://cdn.jsdelivr.net/npm/@zxing/browser@0.1.5/+esm');
   return zxingPromise;
 }
 
@@ -151,7 +270,7 @@ async function startNativeScanner() {
     if (codes[0]?.rawValue) {
       const value = codes[0].rawValue;
       stopCamera();
-      showResult(value, '바코드');
+      await resolveBarcode(value, '바코드');
       return;
     }
     nativeFrame = requestAnimationFrame(scan);
@@ -166,7 +285,7 @@ async function startZXingScanner() {
     if (!result) return;
     const value = result.getText();
     stopCamera();
-    showResult(value, '바코드');
+    resolveBarcode(value, '바코드');
   });
   ui.cameraEmpty.hidden = true;
 }
@@ -223,8 +342,7 @@ async function handleBarcodeImage(file) {
   try {
     const value = await detectBarcodeFromFile(file);
     if (!value) throw new Error('바코드를 찾지 못했습니다. 더 선명하게 촬영해 주세요.');
-    showResult(value, '바코드 사진');
-    ui.scannerMessage.textContent = `바코드 ${value}를 인식했습니다.`;
+    await resolveBarcode(value, '바코드 사진');
   } catch (error) {
     ui.scannerMessage.textContent = error.message;
     showToast(error.message);
@@ -281,10 +399,16 @@ async function runOcr() {
   }
 }
 
+async function submitManualSearch() {
+  const value = ui.search.value.trim();
+  if (/^\d{8,14}$/.test(value)) await resolveBarcode(value, '직접 입력 바코드');
+  else showResult(value, '직접 입력');
+}
+
 ui.tabs.forEach((button) => button.addEventListener('click', () => activateMode(button.dataset.mode)));
-ui.searchButton.addEventListener('click', () => showResult(ui.search.value, '직접 입력'));
+ui.searchButton.addEventListener('click', submitManualSearch);
 ui.search.addEventListener('keydown', (event) => {
-  if (event.key === 'Enter') showResult(ui.search.value, '직접 입력');
+  if (event.key === 'Enter') submitManualSearch();
 });
 ui.startCamera.addEventListener('click', startCamera);
 ui.stopCamera.addEventListener('click', stopCamera);
@@ -308,7 +432,9 @@ ui.copyMallLink.addEventListener('click', async () => {
 ui.resetResult.addEventListener('click', () => {
   ui.resultCard.hidden = true;
   ui.recognizedQuery.value = '';
-  ui.recognizedRaw.textContent = '';
+  setRawText('');
+  resetProductIdentity();
+  ui.webLookupLink.hidden = true;
 });
 window.addEventListener('pagehide', () => {
   stopCamera();
