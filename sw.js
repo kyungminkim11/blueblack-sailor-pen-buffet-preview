@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v35-20260701';
+const CACHE_NAME = 'blueblack-store-guide-v36-20260702';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -10,6 +10,10 @@ const CORE_PATHS = [
   './admin.html',
   './admin-v16.css',
   './admin-ink-v1.css',
+  './admin/product-finder/',
+  './admin/product-finder/index.html',
+  './admin/product-finder/product-finder.css',
+  './admin/product-finder/simple-finder.js',
   './portal-card.svg',
   './portal-card.png',
   './store-guide/',
