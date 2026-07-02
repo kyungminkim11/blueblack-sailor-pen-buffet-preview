@@ -31,45 +31,57 @@
 <body>
   <header class="finder-header">
     <div class="finder-header-inner">
-      <div>
-        <a class="finder-back" href="../">← 관리자 도구</a>
+      <div class="finder-heading">
+        <a class="finder-back" href="../" aria-label="관리자 도구로 돌아가기">← 관리자 도구</a>
         <small>BLUEBLACK PEN SHOP · INTERNAL</small>
         <h1>상품 빠른찾기</h1>
-        <p>바코드를 읽어 제품명을 확인하고 블루블랙몰 검색 링크를 만듭니다.</p>
+        <p>바코드를 스캔하면 등록된 상품 정보를 바로 확인할 수 있습니다.</p>
       </div>
-      <div class="finder-db-status ready"><span></span><strong>바로 사용 가능</strong><small>바코드 상품명 조회 기능이 연결돼 있습니다.</small></div>
+      <div class="finder-db-status ready"><span></span><strong>상품 데이터 연결됨</strong><small>바코드 상품명 조회 기능을 사용할 수 있습니다.</small></div>
     </div>
   </header>
 
   <main class="finder-main">
     <section class="finder-search-card">
       <div class="finder-tabs" role="tablist" aria-label="검색 방식">
-        <button type="button" class="active" data-mode="text">직접 입력</button>
-        <button type="button" data-mode="barcode">바코드 스캔</button>
-        <button type="button" data-mode="photo">사진 OCR</button>
+        <button type="button" class="active" data-mode="barcode" role="tab" aria-selected="true"><span class="tab-icon" aria-hidden="true">▥</span>바코드</button>
+        <button type="button" data-mode="text" role="tab" aria-selected="false"><span class="tab-icon" aria-hidden="true">⌕</span>이름 검색</button>
+        <button type="button" data-mode="photo" role="tab" aria-selected="false"><span class="tab-icon" aria-hidden="true">▧</span>사진 검색</button>
       </div>
 
-      <div class="finder-panel active" data-panel="text">
-        <label class="main-search-label" for="productSearch">상품명, 모델명 또는 바코드를 입력하세요.</label>
-        <div class="main-search-row">
-          <input id="productSearch" type="search" autocomplete="off" placeholder="예: 라미 사파리, L17, 4014519..." />
-          <button type="button" class="primary" id="searchButton">상품 확인</button>
+      <div class="finder-panel active" data-panel="barcode">
+        <div class="mobile-panel-title">
+          <div><small>가장 빠른 검색</small><strong>상품 바코드를 비춰 주세요</strong></div>
+          <span class="status-chip">실시간 인식</span>
         </div>
-      </div>
-
-      <div class="finder-panel" data-panel="barcode">
         <div class="scanner-layout">
           <div class="camera-stage">
             <video id="barcodeVideo" playsinline muted></video>
             <div class="camera-frame"><span></span></div>
-            <div class="camera-empty" id="cameraEmpty">카메라를 시작하고 바코드를 화면 중앙에 맞춰 주세요.</div>
+            <div class="camera-empty" id="cameraEmpty">
+              <span class="camera-empty-icon" aria-hidden="true">▥</span>
+              <strong>카메라를 시작해 주세요</strong>
+              <small>바코드 전체가 사각형 안에 들어오도록 맞추면 자동으로 인식합니다.</small>
+            </div>
+            <div class="camera-guide" aria-hidden="true">바코드를 가로로 맞춰 주세요</div>
           </div>
           <div class="scanner-controls">
-            <button type="button" class="primary" id="startCamera">카메라 스캔 시작</button>
-            <button type="button" id="stopCamera" disabled>카메라 중지</button>
-            <label class="file-button">바코드 사진 선택<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label>
-            <p id="scannerMessage">바코드를 읽은 뒤 상품명과 브랜드를 조회합니다.</p>
+            <button type="button" class="primary scanner-primary" id="startCamera"><span aria-hidden="true">◉</span> 카메라로 스캔</button>
+            <label class="file-button scanner-secondary"><span aria-hidden="true">▧</span> 촬영한 바코드 사진 사용<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label>
+            <button type="button" class="scanner-stop" id="stopCamera" disabled>카메라 중지</button>
+            <div class="scanner-message" id="scannerMessage" role="status" aria-live="polite">버튼을 누르면 후면 카메라가 열립니다.</div>
+            <div class="scan-tips">
+              <span>빛 반사를 피하고</span><span>10~20cm 거리에서</span><span>바코드를 가로로</span>
+            </div>
           </div>
+        </div>
+      </div>
+
+      <div class="finder-panel" data-panel="text">
+        <label class="main-search-label" for="productSearch">상품명, 모델명 또는 바코드를 입력하세요.</label>
+        <div class="main-search-row">
+          <input id="productSearch" type="search" autocomplete="off" enterkeyhint="search" placeholder="예: 라미 사파리, L17, 4014519..." />
+          <button type="button" class="primary" id="searchButton">상품 확인</button>
         </div>
       </div>
 
@@ -79,7 +91,7 @@
             <input id="photoInput" type="file" accept="image/*" capture="environment" />
             <span class="photo-icon">▧</span>
             <strong>제품 또는 상자 사진 촬영</strong>
-            <small>상품명, 브랜드, 모델명을 사진에서 읽습니다.</small>
+            <small>상품명, 브랜드, 모델명이 크게 보이도록 촬영해 주세요.</small>
           </label>
           <div class="photo-preview" id="photoPreview"><span>선택한 사진이 여기에 표시됩니다.</span></div>
         </div>
