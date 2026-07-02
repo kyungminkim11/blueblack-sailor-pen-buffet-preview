@@ -8,11 +8,12 @@
   <title>상품 빠른찾기 · BlueBlack</title>
   <link rel="icon" href="../../app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./product-finder.css" />
+  <link rel="stylesheet" href="./product-finder-enhancements.css" />
 </head>
 <body>
   <header class="finder-header">
     <div class="finder-header-inner">
-      <div><a class="finder-back" href="../">← 관리자 도구</a><small>BLUEBLACK PEN SHOP · INTERNAL</small><h1>상품 빠른찾기</h1><p>상품명·바코드·사진으로 제품 정보와 위치를 즉시 확인합니다.</p></div>
+      <div><a class="finder-back" href="../">← 관리자 도구</a><small>BLUEBLACK PEN SHOP · INTERNAL</small><h1>상품 빠른찾기</h1><p>품목코드·바코드·상품명으로 가격, 재고와 위치를 빠르게 확인합니다.</p></div>
       <div class="finder-db-status" id="dbStatus"><span></span><strong>접근 확인 중</strong><small>관리자 접근키가 필요합니다.</small></div>
     </div>
   </header>
@@ -20,52 +21,52 @@
   <main class="finder-main">
     <section class="finder-search-card">
       <div class="finder-tabs" role="tablist" aria-label="검색 방식">
-        <button type="button" class="active" data-mode="text">상품명·바코드</button>
+        <button type="button" class="active" data-mode="text">상품명·품목코드</button>
         <button type="button" data-mode="barcode">바코드 스캔</button>
         <button type="button" data-mode="photo">사진 검색</button>
       </div>
 
       <div class="finder-panel active" data-panel="text">
-        <label class="main-search-label" for="productSearch">상품명 또는 바코드를 입력하세요.</label>
+        <label class="main-search-label" for="productSearch">상품명, 품목코드 또는 바코드를 입력하세요.</label>
         <div class="main-search-row">
-          <input id="productSearch" type="search" autocomplete="off" placeholder="예: 라미 사파리, 트위스비 에코, EAN 바코드" />
+          <input id="productSearch" type="search" autocomplete="off" placeholder="예: 사파리, 000005, 스캔한 코드" />
           <button type="button" class="primary" id="searchButton">검색</button>
         </div>
-        <div class="search-shortcuts"><button type="button" id="focusScanner">USB 스캐너 대기</button><span>스캐너가 Enter를 보내면 자동으로 검색됩니다.</span></div>
+        <div class="search-shortcuts"><button type="button" id="focusScanner">USB 스캐너 대기</button><span>상품명 일부만 입력해도 찾을 수 있고, 스캐너가 Enter를 보내면 바로 검색합니다.</span></div>
       </div>
 
       <div class="finder-panel" data-panel="barcode">
         <div class="scanner-layout">
           <div class="camera-stage"><video id="barcodeVideo" playsinline muted></video><div class="camera-frame"><span></span></div><div class="camera-empty" id="cameraEmpty">카메라를 시작하면 바코드를 화면 중앙에 맞춰 주세요.</div></div>
-          <div class="scanner-controls"><button type="button" class="primary" id="startCamera">카메라 스캔 시작</button><button type="button" id="stopCamera" disabled>카메라 중지</button><label class="file-button">바코드 사진 선택<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label><p id="scannerMessage">Supabase에 실제 바코드가 등록된 상품만 정확히 검색됩니다.</p></div>
+          <div class="scanner-controls"><button type="button" class="primary" id="startCamera">카메라 스캔 시작</button><button type="button" id="stopCamera" disabled>카메라 중지</button><label class="file-button">바코드 사진 선택<input id="barcodeImageInput" type="file" accept="image/*" capture="environment" /></label><p id="scannerMessage">스캔한 값이 품목코드 또는 등록된 바코드와 일치하면 상품을 바로 표시합니다.</p></div>
         </div>
       </div>
 
       <div class="finder-panel" data-panel="photo">
         <div class="photo-search-layout">
-          <label class="photo-drop" id="photoDrop"><input id="photoInput" type="file" accept="image/*" capture="environment" /><span class="photo-icon">▧</span><strong>제품 또는 포장 사진 촬영</strong><small>사진 속 바코드를 먼저 찾고, 없으면 상품명을 문자로 인식합니다.</small></label>
+          <label class="photo-drop" id="photoDrop"><input id="photoInput" type="file" accept="image/*" capture="environment" /><span class="photo-icon">▧</span><strong>제품 또는 포장 사진 촬영</strong><small>사진 속 바코드를 먼저 찾고, 없으면 상품명과 모델 문자를 인식합니다.</small></label>
           <div class="photo-preview" id="photoPreview"><span>선택한 사진이 여기에 표시됩니다.</span></div>
         </div>
         <div class="photo-actions"><button type="button" class="primary" id="runPhotoSearch" disabled>사진으로 검색</button><button type="button" id="clearPhoto" disabled>사진 지우기</button></div>
-        <div class="recognition-status" id="recognitionStatus">사진은 저장하거나 업로드하지 않고 브라우저에서 분석합니다.</div>
+        <div class="recognition-status" id="recognitionStatus">사진은 저장하거나 업로드하지 않고 현재 브라우저에서만 분석합니다.</div>
       </div>
     </section>
 
     <section class="finder-toolbar">
       <div><strong id="resultTitle">상품 검색</strong><span id="resultSummary">관리자 접근키를 입력해 주세요.</span></div>
-      <div class="finder-toolbar-actions"><button type="button" id="openImport">Supabase 데이터 업데이트</button><button type="button" id="changeAccess">접근키 변경</button></div>
+      <div class="finder-toolbar-actions"><button type="button" id="openImport">오늘 재고 파일 업데이트</button><button type="button" id="changeAccess">접근키 변경</button></div>
     </section>
 
     <section class="finder-workspace">
       <div class="result-list" id="resultList"><div class="finder-empty"><b>접근이 잠겨 있습니다.</b><span>관리자 접근키를 입력하면 상품 검색을 사용할 수 있습니다.</span></div></div>
-      <aside class="product-detail" id="productDetail"><div class="finder-empty"><b>상품을 선택해 주세요.</b><span>검색 결과에서 상품을 누르면 상품명·바코드·위치가 표시됩니다.</span></div></aside>
+      <aside class="product-detail" id="productDetail"><div class="finder-empty"><b>상품을 선택해 주세요.</b><span>검색 결과에서 상품을 누르면 가격·재고·위치와 자사몰 검색 버튼이 표시됩니다.</span></div></aside>
     </section>
   </main>
 
   <dialog id="accessDialog" class="finder-dialog access-dialog">
     <div class="dialog-card">
       <div class="dialog-head"><div><small>PRIVATE DATABASE</small><h2>관리자 접근키</h2></div></div>
-      <p>상품 데이터는 공개되지 않습니다. 접근키는 서버로 검증되며 현재 브라우저 탭에만 보관됩니다.</p>
+      <p>상품 데이터는 공개되지 않습니다. 접근키는 서버에서 검증되며 현재 브라우저 탭에만 보관됩니다.</p>
       <label class="access-key-field"><span>접근키</span><input id="accessKey" type="password" autocomplete="off" placeholder="관리자 접근키 입력" /></label>
       <p class="access-error" id="accessError" aria-live="polite"></p>
       <div class="dialog-actions"><button type="button" class="primary" id="unlockAccess">접속</button></div>
@@ -74,11 +75,13 @@
 
   <dialog id="importDialog" class="finder-dialog">
     <form method="dialog" class="dialog-card" id="importForm">
-      <div class="dialog-head"><div><small>PRIVATE SUPABASE DATABASE</small><h2>상품 데이터 업데이트</h2></div><button type="submit" value="cancel" aria-label="닫기">×</button></div>
-      <p>원본 CSV에서 <strong>상품명·검증된 바코드·위치</strong>만 추출해 Supabase로 전송합니다. 재고수량·가격·적요·품목코드 등 나머지 정보는 전송 전에 버립니다.</p>
-      <label class="import-drop"><input id="catalogFile" type="file" accept=".csv,text/csv" /><strong>재고현황 CSV 선택</strong><span>새 파일을 업로드하면 기존 상품 검색 DB가 교체됩니다.</span></label>
-      <div class="import-progress" id="importProgress" hidden><span></span><strong id="importProgressTitle">안전한 필드만 추출하고 있습니다.</strong><small id="importProgressDetail">파일을 확인하고 있습니다.</small></div>
-      <div class="dialog-actions"><button type="submit" value="cancel">취소</button><button type="button" class="primary" id="importCatalog" disabled>Supabase에 업데이트</button></div>
+      <div class="dialog-head"><div><small>DAILY PRIVATE UPDATE</small><h2>오늘 재고 파일 업데이트</h2></div><button type="submit" value="cancel" aria-label="닫기">×</button></div>
+      <p>이카운트에서 내려받은 Excel 또는 CSV에서 <strong>품목코드·상품명·소비자가·판매가·재고수량·재고 위치</strong>를 추출합니다. 적요와 불필요한 열은 저장하지 않습니다.</p>
+      <div class="import-notice"><strong>안전한 전체 교체</strong><span>새 파일 전송과 건수 검증이 모두 끝난 경우에만 기존 DB가 교체됩니다. 업로드 중 오류가 나면 기존 데이터는 그대로 유지됩니다.</span></div>
+      <label class="import-drop"><input id="catalogFile" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" /><strong>재고현황 Excel·CSV 선택</strong><span>매일 매장 오픈 전 최신 파일을 선택해 주세요.</span></label>
+      <div class="import-progress" id="importProgress" hidden><span></span><strong id="importProgressTitle">파일을 확인하고 있습니다.</strong><small id="importProgressDetail">상품 데이터를 읽고 있습니다.</small></div>
+      <p class="inventory-warning">재고와 가격은 마지막 파일 업데이트 시점 기준이며 실시간 정보와 다를 수 있습니다.</p>
+      <div class="dialog-actions"><button type="submit" value="cancel">취소</button><button type="button" class="primary" id="importCatalog" disabled>비공개 DB 업데이트</button></div>
     </form>
   </dialog>
 
