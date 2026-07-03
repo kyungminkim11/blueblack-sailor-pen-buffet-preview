@@ -1,5 +1,6 @@
 const cleanText=value=>String(value??'').trim();
 const cleanNumber=value=>{if(value===null||value===undefined||value==='')return null;const parsed=Number(String(value).replace(/,/g,'').replace(/원/g,'').trim());return Number.isFinite(parsed)?parsed:null};
+const cleanCode=value=>{const source=cleanText(value);if(!source)return'';if(/^[+-]?\d+(?:\.\d+)?e[+-]?\d+$/i.test(source)){const parsed=Number(source);if(Number.isSafeInteger(parsed))return String(parsed)}return source.replace(/\.0$/,'')};
 const mapHeaders=row=>new Map(row.map((value,index)=>[cleanText(value),index]).filter(([key])=>key));
 const valueAt=(row,map,name)=>row[map.get(name)]??'';
 
@@ -27,10 +28,10 @@ export async function parseProductFile(file){
   const rows=[];
   for(let index=result.headerIndex+1;index<result.rows.length;index++){
     const row=result.rows[index];
-    const itemCode=cleanText(valueAt(row,headers,'품목코드'));
+    const itemCode=cleanCode(valueAt(row,headers,'품목코드'));
     const productName=cleanText(valueAt(row,headers,'품목명'));
     if(!itemCode||!productName)continue;
-    rows.push({source_row:index+1,item_code:itemCode,manufacturer:cleanText(valueAt(row,headers,'제조사'))||null,product_name:productName,product_type:cleanText(valueAt(row,headers,'종류'))||null,consumer_price:cleanNumber(valueAt(row,headers,'소비자가')),sale_price:cleanNumber(valueAt(row,headers,'판매가')),store_price:null,barcode:cleanText(valueAt(row,headers,'바코드'))||null,location:cleanText(valueAt(row,headers,'재고 위치'))||null,note:cleanText(valueAt(row,headers,'적요'))||null});
+    rows.push({source_row:index+1,item_code:itemCode,manufacturer:cleanText(valueAt(row,headers,'제조사'))||null,product_name:productName,product_type:cleanText(valueAt(row,headers,'종류'))||null,consumer_price:cleanNumber(valueAt(row,headers,'소비자가')),sale_price:cleanNumber(valueAt(row,headers,'판매가')),store_price:null,barcode:cleanCode(valueAt(row,headers,'바코드'))||null,location:cleanText(valueAt(row,headers,'재고 위치'))||null,note:cleanText(valueAt(row,headers,'적요'))||null});
   }
   if(!rows.length)throw new Error('등록 가능한 상품 행을 찾지 못했습니다.');
   return{rows,sheetName:result.name};
@@ -43,7 +44,7 @@ export async function parseStockFile(file){
   const rows=[];
   for(let index=result.headerIndex+1;index<result.rows.length;index++){
     const row=result.rows[index];
-    const itemCode=cleanText(valueAt(row,headers,'품목코드'));
+    const itemCode=cleanCode(valueAt(row,headers,'품목코드'));
     const productName=cleanText(valueAt(row,headers,'품명 및 규격'));
     if(!itemCode||!productName)continue;
     rows.push({source_row:index+1,item_code:itemCode,manufacturer:cleanText(valueAt(row,headers,'품목그룹1명'))||null,product_name:productName,stock_qty:cleanNumber(valueAt(row,headers,'재고수량')),consumer_price:cleanNumber(valueAt(row,headers,'소비자가')),sale_price:cleanNumber(valueAt(row,headers,'판매가')),location:cleanText(valueAt(row,headers,'재고 위치'))||null,note:cleanText(valueAt(row,headers,'적요'))||null});
