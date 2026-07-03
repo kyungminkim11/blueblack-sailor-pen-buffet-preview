@@ -1,0 +1,42 @@
+name: Validate ink store modules
+
+on:
+  push:
+    paths:
+      - 'src/ink-price-store-v30-*'
+      - 'src/ink-price-store-v30.*'
+      - 'src/ink-bottle-*'
+      - 'src/ink-price-style-v30-*'
+      - 'ink-price/index.html'
+      - '.github/workflows/validate-ink-store.yml'
+  workflow_dispatch:
+
+jobs:
+  syntax-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rebuild generated ink store module
+        run: |
+          python - <<'PY'
+          import base64, json
+          from pathlib import Path
+          root = Path('src')
+          encoded = [
+              base64.b64decode((root / 'ink-price-store-v30-1.b64').read_text().strip()).decode(),
+              base64.b64decode((root / 'ink-price-store-v30-2.b64').read_text().strip()).decode(),
+          ]
+          prefix = [
+              (root / 'ink-price-store-v30.part3.txt').read_text(),
+              (root / 'ink-price-store-v30.part4a.txt').read_text(),
+          ]
+          ranked = json.loads((root / 'ink-price-store-v30.part4b.json').read_text())
+          suffix = [(root / f'ink-price-store-v30.part{i}.txt').read_text() for i in range(5, 9)]
+          Path('/tmp/ink-store-generated.mjs').write_text(''.join(encoded + prefix + [ranked] + suffix))
+          PY
+      - name: Check JavaScript syntax
+        run: |
+          node --check /tmp/ink-store-generated.mjs
+          node --check src/ink-bottle-price-v36.js
+          node --check src/ink-bottle-volume-rpc-v38.js
+          node --check src/ink-price-i18n-v43.js
