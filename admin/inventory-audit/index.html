@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#102b4c" />
+  <meta name="robots" content="noindex,nofollow" />
+  <title>재고 조사 · BlueBlack</title>
+  <script>if(sessionStorage.getItem('blueblack-admin-unlocked')!=='1')location.replace('../');</script>
+  <link rel="stylesheet" href="./inventory-audit.css" />
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+</head>
+<body>
+  <header class="header"><div class="header-inner"><div><a class="back" href="../">← 관리자 도구</a><div class="brand">BLUEBLACK PEN SHOP · INVENTORY AUDIT</div><h1>재고 조사</h1><p>구역을 선택하고 상품 바코드를 스캔하면 실제 수량이 자동으로 누적됩니다.</p></div><div><button class="btn" id="exportTop">엑셀 다운로드</button></div></div></header>
+  <main class="main">
+    <section class="panel setup">
+      <div><div class="title"><small>STEP 1</small><h2>조사 구역 선택</h2><p>구역을 바꾸면 이후 스캔부터 새 구역에 저장됩니다.</p></div><div class="area-row"><select id="areaSelect" aria-label="재고 조사 구역"><option value="지하">지하</option><option value="1층 진열">1층 진열</option><option value="1층 창고">1층 창고</option><option value="2층 진열">2층 진열</option><option value="2층 창고">2층 창고</option><option value="3층">3층</option><option value="4층">4층</option><option value="__custom__">직접 입력</option></select><input id="customArea" type="text" placeholder="예: 1층 계산대 옆" hidden /></div></div>
+      <div class="current-area"><div><small>현재 조사 구역</small><strong id="currentArea">지하</strong></div><span class="badge">자동 저장 중</span></div>
+    </section>
+    <section class="kpis"><div class="kpi"><small>조사 상품 종류</small><strong id="skuCount">0</strong></div><div class="kpi"><small>조사 총수량</small><strong id="unitCount">0</strong></div><div class="kpi"><small>현재 구역 수량</small><strong id="areaUnitCount">0</strong></div><div class="kpi"><small>미등록 바코드</small><strong id="unknownCount">0</strong></div></section>
+    <section class="workspace">
+      <div class="panel"><div class="title"><small>STEP 2</small><h2>바코드 스캔</h2><p>같은 상품을 다시 스캔하면 조사 수량이 1개씩 증가합니다.</p></div><div class="camera"><video id="video" playsinline muted></video><div class="camera-empty" id="cameraEmpty"><b>카메라를 시작해 주세요</b><span>바코드 전체가 사각형 안에 들어오도록 맞춰 주세요.</span></div><div class="frame"></div></div><div class="buttons"><button class="btn primary" id="startCamera">카메라로 스캔</button><button class="btn" id="stopCamera" disabled>중지</button></div><div class="input-row"><input id="barcodeInput" type="text" inputmode="numeric" enterkeyhint="done" placeholder="바코드 직접 입력 또는 USB 스캐너 사용" /><button class="btn" id="addBarcode">추가</button></div><div class="status" id="scanStatus">구역을 확인한 뒤 카메라를 시작해 주세요.</div></div>
+      <div class="panel"><div class="title"><small>LATEST SCAN</small><h2>마지막으로 추가한 상품</h2><p>잘못 추가한 경우 아래 조사 목록에서 수량을 수정할 수 있습니다.</p></div><div id="latestEmpty" class="empty">아직 스캔한 상품이 없습니다.</div><div id="latestCard" class="latest" hidden><div class="mark" id="latestMark">BB</div><div><small id="latestBrand"></small><h3 id="latestName"></h3><p id="latestMeta"></p></div><div class="qty"><strong id="latestQty">1</strong><span>현재 구역</span></div></div></div>
+    </section>
+    <section class="lower">
+      <div class="panel"><div class="panel-head"><div><h2>현재 구역 조사 목록</h2><p id="areaListSummary">지하에서 조사한 상품이 표시됩니다.</p></div></div><div class="count-list" id="countList"><div class="empty">현재 구역에서 조사한 상품이 없습니다.</div></div></div>
+      <div class="panel"><div class="panel-head"><div><h2>바코드 없는 상품</h2><p>상품명이나 품목코드로 검색해 수동으로 추가합니다.</p></div><span class="warn-badge" id="noBarcodeCount">확인 중</span></div><div class="input-row"><input id="manualSearch" type="search" enterkeyhint="search" placeholder="상품명·품목코드·제조사 검색" /><button class="btn" id="manualSearchButton">검색</button></div><div class="warning">바코드가 없는 상품을 선택하면 현재 구역의 조사 수량에 1개가 추가됩니다.</div><div class="search-results" id="manualResults"><div class="empty">검색어를 입력해 주세요.</div></div></div>
+    </section>
+    <section class="panel unknown" id="unknownPanel" hidden><div class="panel-head"><div><h2>상품 DB에 없는 바코드</h2><p>스캔했지만 등록 상품을 찾지 못한 바코드입니다.</p></div></div><div class="unknown-list" id="unknownList"></div></section>
+    <div class="footer"><button class="btn danger" id="resetAudit">재고 조사 초기화</button><button class="btn primary" id="exportExcel">결과 엑셀 다운로드</button></div>
+  </main>
+  <div class="modal" id="candidateModal" hidden><div class="modal-card"><h2>같은 바코드의 상품이 여러 개입니다</h2><p>실제 상품과 일치하는 항목을 선택해 주세요.</p><div id="candidateList"></div><button class="btn" id="closeCandidate">취소</button></div></div>
+  <div class="toast" id="toast"></div>
+  <script type="module" src="./inventory-audit.js"></script>
+</body>
+</html>
