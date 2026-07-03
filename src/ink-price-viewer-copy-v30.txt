@@ -1,0 +1,11 @@
+const inkHeaderCopy={
+  ko:{title:'잉크 소분 가격 검색',intro:'브랜드·시리즈·색상명을 검색하고 5ml·10ml 가격을 빠르게 확인하세요.'},
+  en:{title:'Ink decant price search',intro:'Search brands, series and colors, then check 5ml and 10ml prices quickly.'},
+  ja:{title:'インク小分け価格検索',intro:'ブランド・シリーズ・色名を検索し、5ml・10ml価格をすばやく確認できます。'},
+  'zh-Hans':{title:'墨水分装价格搜索',intro:'搜索品牌、系列和颜色，并快速查看5ml、10ml价格。'},
+  'zh-Hant':{title:'墨水分裝價格搜尋',intro:'搜尋品牌、系列和顏色，並快速查看5ml、10ml價格。'}
+};
+function inkHeaderLanguage(){const value=document.documentElement.lang||'ko';if(value.startsWith('zh-Hant'))return'zh-Hant';if(value.startsWith('zh'))return'zh-Hans';if(value.startsWith('ja'))return'ja';if(value.startsWith('en'))return'en';return'ko';}
+function inkHeaderRefresh(){const value=inkHeaderCopy[inkHeaderLanguage()]||inkHeaderCopy.ko;document.querySelectorAll('[data-ink-title]').forEach(node=>node.textContent=value.title);document.querySelectorAll('[data-ink-intro]').forEach(node=>node.textContent=value.intro);}
+function inkHeaderInit(){inkHeaderRefresh();document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>setTimeout(inkHeaderRefresh,100)));}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',inkHeaderInit,{once:true});else inkHeaderInit();
