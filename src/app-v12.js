@@ -68,12 +68,32 @@ function configureMetal(material,color,meshName,highlight=false){const dark=/sli
 
 function applyColors(){if(!state.ready)return;for(const part of parts){const selected=colorById(state.selections[part.id]);const active=part.id===state.activePartId;for(const mesh of state.partMeshes.get(part.id)??[]){const materials=Array.isArray(mesh.material)?mesh.material:[mesh.material];for(const material of materials){if(part.colorGroup==='metal')configureMetal(material,selected,mesh.name,active);else configureResin(material,selected,active);}}}}
 
-function applyViewMode(){if(!state.groups)return;const exploded=state.viewMode==='exploded';const positions={capEndGroup:exploded?[-25,20,0]:[0,0,0],capBodyGroup:exploded?[-18,20,0]:[0,0,0],nibGripGroup:exploded?[-5,-6,0]:[0,0,0],barrelGroup:exploded?[13,-6,0]:[0,0,0],barrelEndGroup:exploded?[28,-6,0]:[0,0,0]};for(const[name,position]of Object.entries(positions)){const group=state.groups[name];if(group)group.position.set(...position);}focusPart(state.activePartId,false);}
+function resize(){if(!renderer||!camera||!elements.stage)return;const width=Math.max(1,elements.stage.clientWidth);const height=Math.max(1,elements.stage.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
+function fitWholePen(){
+  if(!state.root||!camera||!controls||!scene)return;
+  resize();
+  scene.updateMatrixWorld(true);
+  const box=new THREE.Box3().setFromObject(state.root);
+  if(box.isEmpty())return;
+  const size=box.getSize(new THREE.Vector3());
+  const center=box.getCenter(new THREE.Vector3());
+  const verticalFov=THREE.MathUtils.degToRad(camera.fov);
+  const horizontalFov=2*Math.atan(Math.tan(verticalFov/2)*Math.max(camera.aspect,.01));
+  const fitHeight=size.y/(2*Math.tan(verticalFov/2));
+  const fitWidth=size.x/(2*Math.tan(horizontalFov/2));
+  const safetyMargin=state.fullscreen?1.16:(mobileMedia.matches?1.28:1.22);
+  const distance=Math.max(fitHeight,fitWidth,size.z*2.4,120)*safetyMargin;
+  camera.position.set(center.x,center.y+Math.min(8,distance*.035),center.z+distance);
+  controls.target.copy(center);
+  controls.minDistance=Math.max(70,distance*.48);
+  controls.maxDistance=Math.max(360,distance*2.4);
+  controls.update();
+}
+function applyViewMode(){if(!state.groups)return;const exploded=state.viewMode==='exploded';const positions={capEndGroup:exploded?[-25,20,0]:[0,0,0],capBodyGroup:exploded?[-18,20,0]:[0,0,0],nibGripGroup:exploded?[-5,-6,0]:[0,0,0],barrelGroup:exploded?[13,-6,0]:[0,0,0],barrelEndGroup:exploded?[28,-6,0]:[0,0,0]};for(const[name,position]of Object.entries(positions)){const group=state.groups[name];if(group)group.position.set(...position);}fitWholePen();}
 function focusPart(id,animate=true){if(!controls||!camera)return;const target=new THREE.Vector3(PART_X[id]??15,state.viewMode==='exploded'?(id.startsWith('cap')?18:-5):0,0);if(!animate||reducedMotion.matches){controls.target.copy(target);camera.position.set(target.x+10,target.y+18,mobileMedia.matches?235:205);controls.update();return;}const startTarget=controls.target.clone();const startPosition=camera.position.clone();const endPosition=new THREE.Vector3(target.x+10,target.y+18,mobileMedia.matches?235:205);const start=performance.now();const step=now=>{const progress=Math.min(1,(now-start)/320);const eased=1-Math.pow(1-progress,3);controls.target.lerpVectors(startTarget,target,eased);camera.position.lerpVectors(startPosition,endPosition,eased);controls.update();if(progress<1)requestAnimationFrame(step);};requestAnimationFrame(step);}
 function pulsePart(){elements.viewerCard?.classList.remove('part-pulse');requestAnimationFrame(()=>elements.viewerCard?.classList.add('part-pulse'));setTimeout(()=>elements.viewerCard?.classList.remove('part-pulse'),520);}
 function selectPart(id,focus=false){if(!parts.some(part=>part.id===id))return;state.activePartId=id;applyColors();renderCustomizer();if(focus)focusPart(id,true);dispatchEvent(new CustomEvent('partchange',{detail:{partId:id}}));}
 function movePart(direction){const index=parts.findIndex(part=>part.id===state.activePartId);const next=index+direction;if(next>=0&&next<parts.length){selectPart(parts[next].id,true);$('.control-card')?.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'});}else if(direction>0){$('#result-section')?.scrollIntoView({behavior:reducedMotion.matches?'auto':'smooth',block:'start'});}}
-function resize(){if(!renderer||!camera||!elements.stage)return;const width=Math.max(1,elements.stage.clientWidth);const height=Math.max(1,elements.stage.clientHeight);renderer.setSize(width,height,false);camera.aspect=width/height;camera.updateProjectionMatrix();}
 function renderFrame(){if(renderer&&scene&&camera)renderer.render(scene,camera);}
 function loop(){animationId=requestAnimationFrame(loop);if(document.hidden)return;controls?.update();renderFrame();}
 
@@ -87,7 +107,7 @@ function init3D(){
     const pmrem=new THREE.PMREMGenerator(renderer);const room=new RoomEnvironment();scene.environment=pmrem.fromScene(room,.04).texture;room.dispose();pmrem.dispose();
     scene.add(new THREE.HemisphereLight(0xffffff,0x8390a0,1.35));const key=new THREE.DirectionalLight(0xffffff,2.1);key.position.set(-20,55,90);key.castShadow=!mobileMedia.matches;scene.add(key);const fill=new THREE.DirectionalLight(0xc5d9ff,1.1);fill.position.set(80,-30,60);scene.add(fill);
     const model=buildPenModel({customMaterial:resinMaterial,fixedMetal,darkInset,feedMaterial});state.root=model.root;state.groups=model.groups;state.partMeshes=model.partMeshes;scene.add(state.root);state.ready=true;
-    applyColors();applyViewMode();resize();focusPart(state.activePartId,false);elements.loading.hidden=true;elements.error.hidden=true;elements.fallback?.classList.remove('is-visible');resizeObserver=new ResizeObserver(resize);resizeObserver.observe(elements.stage);loop();setupCanvasPicking();
+    applyColors();resize();applyViewMode();elements.loading.hidden=true;elements.error.hidden=true;elements.fallback?.classList.remove('is-visible');resizeObserver=new ResizeObserver(resize);resizeObserver.observe(elements.stage);loop();setupCanvasPicking();
     renderer.domElement.addEventListener('webglcontextlost',event=>{event.preventDefault();state.renderFailed=true;elements.error.hidden=false;elements.fallback?.classList.add('is-visible');dispatchEvent(new CustomEvent('viewerstatus',{detail:{status:'error'}}));});
     dispatchEvent(new Event('penviewerready'));dispatchEvent(new CustomEvent('viewerstatus',{detail:{status:'ready'}}));
   }catch(error){console.error(error);state.renderFailed=true;elements.loading.hidden=true;elements.error.hidden=false;elements.fallback?.classList.add('is-visible');dispatchEvent(new CustomEvent('viewerstatus',{detail:{status:'error'}}));}
@@ -95,17 +115,17 @@ function init3D(){
 
 function setupCanvasPicking(){raycaster=new THREE.Raycaster();const pointer=new THREE.Vector2();elements.canvas.addEventListener('pointerdown',event=>{pointerDown={x:event.clientX,y:event.clientY};});elements.canvas.addEventListener('pointerup',event=>{if(!pointerDown||Math.hypot(event.clientX-pointerDown.x,event.clientY-pointerDown.y)>8)return;const rect=elements.canvas.getBoundingClientRect();pointer.x=((event.clientX-rect.left)/rect.width)*2-1;pointer.y=-((event.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const hits=raycaster.intersectObjects(state.root.children,true);const hit=hits.find(item=>item.object.userData.partId);if(hit)selectPart(hit.object.userData.partId,true);});}
 function toggleView(){state.viewMode=state.viewMode==='assembled'?'exploded':'assembled';applyViewMode();renderStaticText();}
-async function toggleFullscreen(){const card=elements.viewerCard;if(!card)return;if(!document.fullscreenElement){try{await card.requestFullscreen?.();}catch{card.classList.add('viewer-fullscreen');state.fullscreen=true;renderStaticText();resize();}}else await document.exitFullscreen?.();}
-function resetView(){if(!camera||!controls)return;camera.position.set(20,18,mobileMedia.matches?235:205);controls.target.set(12,0,0);controls.update();}
-function resetCombination(){state.selections={...defaultSelection};state.activePartId=parts[0].id;state.viewMode='assembled';persist();applyViewMode();applyColors();renderCustomizer();focusPart(state.activePartId,false);showToast(t('resetDone'));}
+async function toggleFullscreen(){const card=elements.viewerCard;if(!card)return;if(!document.fullscreenElement){try{await card.requestFullscreen?.();}catch{card.classList.add('viewer-fullscreen');state.fullscreen=true;renderStaticText();fitWholePen();}}else await document.exitFullscreen?.();}
+function resetView(){fitWholePen();}
+function resetCombination(){state.selections={...defaultSelection};state.activePartId=parts[0].id;state.viewMode='assembled';persist();applyViewMode();applyColors();renderCustomizer();showToast(t('resetDone'));}
 
 function bind(){
   $('#previous-part')?.addEventListener('click',()=>movePart(-1));$('#next-part')?.addEventListener('click',()=>movePart(1));$('#toggle-view')?.addEventListener('click',toggleView);$('#toggle-fullscreen')?.addEventListener('click',toggleFullscreen);$('#fullscreen-close')?.addEventListener('click',toggleFullscreen);$('#zoom-in')?.addEventListener('click',()=>{if(camera&&controls){camera.position.multiplyScalar(.86);controls.update();}});$('#zoom-out')?.addEventListener('click',()=>{if(camera&&controls){camera.position.multiplyScalar(1.16);controls.update();}});$('#reset-view')?.addEventListener('click',resetView);$('#staff-close')?.addEventListener('click',()=>elements.staffDialog?.close());
-  document.addEventListener('fullscreenchange',()=>{state.fullscreen=Boolean(document.fullscreenElement);elements.viewerCard?.classList.toggle('viewer-fullscreen',state.fullscreen);renderStaticText();resize();});
+  document.addEventListener('fullscreenchange',()=>{state.fullscreen=Boolean(document.fullscreenElement);elements.viewerCard?.classList.toggle('viewer-fullscreen',state.fullscreen);renderStaticText();fitWholePen();});
   document.querySelectorAll('[data-language]').forEach(button=>button.addEventListener('click',()=>{setLanguage(button.dataset.language);persist();renderCustomizer();applyColors();}));
   addEventListener('keydown',event=>{if(event.target.matches('input,textarea,select,button'))return;if(event.key==='ArrowRight')movePart(1);if(event.key==='ArrowLeft')movePart(-1);if(event.key.toLowerCase()==='e')toggleView();if(event.key.toLowerCase()==='r')resetView();});
-  mobileMedia.addEventListener?.('change',()=>{renderer?.setPixelRatio(Math.min(devicePixelRatio,mobileMedia.matches?1.25:1.7));resize();});
+  mobileMedia.addEventListener?.('change',()=>{renderer?.setPixelRatio(Math.min(devicePixelRatio,mobileMedia.matches?1.25:1.7));fitWholePen();});
 }
 
-window.blueblackPenApp={get selections(){return{...state.selections};},get activePartId(){return state.activePartId;},get ready(){return state.ready;},get viewMode(){return state.viewMode;},selectPart,resetCombination,render:renderFrame,toggleView,focusPart,getCanvas:()=>elements.canvas,getCombination:()=>parts.map(part=>({part,color:colorById(state.selections[part.id])}))};
+window.blueblackPenApp={get selections(){return{...state.selections};},get activePartId(){return state.activePartId;},get ready(){return state.ready;},get viewMode(){return state.viewMode;},selectPart,resetCombination,render:renderFrame,toggleView,focusPart,fitWholePen,getCanvas:()=>elements.canvas,getCombination:()=>parts.map(part=>({part,color:colorById(state.selections[part.id])}))};
 renderCustomizer();bind();init3D();
