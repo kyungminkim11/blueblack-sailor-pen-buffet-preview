@@ -7,16 +7,17 @@ import {
 const SUPABASE_URL='https://jnciddblcndmthmmvqrz.supabase.co';
 const SUPABASE_KEY='sb_publishable_UUzSE7O9wqI0WN9cKG9OAQ_VleRkL4I';
 const COPY={
-  ko:{label:'본병'},
-  en:{label:'Bottle'},
-  ja:{label:'本体'},
-  'zh-Hans':{label:'整瓶'},
-  'zh-Hant':{label:'整瓶'}
+  ko:{label:'본병',add:'본병 담기',selected:'담음',checking:'가격 확인 중'},
+  en:{label:'Full bottle',add:'Add bottle',selected:'Added',checking:'Checking price'},
+  ja:{label:'ボトル',add:'ボトルを追加',selected:'追加済み',checking:'価格確認中'},
+  'zh-Hans':{label:'原装瓶',add:'加入原装瓶',selected:'已加入',checking:'正在查询价格'},
+  'zh-Hant':{label:'原裝瓶',add:'加入原裝瓶',selected:'已加入',checking:'正在查詢價格'}
 };
 
 const cache=new Map();
 const inFlight=new Set();
 let scheduleTimer=0;
+window.blueblackBottleCatalog=window.blueblackBottleCatalog||{};
 
 function text(){return COPY[currentLang()]||COPY.ko;}
 function formatWon(value){
@@ -46,9 +47,45 @@ function cardData(card){
     }
   };
 }
+function setBottleButton(card,info){
+  const button=card.querySelector('.ink-store-bottle-volume');
+  if(!button)return;
+  const value=text();
+  const volume=String(info?.bottle_volume||info?.volume||'').trim();
+  const price=Number(info?.bottle_price||info?.price||0);
+  const productName=String(info?.product_name||info?.productName||'');
+  const span=button.querySelector('span');
+  const strong=button.querySelector('strong');
+  const small=button.querySelector('small');
+  if(!(price>0)){
+    button.disabled=true;
+    if(span)span.textContent=value.label;
+    if(strong)strong.textContent='—';
+    if(small)small.textContent=value.checking;
+    return;
+  }
+  button.disabled=false;
+  button.dataset.bottlePrice=String(price);
+  button.dataset.bottleVolume=volume;
+  button.dataset.productName=productName;
+  if(span)span.textContent=`${value.label}${volume?` ${volume}`:''}`;
+  if(strong)strong.textContent=formatWon(price);
+  if(small)small.textContent=button.classList.contains('is-selected')?`✓ ${value.selected}`:value.add;
+}
 function removeInfo(card){
+  setBottleButton(card,null);
   card.querySelector('.ink-bottle-info')?.remove();
   card.querySelector('.ink-store-result-copy')?.classList.remove('has-bottle-info');
+}
+function publishInfo(card,info){
+  const itemId=card.dataset.itemId||'';
+  const colorId=card.dataset.colorId||'';
+  const price=Number(info?.bottle_price||0);
+  if(!itemId||!colorId||!(price>0))return;
+  const record={price,volume:String(info?.bottle_volume||''),productName:String(info?.product_name||'')};
+  window.blueblackBottleCatalog[`${itemId}:${colorId}`]=record;
+  setBottleButton(card,info);
+  window.dispatchEvent(new CustomEvent('blueblack:bottle-info',{detail:{itemId,colorId,...record}}));
 }
 function applyInfo(card,info){
   if(!info){removeInfo(card);return;}
@@ -64,11 +101,13 @@ function applyInfo(card,info){
     copy.append(node);
   }
   const signature=[text().label,volume,price,info.product_name||''].join('|');
-  if(node.dataset.signature===signature)return;
-  node.dataset.signature=signature;
-  node.title=String(info.product_name||'');
-  node.innerHTML=`<span>${text().label}</span><strong>${volume||'용량 확인'}</strong><em>${price||'가격 확인'}</em>`;
+  if(node.dataset.signature!==signature){
+    node.dataset.signature=signature;
+    node.title=String(info.product_name||'');
+    node.innerHTML=`<span>${text().label}</span><strong>${volume||'—'}</strong><em>${price||'—'}</em>`;
+  }
   copy.classList.add('has-bottle-info');
+  publishInfo(card,info);
 }
 async function rpc(queries){
   const response=await fetch(`${SUPABASE_URL}/rest/v1/rpc/ink_bottle_prices_public`,{
@@ -105,6 +144,7 @@ function applyAll(){
     const data=cardData(card);
     if(!data){removeInfo(card);return;}
     if(cache.has(data.key)){applyInfo(card,cache.get(data.key));return;}
+    setBottleButton(card,null);
     if(!inFlight.has(data.key))missing.set(data.key,data);
   });
   const values=[...missing.values()];
@@ -117,7 +157,7 @@ function schedule(){
 function addStyles(){
   if(document.querySelector('[data-ink-bottle-price-style]'))return;
   const style=document.createElement('style');
-  style.dataset.inkBottlePriceStyle='v36';
+  style.dataset.inkBottlePriceStyle='v44';
   style.textContent=`
 .ink-store-result-copy{position:relative;min-width:0}
 .ink-store-result-copy.has-bottle-info{padding-right:112px}
@@ -142,6 +182,7 @@ async function init(){
   });
   if(!root)return;
   new MutationObserver(schedule).observe(root,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
+  window.addEventListener('blueblack:ink-results-rendered',schedule);
   document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>setTimeout(()=>{cache.clear();schedule();},80)));
   schedule();
 }
