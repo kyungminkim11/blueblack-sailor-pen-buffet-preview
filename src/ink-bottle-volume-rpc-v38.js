@@ -2,6 +2,7 @@ const SUPABASE_URL='https://jnciddblcndmthmmvqrz.supabase.co';
 const SUPABASE_KEY='sb_publishable_UUzSE7O9wqI0WN9cKG9OAQ_VleRkL4I';
 const cache=new Map();
 const pending=new Set();
+window.blueblackBottleCatalog=window.blueblackBottleCatalog||{};
 
 async function fetchVolume(itemId){
   if(cache.has(itemId))return cache.get(itemId);
@@ -30,6 +31,21 @@ function ensureBadge(card){
   }
   return badge;
 }
+function publishVolume(card,volume){
+  const itemId=card.dataset.itemId||'';
+  const colorId=card.dataset.colorId||'';
+  if(!itemId||!colorId||!volume)return;
+  const key=`${itemId}:${colorId}`;
+  const current=window.blueblackBottleCatalog[key]||{};
+  window.blueblackBottleCatalog[key]={...current,volume};
+  const button=card.querySelector('.ink-store-bottle-volume');
+  if(button){
+    button.dataset.bottleVolume=volume;
+    const label=button.querySelector('span');
+    if(label&&!label.textContent.includes(volume))label.textContent=`${label.textContent.trim()} ${volume}`;
+  }
+  window.dispatchEvent(new CustomEvent('blueblack:bottle-info',{detail:{itemId,colorId,price:Number(current.price||0),volume,productName:String(current.productName||'')}}));
+}
 
 async function applyCard(card){
   const itemId=card.dataset.itemId||'';
@@ -38,7 +54,7 @@ async function applyCard(card){
   const strong=badge?.querySelector('strong');
   if(!strong)return;
   const current=strong.textContent.trim();
-  if(current&&current!=='—'&&!/용량|확인|조회/.test(current))return;
+  if(current&&current!=='—'&&!/용량|확인|조회/.test(current)){publishVolume(card,current);return;}
   pending.add(itemId);
   try{
     const volume=await fetchVolume(itemId);
@@ -46,6 +62,7 @@ async function applyCard(card){
     document.querySelectorAll(`.ink-store-result[data-item-id="${CSS.escape(itemId)}"]`).forEach(node=>{
       const target=ensureBadge(node)?.querySelector('strong');
       if(target)target.textContent=volume;
+      publishVolume(node,volume);
     });
   }catch(error){
     console.warn('[ink bottle volume]',error);
@@ -63,5 +80,6 @@ function init(){
     queued=true;
     requestAnimationFrame(()=>{queued=false;scan();});
   }).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['hidden']});
+  window.addEventListener('blueblack:ink-results-rendered',scan);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
