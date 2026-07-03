@@ -1,3 +1,5 @@
+import '../admin-auth.js';
+
 const music = document.querySelector('[data-nib="MUSIC"]');
 const zoom = document.querySelector('[data-nib="ZOOM"]');
 if (music) music.dataset.nib = 'MS';
@@ -18,7 +20,7 @@ document.head.append(style);
 
 const details = document.createElement('details');
 details.className = 'nib-special';
-details.innerHTML = '<summary>특수촉·소프트촉·캘리그라피 촉 보기</summary><div class="nib-size-grid"></div>';
+details.innerHTML = '<summary>More nibs</summary><div class="nib-size-grid"></div>';
 const grid = details.querySelector('.nib-size-grid');
 
 definitions.forEach(([id, label]) => {
@@ -27,7 +29,7 @@ definitions.forEach(([id, label]) => {
   button.type = 'button';
   button.className = 'nib-size-button';
   button.dataset.nib = id;
-  button.innerHTML = `${label}<small>특수촉</small>`;
+  button.innerHTML = `${label}<small>Special</small>`;
   grid.append(button);
 });
 
