@@ -1,0 +1,27 @@
+brandKo,color.brandEn].filter(Boolean).join(' '));}
+function entryKey(entry){return `${entry.kind}:${entry.item.id}:${entry.color?.id||normalize(entry.manualColor||'')}:${entry.volume}`;}
+function listTotal(){return list.reduce((sum,item)=>sum+Number(item.price||0),0);}
+function isSelected(entry,volume){return list.some(item=>item.key===entryKey({...entry,volume}));}
+
+function writeList(){sessionStorage.setItem(SESSION_KEY,JSON.stringify({updatedAt:Date.now(),items:list}));renderList();renderResults();}
+function readSessionList(){const saved=safeParse(sessionStorage.getItem(SESSION_KEY),null);if(!saved||!Array.isArray(saved.items)||Date.now()-Number(saved.updatedAt||0)>SESSION_TTL){sessionStorage.removeItem(SESSION_KEY);return [];}return saved.items.filter(item=>item&&item.key&&item.itemId&&item.volume);}
+function restoreList(raw){if(!Array.isArray(raw))return [];
+  return raw.map(saved=>{
+    const item=priceItemById(saved.itemId);if(!item)return null;
+    const color=saved.colorId?colorById(saved.colorId):null;
+    const entry={kind:color?'color':'series',item,color,manualColor:String(saved.manualColor||'')};
+    const volume=saved.volume==='10ml'?'10ml':'5ml';
+    return{key:entryKey({...entry,volume}),itemId:item.id,colorId:color?.id||'',manualColor:entry.manualColor,brandKo:item.brandKo,brandEn:item.brandEn,seriesKo:item.productKo,seriesEn:item.productEn,colorKo:color?.nameKo||entry.manualColor||'',colorEn:color?.nameEn||entry.manualColor||'',volume,price:priceFor(item,volume),addedAt:Date.now()};
+  }).filter(Boolean);
+}
+function persistableList(){return list.map(({itemId,colorId,manualColor,volume})=>({itemId,colorId,manualColor,volume}));}
+
+function buildData(){
+  groups=brandGroups().filter(group=>group.priceItems.length);
+  entries=[];
+  groups.forEach(group=>{
+    const byItem=new Map(group.priceItems.map(item=>[item.id,[]]));
+    group.colors.forEach(color=>{const item=priceItemForColor(color,group);if(item&&byItem.has(item.id))byItem.get(item.id).push(color);});
+    group.priceItems.forEach(item=>{
+      const colors=byItem.get(item.id)||[];
+      if(colors.length)colors.forEach(color=>entries.push({k
