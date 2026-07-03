@@ -1,0 +1,21 @@
+(){
+  localStorage.removeItem('blueblack-ink-check-list-v6');
+  buildData();
+  const params=new URLSearchParams(location.search);query=params.get('q')||'';
+  const shared=decodeSelection(params.get('selection')||'');list=shared?restoreList(shared):readSessionList();
+  const root=document.querySelector('#ink-store-app');if(!root)return;
+  root.innerHTML=`<section class="ink-store-layout"><article class="ink-store-search-card"><span class="ink-store-kicker">BLUEBLACK INK SERVICE</span><h2 data-store-title></h2><p data-store-body></p><label class="ink-store-search-field"><span aria-hidden="true">⌕</span><input class="ink-store-search" type="search" autocomplete="off" spellcheck="false"><button type="button" class="ink-store-search-clear" aria-label="Clear">×</button></label><div class="ink-store-quick-head"><span data-store-quick></span><div class="ink-store-quick"></div></div><details class="ink-store-filter-details"><summary data-store-filter-summary></summary><div class="ink-store-filter-block"><span data-store-country></span><div class="ink-store-filter-buttons ink-store-country"></div></div><div class="ink-store-filter-block"><span data-store-type></span><div class="ink-store-filter-buttons ink-store-type"></div></div></details><div class="ink-store-result-head"><h3 data-store-result></h3><span data-ink-store-stats></span></div><div class="ink-store-results" aria-live="polite"></div><button type="button" class="ink-store-more" hidden></button></article><aside class="ink-store-list-card"><span class="ink-store-kicker">INK CHECK LIST</span><h2><span data-store-list-title></span><b data-ink-store-count>0</b></h2><p data-store-list-body></p><div class="ink-store-list-total"><span data-store-total-label></span><strong data-ink-store-total>0원</strong></div><div class="ink-store-list-actions"><button type="button" class="ink-store-show primary"></button><button type="button" class="ink-store-share"></button><button type="button" class="ink-store-reset"></button></div><div class="ink-store-list"></div><p class="ink-store-pricing-note"></p></aside></section><p class="ink-store-disclaimer"></p>`;
+  const input=root.querySelector('.ink-store-search');input.value=query;
+  input.addEventListener('input',()=>{query=input.value;visibleLimit=RESULT_STEP;syncUrl();renderResults();document.querySelector('[data-store-result]').textContent=query?text().result:text().initialTitle;});
+  root.querySelector('.ink-store-search-clear').addEventListener('click',()=>{query='';input.value='';visibleLimit=RESULT_STEP;syncUrl();renderResults();document.querySelector('[data-store-result]').textContent=text().initialTitle;input.focus();});
+  root.querySelector('.ink-store-more').addEventListener('click',()=>{visibleLimit+=RESULT_STEP;renderResults();});
+  root.querySelector('.ink-store-share').addEventListener('click',shareList);
+  root.querySelector('.ink-store-show').addEventListener('click',openStaffDialog);
+  root.querySelector('.ink-store-reset').addEventListener('click',clearForNewCustomer);
+  const dock=document.createElement('button');dock.type='button';dock.className='ink-store-mobile-dock';dock.innerHTML=`<span>${text().listTitle}</span><b><i data-ink-store-count>0</i> · <em data-ink-store-total>0원</em></b>`;dock.addEventListener('click',()=>document.querySelector('.ink-store-list-card')?.scrollIntoView({behavior:'smooth',block:'start'}));document.body.append(dock);
+  document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>setTimeout(renderCopy,40)));
+  renderCopy();
+  if(shared)writeList();
+}
+
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',mount,{once:true});else mount();
