@@ -1,22 +1,9 @@
-tTitle;
-  document.querySelector('[data-store-list-body]').textContent=text().listBody;
-  document.querySelector('[data-store-total-label]').textContent=text().total;
-  document.querySelector('.ink-store-share').textContent=text().share;
-  document.querySelector('.ink-store-show').textContent=text().showStaff;
-  document.querySelector('.ink-store-reset').textContent=text().newCustomer;
-  document.querySelector('.ink-store-disclaimer').textContent=text().disclaimer;
-  document.querySelector('.ink-store-pricing-note').textContent=text().pricing;
-  const aux=AUX_COPY[lang()]||AUX_COPY.ko;
-  const noticeSummary=document.querySelector('[data-store-notice-summary]');if(noticeSummary)noticeSummary.textContent=aux.notice;
-  const originalSummary=document.querySelector('[data-store-original-summary]');if(originalSummary)originalSummary.textContent=aux.original;
-  renderQuick();renderFilters();renderResults();renderList();
-}
-
 function syncUrl(){const url=new URL(location.href);if(query.trim())url.searchParams.set('q',query.trim());else url.searchParams.delete('q');url.searchParams.delete('selection');history.replaceState(null,'',url);}
 function shareUrl(){const url=new URL(location.href);if(query.trim())url.searchParams.set('q',query.trim());else url.searchParams.delete('q');if(list.length)url.searchParams.set('selection',encodeSelection(persistableList()));else url.searchParams.delete('selection');return url.href;}
+function cartItemVolumeLabel(item){const ui=cartUiCopy();return item.volume==='bottle'?`${ui.bottle}${item.bottleVolume?` ${item.bottleVolume}`:''}`:item.volume;}
 async function shareList(){
   if(!list.length)return;
-  const lines=list.map((item,index)=>`${index+1}. ${displayName(item)} · ${item.volume} · ${formatWon(item.price)}`);
+  const lines=list.map((item,index)=>`${index+1}. ${displayName(item)} · ${cartItemVolumeLabel(item)} · ${formatWon(item.price)} × ${normalizeQty(item.qty)} = ${formatWon(Number(item.price||0)*normalizeQty(item.qty))}`);
   const body=`BlueBlack Ink Check List\n${lines.join('\n')}\n\n${text().total}: ${formatWon(listTotal())}\n${text().staffNote}`;
   const url=shareUrl();
   if(navigator.share){try{await navigator.share({title:text().staffTitle,text:body,url});return;}catch{}}
@@ -37,10 +24,24 @@ function staffDialog(){
 function openStaffDialog(){
   if(!list.length)return;
   const dialog=staffDialog();dialog.querySelector('h2').textContent=text().staffTitle;
-  dialog.querySelector('.ink-store-dialog-list').innerHTML=list.map((item,index)=>`<div><span>${index+1}</span><p><b>${escapeHtml(displayName(item))}</b><small>${item.volume} · ${formatWon(item.price)}</small></p></div>`).join('');
+  dialog.querySelector('.ink-store-dialog-list').innerHTML=list.map((item,index)=>`<div><span>${index+1}</span><p><b>${escapeHtml(displayName(item))}</b><small>${escapeHtml(cartItemVolumeLabel(item))} · ${formatWon(item.price)} × ${normalizeQty(item.qty)} · ${formatWon(Number(item.price||0)*normalizeQty(item.qty))}</small></p></div>`).join('');
   dialog.querySelector('.ink-store-dialog-total span').textContent=text().total;dialog.querySelector('.ink-store-dialog-total strong').textContent=formatWon(listTotal());
   dialog.querySelector('.ink-store-dialog-note').textContent=text().staffNote;dialog.querySelector('.ink-store-dialog-share').textContent=text().share;dialog.querySelector('.ink-store-dialog-print').textContent=text().print;
   if(!dialog.open)dialog.showModal();
 }
+function receiveBottleInfo(detail){
+  if(!detail?.itemId||!detail?.colorId)return;
+  let changed=false;
+  list.forEach(saved=>{
+    if(saved.itemId!==detail.itemId||saved.colorId!==detail.colorId)return;
+    saved.bottlePrice=Number(detail.price||saved.bottlePrice||0);
+    saved.bottleVolume=String(detail.volume||saved.bottleVolume||'');
+    saved.productName=String(detail.productName||saved.productName||'');
+    if(saved.volume==='bottle'&&saved.bottlePrice>0)saved.price=saved.bottlePrice;
+    changed=true;
+  });
+  if(changed){sessionStorage.setItem(SESSION_KEY,JSON.stringify({updatedAt:Date.now(),items:list}));renderList();}
+}
+window.addEventListener('blueblack:bottle-info',event=>receiveBottleInfo(event.detail));
 
 function mount
