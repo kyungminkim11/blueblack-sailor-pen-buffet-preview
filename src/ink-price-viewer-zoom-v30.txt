@@ -34,3 +34,20 @@ function inkSheetZoomInit(){
   inkSheetApply();
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',inkSheetZoomInit,{once:true});else inkSheetZoomInit();
+
+const inkSheetCopy={
+  ko:{tabs:['이용 안내','브랜드 가격표 1','브랜드 가격표 2','브랜드 가격표 3'],notices:['소분은 5ml와 10ml 두 가지 용량으로 준비됩니다.','10ml 가격은 5ml 두 병 금액에서 1,500원을 할인한 금액입니다.','가격표에 없는 브랜드, 한정 잉크, 일부 세트·특수 잉크는 소분 판매가 불가능할 수 있습니다.','화면 색상은 실제 잉크와 다를 수 있습니다. 결제 전 매장 실물과 용기 밀폐 상태를 확인해 주세요.']},
+  en:{tabs:['Guide','Brand price list 1','Brand price list 2','Brand price list 3'],notices:['Decants are available in 5ml and 10ml.','10ml is priced as two 5ml portions minus 1,500 KRW.','Unlisted brands, limited inks and some specialty inks may not be available.','Screen colors may differ from actual ink. Confirm the item and container seal with staff.']},
+  ja:{tabs:['ご利用案内','ブランド価格表 1','ブランド価格表 2','ブランド価格表 3'],notices:['小分けは5mlと10mlの2種類です。','10mlは5mlを2本購入する金額から1,500ウォン割引した価格です。','価格表にないブランドや一部の限定・特殊インクは小分けできない場合があります。','画面の色は実物と異なる場合があります。実物と容器の密閉状態をご確認ください。']},
+  'zh-Hans':{tabs:['使用说明','品牌价格表 1','品牌价格表 2','品牌价格表 3'],notices:['分装容量为5ml和10ml两种。','10ml价格为两份5ml总价减1,500韩元。','未列出的品牌、限定墨水及部分特殊墨水可能无法分装。','屏幕颜色可能与实物不同，请确认实物及容器密封状态。']},
+  'zh-Hant':{tabs:['使用說明','品牌價格表 1','品牌價格表 2','品牌價格表 3'],notices:['分裝容量為5ml和10ml兩種。','10ml價格為兩份5ml總價減1,500韓元。','未列出的品牌、限定墨水及部分特殊墨水可能無法分裝。','螢幕顏色可能與實物不同，請確認實物及容器密封狀態。']}
+};
+function inkSheetLanguage(){const value=document.documentElement.lang||'ko';if(value.startsWith('zh-Hant'))return'zh-Hant';if(value.startsWith('zh'))return'zh-Hans';if(value.startsWith('ja'))return'ja';if(value.startsWith('en'))return'en';return'ko';}
+function inkSheetRefreshCopy(){
+  const value=inkSheetCopy[inkSheetLanguage()]||inkSheetCopy.ko;
+  document.querySelectorAll('.ink-tabs button').forEach((button,index)=>{if(value.tabs[index])button.textContent=value.tabs[index];});
+  const notices=document.querySelector('.ink-notices');
+  if(notices)notices.replaceChildren(...value.notices.map(message=>{const item=document.createElement('div');item.className='ink-notice';item.textContent=message;return item;}));
+}
+function inkSheetCopyInit(){inkSheetRefreshCopy();document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>setTimeout(inkSheetRefreshCopy,80)));}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',inkSheetCopyInit,{once:true});else inkSheetCopyInit();
