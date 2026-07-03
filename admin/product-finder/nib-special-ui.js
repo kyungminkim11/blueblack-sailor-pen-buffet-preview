@@ -1,5 +1,46 @@
 import '../admin-auth.js';
 
+const originalFetch = window.fetch.bind(window);
+window.fetch = async (...args) => {
+  const response = await originalFetch(...args);
+  const requestUrl = String(args[0] instanceof Request ? args[0].url : args[0] || '');
+  if (!requestUrl.includes('/rest/v1/rpc/internal_product_search_public')) return response;
+
+  try {
+    const rows = await response.clone().json();
+    if (!Array.isArray(rows)) return response;
+    const normalized = rows.map((product) => ({
+      ...product,
+      sale_price: product.consumer_price,
+      store_price: null
+    }));
+    return new Response(JSON.stringify(normalized), {
+      status: response.status,
+      statusText: response.statusText,
+      headers: response.headers
+    });
+  } catch {
+    return response;
+  }
+};
+
+function cleanPriceFields() {
+  const fields = [...document.querySelectorAll('#productFields .detail-field')];
+  fields.forEach((field) => {
+    const label = field.querySelector('small');
+    if (!label) return;
+    if (label.textContent === '판매가' || label.textContent === '매장가') {
+      field.remove();
+    } else if (label.textContent === '소비자가') {
+      label.textContent = '매장 판매가';
+    }
+  });
+  document.querySelectorAll('#productPrice span').forEach((element) => element.remove());
+}
+
+new MutationObserver(cleanPriceFields).observe(document.documentElement, { childList: true, subtree: true });
+document.addEventListener('DOMContentLoaded', cleanPriceFields);
+
 const music = document.querySelector('[data-nib="MUSIC"]');
 const zoom = document.querySelector('[data-nib="ZOOM"]');
 if (music) music.dataset.nib = 'MS';
@@ -20,7 +61,7 @@ document.head.append(style);
 
 const details = document.createElement('details');
 details.className = 'nib-special';
-details.innerHTML = '<summary>More nibs</summary><div class="nib-size-grid"></div>';
+details.innerHTML = '<summary>특수촉·소프트촉·캘리그라피 촉 보기</summary><div class="nib-size-grid"></div>';
 const grid = details.querySelector('.nib-size-grid');
 
 definitions.forEach(([id, label]) => {
@@ -29,7 +70,7 @@ definitions.forEach(([id, label]) => {
   button.type = 'button';
   button.className = 'nib-size-button';
   button.dataset.nib = id;
-  button.innerHTML = `${label}<small>Special</small>`;
+  button.innerHTML = `${label}<small>특수촉</small>`;
   grid.append(button);
 });
 
