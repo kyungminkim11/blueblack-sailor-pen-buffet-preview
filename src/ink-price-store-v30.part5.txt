@@ -1,0 +1,57 @@
+=[];const seen=new Set();
+    for(const entry of values){const key=entry.item.id;if(seen.has(key))continue;seen.add(key);condensed.push(entry);if(condensed.length>=12)break;}
+    return condensed;
+  }
+  return values;
+}
+function resultStats(values){
+  const brands=new Set(values.map(entry=>entry.group.id));
+  const series=new Set(values.map(entry=>entry.item.id));
+  const colors=new Set(values.filter(entry=>entry.color).map(entry=>entry.color.id));
+  return{brands:brands.size,series:series.size,colors:colors.size};
+}
+
+function colorVisual(entry){
+  const color=entry.color;
+  if(color?.image)return`<span class="ink-store-visual has-image"><img src="${escapeHtml(color.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><i style="--ink-color:${escapeHtml(color.hex||entry.item.color||'#9aa7b5')}"></i></span>`;
+  return`<span class="ink-store-visual"><i style="--ink-color:${escapeHtml(color?.hex||entry.item.color||'#9aa7b5')}"></i></span>`;
+}
+function volumeButton(entry,volume){
+  const selected=isSelected(entry,volume);
+  return`<button type="button" class="ink-store-volume${selected?' is-selected':''}" data-item-id="${escapeHtml(entry.item.id)}" data-color-id="${escapeHtml(entry.color?.id||'')}" data-entry-kind="${entry.kind}" data-volume="${volume}"><span>${volume}</span><strong>${formatPrice(priceFor(entry.item,volume))}</strong><small>${selected?'✓ '+text().selected:text().add}</small></button>`;
+}
+function resultCard(entry){
+  const country=text().countries[groupCountryKey(entry.group)]||text().countries.other;
+  const types=itemTypeKeys(entry.item).map(key=>text().types[key]||key).slice(0,2).join(' · ');
+  const color=entry.color;
+  return`<article class="ink-store-result" data-item-id="${escapeHtml(entry.item.id)}" data-color-id="${escapeHtml(color?.id||'')}">${colorVisual(entry)}<div class="ink-store-result-copy"><span class="ink-store-brand">${escapeHtml(brandName(entry.group))}</span><h3>${escapeHtml(color?colorName(color):seriesName(entry.item))}</h3><p>${escapeHtml(color?seriesName(entry.item):entry.item.productEn||seriesName(entry.item))}</p><div class="ink-store-tags"><span>${escapeHtml(country)}</span><span>${escapeHtml(types)}</span></div>${entry.kind==='series'?`<label class="ink-store-manual"><span>${text().manualColor}</span><input type="text" placeholder="${text().manualPlaceholder}" data-manual-item="${escapeHtml(entry.item.id)}"></label>`:''}</div><div class="ink-store-prices">${volumeButton(entry,'5ml')}${volumeButton(entry,'10ml')}</div></article>`;
+}
+
+function renderResults(){
+  const root=document.querySelector('.ink-store-results');if(!root)return;
+  const values=filteredEntries();
+  const stats=resultStats(values);
+  document.querySelector('[data-ink-store-stats]').textContent=query?text().stats(stats.brands,stats.series,stats.colors):text().initialBody;
+  const shown=values.slice(0,visibleLimit);
+  if(!shown.length){root.innerHTML=`<div class="ink-store-empty"><strong>${text().emptyTitle}</strong><span>${text().emptyBody}</span></div>`;renderMore(0,0);return;}
+  root.innerHTML=shown.map(resultCard).join('');
+  root.querySelectorAll('.ink-store-volume').forEach(button=>button.addEventListener('click',()=>toggleSelection(button)));
+  renderMore(shown.length,values.length);
+}
+function renderMore(shown,total){
+  const button=document.querySelector('.ink-store-more');if(!button)return;
+  const remaining=Math.max(0,total-shown);button.hidden=remaining===0;button.innerHTML=remaining?`${text().more}<small>${text().remaining(remaining)}</small>`:'';
+}
+function entryFromButton(button){
+  const item=priceItemById(button.dataset.itemId);if(!item)return null;
+  const group=groupForItem(item);const color=button.dataset.colorId?colorById(button.dataset.colorId):null;
+  const manualInput=document.querySelector(`[data-manual-item="${CSS.escape(item.id)}"]`);
+  return{kind:color?'color':'series',group,item,color,manualColor:manualInput?.value.trim()||''};
+}
+function toggleSelection(button){
+  const entry=entryFromButton(button);if(!entry)return;
+  const volume=button.dataset.volume;
+  const key=entryKey({...entry,volume});
+  const existing=list.findIndex(item=>item.key===key);
+  if(existing>=0){list.splice(existing,1);toast(text().removed);writeList();return;}
+  const item=entry.item;co
