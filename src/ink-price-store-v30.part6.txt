@@ -1,17 +1,67 @@
-nst color=entry.color;
-  list.push({key,itemId:item.id,colorId:color?.id||'',manualColor:entry.manualColor,brandKo:item.brandKo,brandEn:item.brandEn,seriesKo:item.productKo,seriesEn:item.productEn,colorKo:color?.nameKo||entry.manualColor||'',colorEn:color?.nameEn||entry.manualColor||'',volume,price:priceFor(item,volume),addedAt:Date.now()});
-  toast(text().saved);writeList();
+function displayName(item){const isKo=lang()==='ko';const brand=isKo?item.brandKo:item.brandEn;const series=isKo?item.seriesKo:item.seriesEn;const color=isKo?item.colorKo:item.colorEn;return[brand,series,color||text().noColor].filter(Boolean).join(' · ');}
+function cartUiCopy(){
+  const values={
+    ko:{volume:'용량',quantity:'수량',remove:'삭제',unit:'개당',subtotal:'소계',bottle:'본병',decrease:'수량 줄이기',increase:'수량 늘리기'},
+    en:{volume:'Size',quantity:'Qty',remove:'Remove',unit:'Each',subtotal:'Subtotal',bottle:'Full bottle',decrease:'Decrease quantity',increase:'Increase quantity'},
+    ja:{volume:'容量',quantity:'数量',remove:'削除',unit:'単価',subtotal:'小計',bottle:'ボトル',decrease:'数量を減らす',increase:'数量を増やす'},
+    'zh-Hans':{volume:'容量',quantity:'数量',remove:'删除',unit:'单价',subtotal:'小计',bottle:'原装瓶',decrease:'减少数量',increase:'增加数量'},
+    'zh-Hant':{volume:'容量',quantity:'數量',remove:'刪除',unit:'單價',subtotal:'小計',bottle:'原裝瓶',decrease:'減少數量',increase:'增加數量'}
+  };
+  return values[lang()]||values.ko;
 }
-
-function displayName(item){const isKo=lang()==='ko';const isAsian=['ja','zh-Hans','zh-Hant'].includes(lang());const brand=isKo?item.brandKo:item.brandEn;const series=isKo?item.seriesKo:item.seriesEn;const color=isKo?item.colorKo:item.colorEn;return[brand,series,color||text().noColor].filter(Boolean).join(' · ');}
+function listItemEntry(saved){
+  const item=priceItemById(saved.itemId);if(!item)return null;
+  const color=saved.colorId?colorById(saved.colorId):null;
+  return{kind:color?'color':'series',item,color,manualColor:String(saved.manualColor||'')};
+}
+function availableBottleInfo(saved){
+  const live=bottleInfoFor(saved.itemId,saved.colorId||'');
+  return{price:Number(saved.bottlePrice||live?.price||0),volume:String(saved.bottleVolume||live?.volume||''),productName:String(saved.productName||live?.productName||'')};
+}
+function cartVolumeOptions(saved){
+  const item=priceItemById(saved.itemId);if(!item)return'';
+  const ui=cartUiCopy();
+  const info=availableBottleInfo(saved);
+  const options=[
+    {value:'5ml',label:`5ml · ${formatPrice(priceFor(item,'5ml'))}`},
+    {value:'10ml',label:`10ml · ${formatPrice(priceFor(item,'10ml'))}`}
+  ];
+  if(info.price>0)options.push({value:'bottle',label:`${ui.bottle}${info.volume?` ${info.volume}`:''} · ${formatWon(info.price)}`});
+  return options.map(option=>`<option value="${option.value}" ${saved.volume===option.value?'selected':''}>${escapeHtml(option.label)}</option>`).join('');
+}
+function updateCartVolume(index,volume){
+  const saved=list[index];if(!saved)return;
+  const entry=listItemEntry(saved);if(!entry)return;
+  const info=availableBottleInfo(saved);
+  if(volume==='bottle'&&!(info.price>0))return;
+  saved.volume=volume;
+  saved.price=volume==='bottle'?info.price:priceFor(entry.item,volume);
+  saved.bottlePrice=info.price;
+  saved.bottleVolume=info.volume;
+  saved.productName=info.productName;
+  saved.key=entryKey({...entry,volume});
+  const duplicate=list.findIndex((item,itemIndex)=>itemIndex!==index&&item.key===saved.key);
+  if(duplicate>=0){list[duplicate].qty=normalizeQty(list[duplicate].qty)+normalizeQty(saved.qty);list.splice(index,1);}
+  writeList();
+}
+function changeCartQty(index,delta){const saved=list[index];if(!saved)return;const next=normalizeQty(saved.qty)+Number(delta||0);if(next<=0){list.splice(index,1);}else saved.qty=Math.min(99,next);writeList();}
+function removeCartItem(index){if(!list[index])return;list.splice(index,1);toast(text().removed);writeList();}
 function renderList(){
   const root=document.querySelector('.ink-store-list');if(!root)return;
-  document.querySelectorAll('[data-ink-store-count]').forEach(node=>node.textContent=String(list.length));
+  const count=listCount();
+  document.querySelectorAll('[data-ink-store-count]').forEach(node=>node.textContent=String(count));
   document.querySelectorAll('[data-ink-store-total]').forEach(node=>node.textContent=formatWon(listTotal()));
   document.querySelectorAll('.ink-store-share,.ink-store-show').forEach(button=>button.disabled=list.length===0);
   if(!list.length){root.innerHTML=`<div class="ink-store-list-empty">${text().emptyList}</div>`;return;}
-  root.innerHTML=list.map((item,index)=>`<div class="ink-store-list-item"><span class="ink-store-list-no">${index+1}</span><div><b>${escapeHtml(displayName(item))}</b><span>${item.volume} · ${formatWon(item.price)}</span></div><button type="button" data-remove-index="${index}" aria-label="${text().remove}">×</button></div>`).join('');
-  root.querySelectorAll('[data-remove-index]').forEach(button=>button.addEventListener('click',()=>{list.splice(Number(button.dataset.removeIndex),1);toast(text().removed);writeList();}));
+  const ui=cartUiCopy();
+  root.innerHTML=list.map((item,index)=>{
+    const qty=normalizeQty(item.qty);
+    const subtotal=Number(item.price||0)*qty;
+    return`<div class="ink-store-list-item ink-store-list-editable"><span class="ink-store-list-no">${index+1}</span><div class="ink-store-cart-main"><b>${escapeHtml(displayName(item))}</b><div class="ink-store-cart-controls"><label><span>${ui.volume}</span><select data-cart-volume-index="${index}">${cartVolumeOptions(item)}</select></label><div class="ink-store-cart-qty" aria-label="${ui.quantity}"><button type="button" data-cart-qty-index="${index}" data-cart-qty-delta="-1" aria-label="${ui.decrease}">−</button><strong>${qty}</strong><button type="button" data-cart-qty-index="${index}" data-cart-qty-delta="1" aria-label="${ui.increase}">＋</button></div></div><small class="ink-store-cart-price">${ui.unit} ${formatWon(item.price)} · ${ui.subtotal} <strong>${formatWon(subtotal)}</strong></small></div><button type="button" class="ink-store-cart-remove" data-remove-index="${index}" aria-label="${ui.remove}"><span>×</span><small>${ui.remove}</small></button></div>`;
+  }).join('');
+  root.querySelectorAll('[data-cart-volume-index]').forEach(select=>select.addEventListener('change',()=>updateCartVolume(Number(select.dataset.cartVolumeIndex),select.value)));
+  root.querySelectorAll('[data-cart-qty-index]').forEach(button=>button.addEventListener('click',()=>changeCartQty(Number(button.dataset.cartQtyIndex),Number(button.dataset.cartQtyDelta))));
+  root.querySelectorAll('[data-remove-index]').forEach(button=>button.addEventListener('click',()=>removeCartItem(Number(button.dataset.removeIndex))));
 }
 
 function filterButtons(root,keys,active,labelMap,onSelect){
@@ -40,4 +90,16 @@ function renderCopy(){
   document.querySelector('[data-store-country]').textContent=text().country;
   document.querySelector('[data-store-type]').textContent=text().type;
   document.querySelector('[data-store-result]').textContent=query?text().result:text().initialTitle;
-  document.querySelector('[data-store-list-title]').textContent=text().lis
+  document.querySelector('[data-store-list-title]').textContent=text().listTitle;
+  document.querySelector('[data-store-list-body]').textContent=text().listBody;
+  document.querySelector('[data-store-total-label]').textContent=text().total;
+  document.querySelector('.ink-store-share').textContent=text().share;
+  document.querySelector('.ink-store-show').textContent=text().showStaff;
+  document.querySelector('.ink-store-reset').textContent=text().newCustomer;
+  document.querySelector('.ink-store-disclaimer').textContent=text().disclaimer;
+  document.querySelector('.ink-store-pricing-note').textContent=text().pricing;
+  const aux=AUX_COPY[lang()]||AUX_COPY.ko;
+  const noticeSummary=document.querySelector('[data-store-notice-summary]');if(noticeSummary)noticeSummary.textContent=aux.notice;
+  const originalSummary=document.querySelector('[data-store-original-summary]');if(originalSummary)originalSummary.textContent=aux.original;
+  renderQuick();renderFilters();renderResults();renderList();
+}
