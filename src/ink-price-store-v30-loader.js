@@ -1,10 +1,11 @@
 const decode=value=>decodeURIComponent(escape(atob(value.trim())));
+const read=async name=>{const response=await fetch(new URL(`./${name}`,import.meta.url));if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.text();};
 try{
-  const encodedFiles=['ink-price-store-v30-1.b64','ink-price-store-v30-2.b64','ink-price-store-v30-3-4.b64'];
-  const rawFiles=['ink-price-store-v30.part5.txt','ink-price-store-v30.part6.txt','ink-price-store-v30.part7.txt','ink-price-store-v30.part8.txt'];
-  const encoded=await Promise.all(encodedFiles.map(async name=>{const response=await fetch(new URL(`./${name}`,import.meta.url));if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.text();}));
-  const raw=await Promise.all(rawFiles.map(async name=>{const response=await fetch(new URL(`./${name}`,import.meta.url));if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.text();}));
-  const source=[...encoded.flatMap(value=>value.trim().split(/\s+/)).map(decode),...raw].join('');
+  const encoded=await Promise.all(['ink-price-store-v30-1.b64','ink-price-store-v30-2.b64'].map(read));
+  const prefix=await Promise.all(['ink-price-store-v30.part3.txt','ink-price-store-v30.part4a.txt'].map(read));
+  const ranked=JSON.parse(await read('ink-price-store-v30.part4b.json'));
+  const suffix=await Promise.all(['ink-price-store-v30.part5.txt','ink-price-store-v30.part6.txt','ink-price-store-v30.part7.txt','ink-price-store-v30.part8.txt'].map(read));
+  const source=[...encoded.map(decode),...prefix,ranked,...suffix].join('');
   const blobUrl=URL.createObjectURL(new Blob([source],{type:'text/javascript'}));
   try{await import(blobUrl);}finally{URL.revokeObjectURL(blobUrl);}
 }catch(error){
