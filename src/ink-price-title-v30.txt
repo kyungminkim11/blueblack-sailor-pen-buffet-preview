@@ -1,0 +1,1 @@
+queueMicrotask(()=>{const heading=document.querySelector('[data-ink-title]')?.textContent?.trim();if(heading)document.title='BlueBlack · '+heading;});
