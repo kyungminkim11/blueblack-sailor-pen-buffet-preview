@@ -1,0 +1,36 @@
+let inkSheetZoom=1;
+const inkSheetMin=.75;
+const inkSheetMax=3;
+function inkSheetApply(center=false){
+  const sheet=document.querySelector('.ink-sheet');
+  const canvas=document.querySelector('.ink-canvas');
+  if(!sheet||!canvas)return;
+  inkSheetZoom=Math.max(inkSheetMin,Math.min(inkSheetMax,inkSheetZoom));
+  sheet.style.width=`${Math.round(inkSheetZoom*100)}%`;
+  sheet.style.maxWidth='none';
+  canvas.dataset.zoom=String(Math.round(inkSheetZoom*100));
+  document.querySelector('.ink-zoom-out')?.toggleAttribute('disabled',inkSheetZoom<=inkSheetMin);
+  document.querySelector('.ink-zoom-in')?.toggleAttribute('disabled',inkSheetZoom>=inkSheetMax);
+  if(center)canvas.scrollTo({left:Math.max(0,(canvas.scrollWidth-canvas.clientWidth)/2),top:Math.max(0,(canvas.scrollHeight-canvas.clientHeight)/2)});
+}
+function inkSheetButton(selector,handler){
+  const old=document.querySelector(selector);
+  if(!old)return;
+  const button=old.cloneNode(true);
+  old.replaceWith(button);
+  button.addEventListener('click',handler);
+}
+function inkSheetZoomInit(){
+  const canvas=document.querySelector('.ink-canvas');
+  const sheet=document.querySelector('.ink-sheet');
+  if(!canvas||!sheet)return;
+  inkSheetButton('.ink-zoom-out',()=>{inkSheetZoom-=.25;inkSheetApply(true);});
+  inkSheetButton('.ink-zoom-in',()=>{inkSheetZoom+=.25;inkSheetApply(true);});
+  inkSheetButton('.ink-zoom-reset',()=>{inkSheetZoom=1;inkSheetApply();canvas.scrollTo({left:0,top:0,behavior:'smooth'});});
+  canvas.addEventListener('dblclick',()=>{inkSheetZoom=inkSheetZoom>1?1:2;inkSheetApply(true);});
+  canvas.addEventListener('wheel',event=>{if(!event.ctrlKey&&!event.metaKey)return;event.preventDefault();inkSheetZoom+=event.deltaY<0?.2:-.2;inkSheetApply(true);},{passive:false});
+  sheet.addEventListener('load',()=>requestAnimationFrame(()=>inkSheetApply()));
+  window.addEventListener('inkpagechange',()=>{inkSheetZoom=1;requestAnimationFrame(()=>inkSheetApply());});
+  inkSheetApply();
+}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',inkSheetZoomInit,{once:true});else inkSheetZoomInit();
