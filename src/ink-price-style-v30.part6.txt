@@ -1,2 +1,30 @@
 .ink-store-toast{position:fixed;left:50%;bottom:24px;z-index:40;transform:translateX(-50%);padding:11px 16px;border-radius:999px;background:#10233f;color:#fff;font-size:12px;font-weight:850;box-shadow:0 14px 34px rgba(16,35,63,.3);white-space:nowrap}
 .ink-store-load-error{padding:24px;border:1px solid #d7b9b3;border-radius:18px;background:#fff4f2;color:#7f3d34;font-size:14px;line-height:1.6;text-align:center}
+
+/* Desktop and tablet layout guardrails */
+.ink-store-volume{min-width:0}
+.ink-store-volume span,.ink-store-volume strong,.ink-store-volume small{min-width:0}
+@media(min-width:391px){
+  .ink-store-volume{grid-template-columns:minmax(0,1fr);grid-template-areas:'volume' 'price' 'action';gap:4px;justify-items:center;text-align:center}
+  .ink-store-volume span{justify-self:center;line-height:1.25;overflow-wrap:anywhere}
+  .ink-store-volume strong{justify-self:center;font-size:14px;line-height:1.25}
+  .ink-store-volume small{width:100%}
+}
+@media(min-width:1201px){
+  body.ink-price-page .detail-header-inner,.ink-price-main{width:min(1380px,calc(100% - 40px))}
+  .ink-store-layout{grid-template-columns:minmax(0,1fr) 320px;gap:20px}
+  .ink-store-result{grid-template-columns:76px minmax(0,1fr) 340px;gap:16px;padding:15px}
+  .ink-store-prices{grid-template-columns:repeat(3,minmax(100px,1fr));gap:8px}
+}
+@media(min-width:901px) and (max-width:1200px){
+  .ink-store-layout{grid-template-columns:1fr}
+  .ink-store-list-card{position:static}
+  .ink-store-result{grid-template-columns:74px minmax(0,1fr) 340px;gap:14px}
+  .ink-store-prices{grid-template-columns:repeat(3,minmax(100px,1fr));gap:8px}
+}
+@media(min-width:681px) and (max-width:900px){
+  .ink-store-layout{grid-template-columns:1fr}
+  .ink-store-list-card{position:static}
+  .ink-store-result{grid-template-columns:70px minmax(0,1fr);gap:12px}
+  .ink-store-prices{grid-column:1/-1;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+}
