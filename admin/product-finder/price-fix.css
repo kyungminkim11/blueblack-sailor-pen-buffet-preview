@@ -1,0 +1,13 @@
+#productFields .detail-field:nth-child(1),
+#productFields .detail-field:nth-child(3) {
+  display: none;
+}
+
+#productFields .detail-field:nth-child(2) small {
+  font-size: 0;
+}
+
+#productFields .detail-field:nth-child(2) small::after {
+  content: '매장 판매가';
+  font-size: 8px;
+}
