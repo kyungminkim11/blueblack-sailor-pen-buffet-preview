@@ -1,20 +1,29 @@
 brandKo,color.brandEn].filter(Boolean).join(' '));}
 function entryKey(entry){return `${entry.kind}:${entry.item.id}:${entry.color?.id||normalize(entry.manualColor||'')}:${entry.volume}`;}
-function listTotal(){return list.reduce((sum,item)=>sum+Number(item.price||0),0);}
+function normalizeQty(value){return Math.max(1,Math.min(99,Math.trunc(Number(value)||1)));}
+function bottleCatalogKey(itemId,colorId=''){return `${itemId}:${colorId||''}`;}
+function bottleInfoFor(itemId,colorId=''){return window.blueblackBottleCatalog?.[bottleCatalogKey(itemId,colorId)]||null;}
+function listTotal(){return list.reduce((sum,item)=>sum+Number(item.price||0)*normalizeQty(item.qty),0);}
+function listCount(){return list.reduce((sum,item)=>sum+normalizeQty(item.qty),0);}
 function isSelected(entry,volume){return list.some(item=>item.key===entryKey({...entry,volume}));}
 
 function writeList(){sessionStorage.setItem(SESSION_KEY,JSON.stringify({updatedAt:Date.now(),items:list}));renderList();renderResults();}
-function readSessionList(){const saved=safeParse(sessionStorage.getItem(SESSION_KEY),null);if(!saved||!Array.isArray(saved.items)||Date.now()-Number(saved.updatedAt||0)>SESSION_TTL){sessionStorage.removeItem(SESSION_KEY);return [];}return saved.items.filter(item=>item&&item.key&&item.itemId&&item.volume);}
+function readSessionList(){const saved=safeParse(sessionStorage.getItem(SESSION_KEY),null);if(!saved||!Array.isArray(saved.items)||Date.now()-Number(saved.updatedAt||0)>SESSION_TTL){sessionStorage.removeItem(SESSION_KEY);return [];}return saved.items.filter(item=>item&&item.key&&item.itemId&&item.volume).map(item=>({...item,qty:normalizeQty(item.qty)}));}
 function restoreList(raw){if(!Array.isArray(raw))return [];
   return raw.map(saved=>{
     const item=priceItemById(saved.itemId);if(!item)return null;
     const color=saved.colorId?colorById(saved.colorId):null;
     const entry={kind:color?'color':'series',item,color,manualColor:String(saved.manualColor||'')};
-    const volume=saved.volume==='10ml'?'10ml':'5ml';
-    return{key:entryKey({...entry,volume}),itemId:item.id,colorId:color?.id||'',manualColor:entry.manualColor,brandKo:item.brandKo,brandEn:item.brandEn,seriesKo:item.productKo,seriesEn:item.productEn,colorKo:color?.nameKo||entry.manualColor||'',colorEn:color?.nameEn||entry.manualColor||'',volume,price:priceFor(item,volume),addedAt:Date.now()};
+    const volume=saved.volume==='bottle'?'bottle':saved.volume==='10ml'?'10ml':'5ml';
+    const info=bottleInfoFor(item.id,color?.id||'');
+    const bottlePrice=Number(saved.bottlePrice||saved.price||info?.price||0);
+    const bottleVolume=String(saved.bottleVolume||info?.volume||'');
+    const price=volume==='bottle'?bottlePrice:priceFor(item,volume);
+    if(volume==='bottle'&&!(price>0))return null;
+    return{key:entryKey({...entry,volume}),itemId:item.id,colorId:color?.id||'',manualColor:entry.manualColor,brandKo:item.brandKo,brandEn:item.brandEn,seriesKo:item.productKo,seriesEn:item.productEn,colorKo:color?.nameKo||entry.manualColor||'',colorEn:color?.nameEn||entry.manualColor||'',volume,price,qty:normalizeQty(saved.qty),bottlePrice:bottlePrice||Number(info?.price||0),bottleVolume:bottleVolume||String(info?.volume||''),productName:String(saved.productName||info?.productName||''),addedAt:Number(saved.addedAt||Date.now())};
   }).filter(Boolean);
 }
-function persistableList(){return list.map(({itemId,colorId,manualColor,volume})=>({itemId,colorId,manualColor,volume}));}
+function persistableList(){return list.map(({itemId,colorId,manualColor,volume,qty,bottlePrice,bottleVolume,productName})=>({itemId,colorId,manualColor,volume,qty:normalizeQty(qty),bottlePrice:Number(bottlePrice||0),bottleVolume:String(bottleVolume||''),productName:String(productName||'')}));}
 
 function buildData(){
   groups=brandGroups().filter(group=>group.priceItems.length);
