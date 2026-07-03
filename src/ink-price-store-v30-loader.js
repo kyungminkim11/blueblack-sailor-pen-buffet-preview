@@ -1,5 +1,6 @@
+const VERSION='44';
 const decode=value=>decodeURIComponent(escape(atob(value.trim())));
-const read=async name=>{const response=await fetch(new URL(`./${name}`,import.meta.url));if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.text();};
+const read=async name=>{const url=new URL(`./${name}`,import.meta.url);url.searchParams.set('v',VERSION);const response=await fetch(url,{cache:'no-store'});if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.text();};
 try{
   const encoded=await Promise.all(['ink-price-store-v30-1.b64','ink-price-store-v30-2.b64'].map(read));
   const prefix=await Promise.all(['ink-price-store-v30.part3.txt','ink-price-store-v30.part4a.txt'].map(read));
