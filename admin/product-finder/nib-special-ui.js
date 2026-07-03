@@ -1,3 +1,4 @@
+import './result-filters.js';
 import './fountain-pen-catalog.js';
 import '../admin-auth.js';
 
