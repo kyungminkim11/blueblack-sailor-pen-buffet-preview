@@ -1,0 +1,2 @@
+.ink-store-toast{position:fixed;left:50%;bottom:24px;z-index:40;transform:translateX(-50%);padding:11px 16px;border-radius:999px;background:#10233f;color:#fff;font-size:12px;font-weight:850;box-shadow:0 14px 34px rgba(16,35,63,.3);white-space:nowrap}
+.ink-store-load-error{padding:24px;border:1px solid #d7b9b3;border-radius:18px;background:#fff4f2;color:#7f3d34;font-size:14px;line-height:1.6;text-align:center}
