@@ -1,3 +1,6 @@
+import './ink-bottle-volume-rpc-v38.js?v=38';
+import './ink-store-policy-v40.js?v=40';
+
 try{
   const files=['ink-price-viewer-zoom-v30.txt','ink-price-viewer-copy-v30.txt'];
   const parts=await Promise.all(files.map(async name=>{const response=await fetch(new URL(`./${name}`,import.meta.url));if(!response.ok)throw new Error(`HTTP ${response.status}`);return response.text();}));
