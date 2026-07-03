@@ -1,0 +1,26 @@
+店员',newCustomer:'新顾客',remove:'删除',clearConfirm:'清空当前清单并开始新顾客吗？',shared:'确认清单链接已复制。',saved:'已加入确认清单。',removed:'已从清单删除。',staffTitle:'墨水分装确认清单',staffNote:'付款前请与店员确认最终颜色、价格、库存及可分装情况。',close:'关闭',print:'打印',disclaimer:'屏幕颜色可能与实际墨水不同。最终选择前请查看店内实物和色卡。',pricing:'10ml价格为两份5ml总价减1,500韩元。',countries:{kr:'韩国',jp:'日本',de:'德国',fr:'法国',it:'意大利',uk:'英国',us:'美国',tw:'中国台湾',ph:'菲律宾',au:'澳大利亚',ca:'加拿大',other:'其他'},types:{standard:'基础/标准',shimmer:'闪粉/珠光',pigment:'颜料/防水',scented:'香味墨水',calligraphy:'书法',special:'特别系列',other:'其他'},
+  },
+  'zh-Hant':{
+    title:'墨水分裝價格搜尋',body:'搜尋品牌、系列或顏色名稱，即可查看5ml和10ml價格。',placeholder:'搜尋品牌、系列或顏色 · Sailor、Manyo、Yama-dori',quick:'常用品牌',filters:'詳細篩選',country:'國家',type:'墨水類型',all:'全部',result:'搜尋結果',emptyTitle:'沒有搜尋結果',emptyBody:'請嘗試其他品牌、系列或顏色名稱。',stats:(b,s,c)=>`${b}個品牌 · ${s}個系列 · ${c}種顏色`,initialTitle:'快速查看價格',initialBody:'請選擇品牌或輸入顏色名稱。',noColor:'顏色請與店員確認',manualColor:'所需顏色',manualPlaceholder:'例如 Take-sumi',add:'選擇',selected:'已選擇',more:'查看更多',remaining:n=>`還有${n}項`,listTitle:'店員確認清單',listBody:'請向店員出示所選顏色和容量。',emptyList:'尚未選擇墨水。',total:'預計合計',share:'分享清單',showStaff:'展示給店員',newCustomer:'新顧客',remove:'刪除',clearConfirm:'清空目前清單並開始新顧客嗎？',shared:'確認清單連結已複製。',saved:'已加入確認清單。',removed:'已從清單刪除。',staffTitle:'墨水分裝確認清單',staffNote:'付款前請與店員確認最終顏色、價格、庫存及可分裝情況。',close:'關閉',print:'列印',disclaimer:'螢幕顏色可能與實際墨水不同。最終選擇前請查看店內實物和色卡。',pricing:'10ml價格為兩份5ml總價減1,500韓元。',countries:{kr:'韓國',jp:'日本',de:'德國',fr:'法國',it:'義大利',uk:'英國',us:'美國',tw:'台灣',ph:'菲律賓',au:'澳洲',ca:'加拿大',other:'其他'},types:{standard:'基礎/標準',shimmer:'亮粉/珠光',pigment:'顏料/防水',scented:'香味墨水',calligraphy:'書法',special:'特別系列',other:'其他'},
+  },
+};
+
+let query='';
+let countryFilter='all';
+let typeFilter='all';
+let visibleLimit=RESULT_STEP;
+let list=[];
+let groups=[];
+let entries=[];
+
+function lang(){return currentLang();}
+function text(){return COPY[lang()]||COPY.ko;}
+function escapeHtml(value=''){return String(value).replace(/[&<>'"]/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[char]));}
+function toast(message){let node=document.querySelector('.ink-store-toast');if(!node){node=document.createElement('div');node.className='ink-store-toast';node.setAttribute('aria-live','polite');document.body.append(node);}node.textContent=message;clearTimeout(toast.timer);toast.timer=setTimeout(()=>node.remove(),2200);}
+function safeParse(value,fallback){try{return JSON.parse(value)||fallback;}catch{return fallback;}}
+function encodeSelection(value){try{return btoa(unescape(encodeURIComponent(JSON.stringify(value)))).replace(/=+$/,'');}catch{return '';}}
+function decodeSelection(value){try{const normalized=value.replace(/-/g,'+').replace(/_/g,'/');const padded=normalized+'='.repeat((4-normalized.length%4)%4);return JSON.parse(decodeURIComponent(escape(atob(padded))));}catch{return null;}}
+function colorLabel(color){return color?colorName(color):text().noColor;}
+function groupForItem(item){return groups.find(group=>group.priceItems.some(candidate=>candidate.id===item.id));}
+function itemSearchText(item){return normalize([item.productKo,item.productEn,...(item.keywords||[])].join(' '));}
+function colorSearchText(color){return normalize([color.nameKo,color.nameEn,color.nameJa,color.nameZhHans,color.nameZhHant,color.productTitle,color.
