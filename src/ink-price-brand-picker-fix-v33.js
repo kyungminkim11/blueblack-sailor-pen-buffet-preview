@@ -46,9 +46,36 @@ function addStyles(){
   .ink-store-all-brands{min-height:44px!important}
 }
 @media(max-width:680px){
-  .ink-brand-picker-shell{max-height:88dvh!important}
-  .ink-brand-picker-list{overflow-y:auto!important}
-  .ink-brand-picker-pager{position:sticky;bottom:0;margin-left:-2px;margin-right:-2px;padding-bottom:2px;background:#fbf8f2}
+  .ink-brand-picker-dialog{
+    position:fixed!important;
+    inset:0!important;
+    width:calc(100% - 20px)!important;
+    max-width:620px!important;
+    max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    margin:auto!important;
+    border-radius:24px!important;
+    overflow:hidden!important;
+  }
+  .ink-brand-picker-shell{
+    box-sizing:border-box!important;
+    width:100%!important;
+    max-height:calc(100dvh - 28px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;
+    padding:17px 15px 14px!important;
+    border-radius:24px!important;
+    overflow:hidden!important;
+  }
+  .ink-brand-picker-head{flex:0 0 auto!important}
+  .ink-brand-picker-search{flex:0 0 auto!important;margin-top:14px!important}
+  .ink-brand-picker-meta{flex:0 0 auto!important}
+  .ink-brand-picker-list{flex:1 1 auto!important;min-height:0!important;max-height:none!important;overflow-y:auto!important;padding-bottom:6px!important}
+  .ink-brand-picker-pager{position:static!important;flex:0 0 auto!important;margin:10px -1px 0!important;padding:11px 0 calc(2px + env(safe-area-inset-bottom))!important;background:#fbf8f2!important}
+}
+@media(max-width:390px){
+  .ink-brand-picker-dialog{width:calc(100% - 14px)!important;max-height:calc(100dvh - 18px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important}
+  .ink-brand-picker-shell{max-height:calc(100dvh - 18px - env(safe-area-inset-top) - env(safe-area-inset-bottom))!important;padding:14px 12px 12px!important}
+  .ink-brand-picker-head h2{font-size:22px!important}
+  .ink-brand-picker-head p{font-size:11px!important}
+  .ink-brand-picker-search input{height:46px!important}
 }
 `;
   document.head.append(style);
