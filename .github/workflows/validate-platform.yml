@@ -25,6 +25,11 @@ jobs:
           node --check src/as-portal-addon.js
           node --check src/engraving-guide.js
           node --check src/portal-ink-live.js
+          node --check src/official-guide-i18n-v50.js
+          node --check src/engraving-guide-i18n-v50.js
+          node --check src/as-guide-i18n-v50.js
+          node --check src/pen-buffet-i18n-v50.js
+          node --check src/ink-price-i18n-completion-v50.js
           node --check src/ink-products-data.js
           node --check src/ink-inventory-colors-v26-part1.js
           node --check src/ink-inventory-colors-v26-part2.js
