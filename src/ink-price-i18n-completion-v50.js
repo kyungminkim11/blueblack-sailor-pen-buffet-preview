@@ -1,5 +1,6 @@
 import './detail-language.js';
 
+// Customer-facing language completion for the ink decant search page.
 const INK_EXTRA={
   ko:{meta:'블루블랙에서 취급하는 잉크를 브랜드·시리즈·색상명으로 검색하고 5ml·10ml 소분 가격과 본병 정보를 확인하세요.',app:'잉크 소분 가격 검색',notices:'잉크 소분 이용 안내',viewer:'공식 잉크 소분 가격표',tabs:'가격표 페이지',sheet:'블루블랙 잉크 소분 가격표',expanded:'확대한 잉크 소분 가격표',close:'확대 화면 닫기'},
   en:{meta:'Search BlueBlack Pen Shop inks by brand, series or color and compare 5ml and 10ml decant prices with full-bottle information.',app:'Ink decant price search',notices:'Ink decant guidance',viewer:'Official ink decant price sheets',tabs:'Price sheet pages',sheet:'BlueBlack ink decant price sheet',expanded:'Enlarged ink decant price sheet',close:'Close enlarged view'},
