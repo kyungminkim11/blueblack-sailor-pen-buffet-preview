@@ -11,6 +11,16 @@ function resultStats(values){
   return{brands:brands.size,series:series.size,colors:colors.size};
 }
 
+function bottleUiCopy(){
+  const values={
+    ko:{bottle:'본병',add:'본병 담기',selected:'담음',checking:'가격 확인 중',unavailable:'본병 가격을 직원에게 확인해 주세요.'},
+    en:{bottle:'Full bottle',add:'Add bottle',selected:'Added',checking:'Checking price',unavailable:'Please ask a staff member to confirm the full-bottle price.'},
+    ja:{bottle:'ボトル',add:'ボトルを追加',selected:'追加済み',checking:'価格確認中',unavailable:'ボトル価格はスタッフにご確認ください。'},
+    'zh-Hans':{bottle:'原装瓶',add:'加入原装瓶',selected:'已加入',checking:'正在查询价格',unavailable:'请向店员确认原装瓶价格。'},
+    'zh-Hant':{bottle:'原裝瓶',add:'加入原裝瓶',selected:'已加入',checking:'正在查詢價格',unavailable:'請向店員確認原裝瓶價格。'}
+  };
+  return values[lang()]||values.ko;
+}
 function colorVisual(entry){
   const color=entry.color;
   if(color?.image)return`<span class="ink-store-visual has-image"><img src="${escapeHtml(color.image)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer"><i style="--ink-color:${escapeHtml(color.hex||entry.item.color||'#9aa7b5')}"></i></span>`;
@@ -20,11 +30,19 @@ function volumeButton(entry,volume){
   const selected=isSelected(entry,volume);
   return`<button type="button" class="ink-store-volume${selected?' is-selected':''}" data-item-id="${escapeHtml(entry.item.id)}" data-color-id="${escapeHtml(entry.color?.id||'')}" data-entry-kind="${entry.kind}" data-volume="${volume}"><span>${volume}</span><strong>${formatPrice(priceFor(entry.item,volume))}</strong><small>${selected?'✓ '+text().selected:text().add}</small></button>`;
 }
+function bottleButton(entry){
+  const ui=bottleUiCopy();
+  const info=bottleInfoFor(entry.item.id,entry.color?.id||'');
+  const price=Number(info?.price||0);
+  const bottleVolume=String(info?.volume||'');
+  const selected=isSelected(entry,'bottle');
+  return`<button type="button" class="ink-store-volume ink-store-bottle-volume${selected?' is-selected':''}" data-item-id="${escapeHtml(entry.item.id)}" data-color-id="${escapeHtml(entry.color?.id||'')}" data-entry-kind="${entry.kind}" data-volume="bottle" data-bottle-price="${price||''}" data-bottle-volume="${escapeHtml(bottleVolume)}" data-product-name="${escapeHtml(info?.productName||'')}" ${price>0?'':'disabled'}><span>${escapeHtml(ui.bottle)}${bottleVolume?` ${escapeHtml(bottleVolume)}`:''}</span><strong>${price>0?formatWon(price):'—'}</strong><small>${selected?'✓ '+ui.selected:price>0?ui.add:ui.checking}</small></button>`;
+}
 function resultCard(entry){
   const country=text().countries[groupCountryKey(entry.group)]||text().countries.other;
   const types=itemTypeKeys(entry.item).map(key=>text().types[key]||key).slice(0,2).join(' · ');
   const color=entry.color;
-  return`<article class="ink-store-result" data-item-id="${escapeHtml(entry.item.id)}" data-color-id="${escapeHtml(color?.id||'')}">${colorVisual(entry)}<div class="ink-store-result-copy"><span class="ink-store-brand">${escapeHtml(brandName(entry.group))}</span><h3>${escapeHtml(color?colorName(color):seriesName(entry.item))}</h3><p>${escapeHtml(color?seriesName(entry.item):entry.item.productEn||seriesName(entry.item))}</p><div class="ink-store-tags"><span>${escapeHtml(country)}</span><span>${escapeHtml(types)}</span></div>${entry.kind==='series'?`<label class="ink-store-manual"><span>${text().manualColor}</span><input type="text" placeholder="${text().manualPlaceholder}" data-manual-item="${escapeHtml(entry.item.id)}"></label>`:''}</div><div class="ink-store-prices">${volumeButton(entry,'5ml')}${volumeButton(entry,'10ml')}</div></article>`;
+  return`<article class="ink-store-result" data-item-id="${escapeHtml(entry.item.id)}" data-color-id="${escapeHtml(color?.id||'')}">${colorVisual(entry)}<div class="ink-store-result-copy"><span class="ink-store-brand">${escapeHtml(brandName(entry.group))}</span><h3>${escapeHtml(color?colorName(color):seriesName(entry.item))}</h3><p>${escapeHtml(color?seriesName(entry.item):entry.item.productEn||seriesName(entry.item))}</p><div class="ink-store-tags"><span>${escapeHtml(country)}</span><span>${escapeHtml(types)}</span></div>${entry.kind==='series'?`<label class="ink-store-manual"><span>${text().manualColor}</span><input type="text" placeholder="${text().manualPlaceholder}" data-manual-item="${escapeHtml(entry.item.id)}"></label>`:''}</div><div class="ink-store-prices">${volumeButton(entry,'5ml')}${volumeButton(entry,'10ml')}${bottleButton(entry)}</div></article>`;
 }
 
 function renderResults(){
@@ -37,6 +55,7 @@ function renderResults(){
   root.innerHTML=shown.map(resultCard).join('');
   root.querySelectorAll('.ink-store-volume').forEach(button=>button.addEventListener('click',()=>toggleSelection(button)));
   renderMore(shown.length,values.length);
+  window.dispatchEvent(new CustomEvent('blueblack:ink-results-rendered'));
 }
 function renderMore(shown,total){
   const button=document.querySelector('.ink-store-more');if(!button)return;
@@ -54,4 +73,14 @@ function toggleSelection(button){
   const key=entryKey({...entry,volume});
   const existing=list.findIndex(item=>item.key===key);
   if(existing>=0){list.splice(existing,1);toast(text().removed);writeList();return;}
-  const item=entry.item;co
+  const item=entry.item;
+  const color=entry.color;
+  const info=bottleInfoFor(item.id,color?.id||'');
+  const bottlePrice=Number(button.dataset.bottlePrice||info?.price||0);
+  const bottleVolume=String(button.dataset.bottleVolume||info?.volume||'');
+  const productName=String(button.dataset.productName||info?.productName||'');
+  if(volume==='bottle'&&!(bottlePrice>0)){toast(bottleUiCopy().unavailable);return;}
+  const price=volume==='bottle'?bottlePrice:priceFor(item,volume);
+  list.push({key,itemId:item.id,colorId:color?.id||'',manualColor:entry.manualColor,brandKo:item.brandKo,brandEn:item.brandEn,seriesKo:item.productKo,seriesEn:item.productEn,colorKo:color?.nameKo||entry.manualColor||'',colorEn:color?.nameEn||entry.manualColor||'',volume,price,qty:1,bottlePrice,bottleVolume,productName,addedAt:Date.now()});
+  toast(text().saved);writeList();
+}
