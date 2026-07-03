@@ -1,0 +1,43 @@
+nst color=entry.color;
+  list.push({key,itemId:item.id,colorId:color?.id||'',manualColor:entry.manualColor,brandKo:item.brandKo,brandEn:item.brandEn,seriesKo:item.productKo,seriesEn:item.productEn,colorKo:color?.nameKo||entry.manualColor||'',colorEn:color?.nameEn||entry.manualColor||'',volume,price:priceFor(item,volume),addedAt:Date.now()});
+  toast(text().saved);writeList();
+}
+
+function displayName(item){const isKo=lang()==='ko';const isAsian=['ja','zh-Hans','zh-Hant'].includes(lang());const brand=isKo?item.brandKo:item.brandEn;const series=isKo?item.seriesKo:item.seriesEn;const color=isKo?item.colorKo:item.colorEn;return[brand,series,color||text().noColor].filter(Boolean).join(' · ');}
+function renderList(){
+  const root=document.querySelector('.ink-store-list');if(!root)return;
+  document.querySelectorAll('[data-ink-store-count]').forEach(node=>node.textContent=String(list.length));
+  document.querySelectorAll('[data-ink-store-total]').forEach(node=>node.textContent=formatWon(listTotal()));
+  document.querySelectorAll('.ink-store-share,.ink-store-show').forEach(button=>button.disabled=list.length===0);
+  if(!list.length){root.innerHTML=`<div class="ink-store-list-empty">${text().emptyList}</div>`;return;}
+  root.innerHTML=list.map((item,index)=>`<div class="ink-store-list-item"><span class="ink-store-list-no">${index+1}</span><div><b>${escapeHtml(displayName(item))}</b><span>${item.volume} · ${formatWon(item.price)}</span></div><button type="button" data-remove-index="${index}" aria-label="${text().remove}">×</button></div>`).join('');
+  root.querySelectorAll('[data-remove-index]').forEach(button=>button.addEventListener('click',()=>{list.splice(Number(button.dataset.removeIndex),1);toast(text().removed);writeList();}));
+}
+
+function filterButtons(root,keys,active,labelMap,onSelect){
+  root.innerHTML=keys.map(key=>`<button type="button" data-filter="${key}" class="${key===active?'is-selected':''}" aria-pressed="${key===active}">${escapeHtml(key==='all'?text().all:labelMap[key]||key)}</button>`).join('');
+  root.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{onSelect(button.dataset.filter);visibleLimit=RESULT_STEP;renderFilters();renderResults();}));
+}
+function renderFilters(){
+  const countryRoot=document.querySelector('.ink-store-country');const typeRoot=document.querySelector('.ink-store-type');if(!countryRoot||!typeRoot)return;
+  const availableCountries=['all',...COUNTRY_KEYS.filter(key=>groups.some(group=>groupCountryKey(group)===key))];
+  const availableTypes=['all',...TYPE_KEYS.filter(key=>groups.some(group=>group.priceItems.some(item=>itemTypeKeys(item).includes(key))))];
+  filterButtons(countryRoot,availableCountries,countryFilter,text().countries,key=>countryFilter=key);
+  filterButtons(typeRoot,availableTypes,typeFilter,text().types,key=>typeFilter=key);
+}
+function renderQuick(){
+  const root=document.querySelector('.ink-store-quick');if(!root)return;
+  const available=POPULAR_BRANDS.map(name=>groups.find(group=>group.brandEn===name)).filter(Boolean);
+  root.innerHTML=available.map(group=>`<button type="button" data-brand="${escapeHtml(group.brandEn)}">${escapeHtml(brandName(group))}</button>`).join('');
+  root.querySelectorAll('button').forEach(button=>button.addEventListener('click',()=>{query=lang()==='ko'?(groups.find(group=>group.brandEn===button.dataset.brand)?.brandKo||button.dataset.brand):button.dataset.brand;const input=document.querySelector('.ink-store-search');input.value=query;visibleLimit=RESULT_STEP;syncUrl();renderResults();input.focus();}));
+}
+function renderCopy(){
+  document.querySelector('[data-store-title]').textContent=text().title;
+  document.querySelector('[data-store-body]').textContent=text().body;
+  document.querySelector('.ink-store-search').placeholder=text().placeholder;
+  document.querySelector('[data-store-quick]').textContent=text().quick;
+  document.querySelector('[data-store-filter-summary]').textContent=text().filters;
+  document.querySelector('[data-store-country]').textContent=text().country;
+  document.querySelector('[data-store-type]').textContent=text().type;
+  document.querySelector('[data-store-result]').textContent=query?text().result:text().initialTitle;
+  document.querySelector('[data-store-list-title]').textContent=text().lis
