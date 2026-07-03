@@ -79,7 +79,13 @@ function applyStore(value){
   document.querySelectorAll('[data-remove-index]').forEach(button=>setAttr(button,'aria-label',value.remove));
 
   const more=document.querySelector('.ink-store-more');
-  if(more&&!more.hidden){const n=numbers(more.textContent).pop();if(Number.isFinite(n))more.innerHTML=`${value.more}<small>${value.remaining(n)}</small>`;else setText(more,value.more);}
+  if(more&&!more.hidden){
+    const n=numbers(more.textContent).pop();
+    if(Number.isFinite(n)){
+      const desired=`${value.more}<small>${value.remaining(n)}</small>`;
+      if(more.innerHTML!==desired)more.innerHTML=desired;
+    }else setText(more,value.more);
+  }
   const dialog=document.querySelector('.ink-store-dialog');
   if(dialog){setText(dialog.querySelector('h2'),value.listTitle);setText(dialog.querySelector('.ink-store-dialog-total span'),value.total);setText(dialog.querySelector('.ink-store-dialog-share'),value.share);setText(dialog.querySelector('.ink-store-dialog-print'),value.print);setAttr(dialog.querySelector('.ink-store-dialog-close'),'aria-label',value.close);}
 }
