@@ -1,5 +1,6 @@
 import './ink-bottle-volume-rpc-v38.js?v=38';
 import './ink-store-policy-v40.js?v=40';
+import './ink-price-i18n-v43.js?v=43';
 
 try{
   const files=['ink-price-viewer-zoom-v30.txt','ink-price-viewer-copy-v30.txt'];
