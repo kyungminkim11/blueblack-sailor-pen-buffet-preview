@@ -18,19 +18,7 @@ async function fetchVolume(itemId){
   return volume;
 }
 
-function ensureBadge(card){
-  const copy=card.querySelector('.ink-store-result-copy');
-  if(!copy)return null;
-  let badge=copy.querySelector('.ink-bottle-info');
-  if(!badge){
-    badge=document.createElement('aside');
-    badge.className='ink-bottle-info is-loading';
-    badge.innerHTML='<span>본병</span><strong>—</strong><em>가격 확인</em>';
-    copy.classList.add('has-bottle-info');
-    copy.append(badge);
-  }
-  return badge;
-}
+function existingBadge(card){return card.querySelector('.ink-bottle-info');}
 function publishVolume(card,volume){
   const itemId=card.dataset.itemId||'';
   const colorId=card.dataset.colorId||'';
@@ -50,17 +38,14 @@ function publishVolume(card,volume){
 async function applyCard(card){
   const itemId=card.dataset.itemId||'';
   if(!itemId||pending.has(itemId))return;
-  const badge=ensureBadge(card);
-  const strong=badge?.querySelector('strong');
-  if(!strong)return;
-  const current=strong.textContent.trim();
-  if(current&&current!=='—'&&!/용량|확인|조회/.test(current)){publishVolume(card,current);return;}
+  const currentVolume=existingBadge(card)?.querySelector('strong')?.textContent?.trim()||'';
+  if(currentVolume&&currentVolume!=='—'&&!/용량|확인|조회/.test(currentVolume)){publishVolume(card,currentVolume);return;}
   pending.add(itemId);
   try{
     const volume=await fetchVolume(itemId);
     if(!volume)return;
     document.querySelectorAll(`.ink-store-result[data-item-id="${CSS.escape(itemId)}"]`).forEach(node=>{
-      const target=ensureBadge(node)?.querySelector('strong');
+      const target=existingBadge(node)?.querySelector('strong');
       if(target)target.textContent=volume;
       publishVolume(node,volume);
     });
@@ -79,7 +64,7 @@ function init(){
     if(queued)return;
     queued=true;
     requestAnimationFrame(()=>{queued=false;scan();});
-  }).observe(document.body,{childList:true,subtree:true,characterData:true,attributes:true,attributeFilter:['hidden']});
+  }).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['hidden']});
   window.addEventListener('blueblack:ink-results-rendered',scan);
 }
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
