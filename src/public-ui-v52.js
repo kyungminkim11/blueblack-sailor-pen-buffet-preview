@@ -3,7 +3,10 @@ const BB_LANGUAGES={
   en:{flag:'🇺🇸',label:'English',aria:'Choose language'},
   ja:{flag:'🇯🇵',label:'日本語',aria:'言語を選択'},
   'zh-Hans':{flag:'🇨🇳',label:'简体中文',aria:'选择语言'},
-  'zh-Hant':{flag:'🇹🇼',label:'繁體中文',aria:'選擇語言'}
+  'zh-Hant':{flag:'🇹🇼',label:'繁體中文',aria:'選擇語言'},
+  vi:{flag:'🇻🇳',label:'Tiếng Việt',aria:'Chọn ngôn ngữ'},
+  id:{flag:'🇮🇩',label:'Bahasa Indonesia',aria:'Pilih bahasa'},
+  th:{flag:'🇹🇭',label:'ไทย',aria:'เลือกภาษา'}
 };
 
 const RESIDUAL_COPY={
@@ -45,6 +48,9 @@ function normalizeLanguage(value=''){
   const text=String(value).toLowerCase();
   if(text.includes('hant')||text.startsWith('zh-tw')||text.startsWith('zh-hk')||text.startsWith('zh-mo'))return'zh-Hant';
   if(text.startsWith('zh'))return'zh-Hans';
+  if(text.startsWith('vi'))return'vi';
+  if(text.startsWith('id'))return'id';
+  if(text.startsWith('th'))return'th';
   if(text.startsWith('ja'))return'ja';
   if(text.startsWith('en'))return'en';
   if(text.startsWith('ko'))return'ko';
@@ -172,6 +178,7 @@ function mount(){
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape')document.querySelector('[data-bb-language-menu]')?.removeAttribute('open');
   });
+  import('./public-extra-locales-v53.js?v=53').catch(error=>console.warn('Extra locale module failed',error));
 }
 
 ensurePageTranslationModule();
