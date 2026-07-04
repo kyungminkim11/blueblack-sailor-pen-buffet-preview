@@ -9,3 +9,4 @@ document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventL
 applyStoreFloorInformation();
 import('./store-guide-merged.js');
 import('./store-map-dedupe.js');
+import('./store-map-live.js?v=6');
