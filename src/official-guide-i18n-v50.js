@@ -1,3 +1,5 @@
+import './public-ui-v52.js';
+
 const OFFICIAL_EXTRA={
   ko:{
     meta:'블루블랙 공식 홈페이지의 브랜드, 상품 카테고리, 각인, A/S와 콘텐츠를 매장 상담용으로 정리한 디지털 가이드입니다.',
