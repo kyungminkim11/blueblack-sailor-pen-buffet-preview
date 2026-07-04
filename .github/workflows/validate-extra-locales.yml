@@ -1,0 +1,36 @@
+name: Validate extra public locales
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/public-ui-v52.js'
+      - 'src/public-extra-locales-v53.js'
+      - 'src/public-extra-locales-v54.js'
+      - 'scripts/validate-public-ui.mjs'
+      - 'scripts/audit-responsive.mjs'
+      - 'sw.js'
+      - '.github/workflows/validate-extra-locales.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check locale JavaScript syntax
+        run: |
+          node --check src/public-ui-v52.js
+          node --check src/public-extra-locales-v53.js
+          node --check src/public-extra-locales-v54.js
+          node --check scripts/validate-public-ui.mjs
+          node --check scripts/audit-responsive.mjs
+          node --check sw.js
+      - name: Validate eight-language coverage
+        run: node scripts/validate-public-ui.mjs
