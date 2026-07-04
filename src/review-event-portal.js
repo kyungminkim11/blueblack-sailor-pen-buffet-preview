@@ -1,9 +1,9 @@
 const reviewEventCopy={
-  ko:{kicker:'STORE REVIEW EVENT',title:'영수증 리뷰 이벤트',body:'매장 리뷰를 남기고 완료 화면을 직원에게 보여주면 랜덤 5ml 소분 잉크 1병을 드립니다.',status:'진행 중'},
-  en:{kicker:'STORE REVIEW EVENT',title:'Receipt Review Event',body:'Leave a store review, show the completed review to our staff, and receive one random 5ml ink sample.',status:'Ongoing'},
-  ja:{kicker:'STORE REVIEW EVENT',title:'レシートレビューイベント',body:'店舗レビューを投稿し、完了画面をスタッフに見せると、ランダム5mlインクサンプルを1本プレゼントします。',status:'開催中'},
-  'zh-Hans':{kicker:'STORE REVIEW EVENT',title:'小票评价活动',body:'留下门店评价并向店员出示完成页面，即可获赠随机5ml墨水分装1瓶。',status:'进行中'},
-  'zh-Hant':{kicker:'STORE REVIEW EVENT',title:'發票評論活動',body:'留下門市評論並向店員出示完成頁面，即可獲贈隨機5ml墨水分裝1瓶。',status:'進行中'}
+  ko:{kicker:'PHOTO REVIEW EVENT',title:'포토리뷰 이벤트',body:'제품 사진이 포함된 리뷰를 남기면 랜덤 5ml 소분 잉크 1병을 드립니다. 참여는 1일 1인 1회입니다.',status:'진행 중'},
+  en:{kicker:'PHOTO REVIEW EVENT',title:'Photo Review Event',body:'Post a review with a product photo and receive one random 5ml ink sample. One entry per person per day.',status:'Ongoing'},
+  ja:{kicker:'PHOTO REVIEW EVENT',title:'フォトレビューイベント',body:'商品写真付きレビューでランダム5mlインクサンプルを1本プレゼント。1日1名様1回までです。',status:'開催中'},
+  'zh-Hans':{kicker:'PHOTO REVIEW EVENT',title:'图片评价活动',body:'附上商品照片并完成评价，即可获赠随机5ml墨水分装1瓶。每人每天限一次。',status:'进行中'},
+  'zh-Hant':{kicker:'PHOTO REVIEW EVENT',title:'照片評論活動',body:'附上商品照片並完成評論，即可獲贈隨機5ml墨水分裝1瓶。每人每天限一次。',status:'進行中'}
 };
 function reviewEventLanguage(){
   const value=(new URLSearchParams(location.search).get('lang')||localStorage.getItem('blueblack-language')||navigator.language||'ko').toLowerCase();
