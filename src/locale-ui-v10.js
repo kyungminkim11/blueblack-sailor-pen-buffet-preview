@@ -1,3 +1,4 @@
+import './public-ui-v52.js';
 import './admin-settings-v16.js';
 import './booklet-guide-v13.js';
 import './store-policy-v14.js';
