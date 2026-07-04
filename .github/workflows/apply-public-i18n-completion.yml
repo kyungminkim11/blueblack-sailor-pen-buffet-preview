@@ -4,6 +4,8 @@ on:
   push:
     branches: [main]
     paths:
+      - 'src/public-ui-v52.js'
+      - 'src/public-ui-v52.css'
       - 'src/official-guide-i18n-v50.js'
       - 'src/engraving-guide-i18n-v50.js'
       - 'src/as-guide-i18n-v50.js'
@@ -22,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Apply multilingual page connections
+      - name: Apply multilingual and responsive page connections
         run: python scripts/apply-public-i18n-completion.py
       - name: Commit generated page updates
         run: |
@@ -32,6 +34,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add official-guide/index.html engraving-guide/index.html as-guide/index.html pen-buffet/index.html ink-price/index.html src/detail-language.js .github/workflows/validate-platform.yml
-          git commit -m "Connect complete public multilingual support"
+          git add index.html news/index.html review-event/index.html pen-buffet/index.html store-guide/index.html official-guide/index.html engraving-guide/index.html as-guide/index.html ink-price/index.html src/detail-language.js .github/workflows/validate-platform.yml
+          git commit -m "Unify public responsive language support"
           git push
