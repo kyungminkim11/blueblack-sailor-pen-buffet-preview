@@ -23,4 +23,3 @@ function cleanPublicPortal(){
 
 document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>queueMicrotask(cleanPublicPortal)));
 cleanPublicPortal();
-import('./portal-closing-notice.js?v=1');
