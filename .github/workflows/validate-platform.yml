@@ -18,12 +18,22 @@ jobs:
           node-version: '22'
       - name: Check JavaScript syntax
         run: |
+          node --check src/public-ui-v52.js
+          node --check scripts/validate-public-ui.mjs
           node --check src/portal.js
           node --check src/detail-language.js
+          node --check src/public-portal-copy.js
+          node --check news/news-feed.js
+          node --check review-event/review-event.js
           node --check src/official-portal-addon.js
           node --check src/engraving-portal-addon.js
           node --check src/as-portal-addon.js
           node --check src/engraving-guide.js
+          node --check src/as-guide.js
+          node --check src/locale-ui-v10.js
+          node --check src/store-address-addon.js
+          node --check src/store-closing-notice.js
+          node --check src/ink-price-style-v30-loader.js
           node --check src/portal-ink-live.js
           node --check src/official-guide-i18n-v50.js
           node --check src/engraving-guide-i18n-v50.js
@@ -57,6 +67,8 @@ jobs:
           node --check admin/product-finder/product-finder-ui.js
           node --check admin/product-finder/product-finder-scan.js
           node --check admin/product-finder/product-finder.js
+      - name: Validate public responsive and multilingual UI
+        run: node scripts/validate-public-ui.mjs
       - name: Validate product finder CSV parser
         run: |
           printf '{"type":"module"}\n' > package.json
@@ -89,6 +101,11 @@ jobs:
       - name: Check platform pages and source assets
         run: |
           test -f index.html
+          test -f news/index.html
+          test -f review-event/index.html
+          test -f src/public-ui-v52.js
+          test -f src/public-ui-v52.css
+          test -f scripts/validate-public-ui.mjs
           test -f detail-language.css
           test -f admin/index.html
           test -f admin/admin.css
