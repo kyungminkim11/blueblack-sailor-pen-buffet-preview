@@ -18,7 +18,7 @@ const viewports=[
   {name:'tablet',width:768,height:1024},
   {name:'mobile',width:390,height:844}
 ];
-const languages=['ko','en','ja','zh-Hans','zh-Hant'];
+const languages=['ko','en','ja','zh-Hans','zh-Hant','vi','id','th'];
 const failures=[];
 const hangul=/[가-힣]/;
 await mkdir('artifacts/responsive',{recursive:true});
@@ -30,7 +30,7 @@ async function openPage(context,pageInfo,language){
   const url=new URL(pageInfo.path,baseUrl);
   url.searchParams.set('lang',language);
   await page.goto(url.href,{waitUntil:'domcontentloaded',timeout:45000});
-  await page.waitForTimeout(1400);
+  await page.waitForTimeout(2600);
   return page;
 }
 
