@@ -20,6 +20,7 @@ const viewports=[
 ];
 const languages=['ko','en','ja','zh-Hans','zh-Hant'];
 const failures=[];
+const hangul=/[가-힣]/;
 await mkdir('artifacts/responsive',{recursive:true});
 
 const browser=await chromium.launch({headless:true});
@@ -29,7 +30,7 @@ async function openPage(context,pageInfo,language){
   const url=new URL(pageInfo.path,baseUrl);
   url.searchParams.set('lang',language);
   await page.goto(url.href,{waitUntil:'domcontentloaded',timeout:45000});
-  await page.waitForTimeout(900);
+  await page.waitForTimeout(1400);
   return page;
 }
 
@@ -74,6 +75,8 @@ for(const pageInfo of pages){
       const buttons=[...document.querySelectorAll('.bb-language-panel button')];
       return{
         htmlLang:document.documentElement.lang,
+        title:document.title.trim(),
+        heading:(document.querySelector('h1')?.textContent||'').trim(),
         options:buttons.map(button=>button.dataset.bbLanguage),
         heights:buttons.map(button=>button.getBoundingClientRect().height),
         selected:buttons.filter(button=>button.getAttribute('aria-pressed')==='true').map(button=>button.dataset.bbLanguage)
@@ -83,6 +86,8 @@ for(const pageInfo of pages){
     if(result.options.join(',')!==languages.join(','))failures.push(`${pageInfo.name}/${language}: language option order is ${result.options.join(',')}`);
     if(result.selected.length!==1||result.selected[0]!==language)failures.push(`${pageInfo.name}/${language}: selected language state is ${result.selected.join(',')}`);
     if(result.heights.some(height=>height<42))failures.push(`${pageInfo.name}/${language}: a language option is under 42px high`);
+    if(language!=='ko'&&hangul.test(result.title))failures.push(`${pageInfo.name}/${language}: Korean remains in page title: ${result.title}`);
+    if(language!=='ko'&&hangul.test(result.heading))failures.push(`${pageInfo.name}/${language}: Korean remains in main heading: ${result.heading}`);
     await page.close();
   }
 }
