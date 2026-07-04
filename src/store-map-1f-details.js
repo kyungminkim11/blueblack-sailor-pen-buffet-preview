@@ -1,11 +1,33 @@
 import { loadStoreMap } from './store-map-config.js';
 
+if (!document.querySelector('link[data-store-map-details]')) {
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = new URL('../store-tour/store-map-1f-details.css?v=1', import.meta.url).href;
+  link.dataset.storeMapDetails = '';
+  document.head.append(link);
+}
+
 const host = document.querySelector('#storeMap1FLive');
 
 function escapeHtml(value = '') {
   const node = document.createElement('div');
   node.textContent = String(value);
   return node.innerHTML;
+}
+
+function normalize(value = '') {
+  return String(value).normalize('NFKC').toLowerCase().replace(/[^0-9a-z가-힣ぁ-んァ-ヶ一-龠]+/g, '');
+}
+
+function syncHighlights() {
+  if (!host) return;
+  const query = normalize(host.querySelector('#storeMap1FSearch')?.value || '');
+  host.querySelectorAll('.live-map-detail-card').forEach((card) => {
+    card.classList.remove('is-match', 'is-dimmed');
+    if (!query) return;
+    card.classList.add(normalize(card.textContent).includes(query) ? 'is-match' : 'is-dimmed');
+  });
 }
 
 function renderDetails() {
@@ -48,6 +70,13 @@ function renderDetails() {
       host.querySelector('.live-map-board')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
   });
+
+  const input = host.querySelector('#storeMap1FSearch');
+  if (input && input.dataset.detailsBound !== 'true') {
+    input.dataset.detailsBound = 'true';
+    input.addEventListener('input', syncHighlights);
+  }
+  syncHighlights();
 }
 
 if (host) {
