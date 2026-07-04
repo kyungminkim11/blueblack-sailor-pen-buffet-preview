@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v36-20260702';
+const CACHE_NAME = 'blueblack-store-guide-v37-20260704';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -16,6 +16,17 @@ const CORE_PATHS = [
   './admin/product-finder/simple-finder.js',
   './portal-card.svg',
   './portal-card.png',
+  './news/',
+  './news/index.html',
+  './news/news.css',
+  './news/news.js',
+  './review-event/',
+  './review-event/index.html',
+  './review-event/review-event.css',
+  './review-event/review-rules.css',
+  './review-event/review-event.js',
+  './review-event/review-qr-ko.svg',
+  './review-event/review-qr-en.svg',
   './store-guide/',
   './store-guide/index.html',
   './store-guide/store-map.css',
@@ -72,6 +83,9 @@ const CORE_PATHS = [
   './src/official-portal-addon.js',
   './src/engraving-portal-addon.js',
   './src/as-portal-addon.js',
+  './src/news-portal.js',
+  './src/review-event-portal.js',
+  './src/review-event-portal.css',
   './src/official-guide.js',
   './src/engraving-guide.js',
   './src/as-guide.js',
