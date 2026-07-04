@@ -3,7 +3,7 @@ import { loadStoreMap } from './store-map-config.js';
 if (!document.querySelector('link[data-store-map-live]')) {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = new URL('../store-tour/store-map-live.css?v=5', import.meta.url).href;
+  link.href = new URL('../store-tour/store-map-live.css?v=6', import.meta.url).href;
   link.dataset.storeMapLive = '';
   document.head.append(link);
 }
@@ -42,13 +42,13 @@ function updateSearchState() {
   zones.forEach((zone) => zone.classList.remove('is-match', 'is-dimmed'));
 
   if (!query) {
-    if (result) result.textContent = '브랜드명을 입력하면 해당 진열 구역이 강조됩니다.';
+    if (result) result.textContent = '브랜드나 제품명을 입력하면 해당 진열 구역이 강조됩니다.';
     return;
   }
 
   const matches = zones.filter((zone) => normalize(zone.dataset.search).includes(query));
   zones.forEach((zone) => zone.classList.add(matches.includes(zone) ? 'is-match' : 'is-dimmed'));
-  if (result) result.textContent = matches.length ? `${matches.length}개 진열 구역을 강조했습니다.` : '일치하는 진열 구역을 찾지 못했습니다.';
+  if (result) result.textContent = matches.length ? `${matches.length}개 진열 구역을 강조했습니다.` : '일치하는 브랜드 또는 제품 진열 구역을 찾지 못했습니다.';
 }
 
 function viewport() {
@@ -124,9 +124,9 @@ function renderMap(config) {
 
     <div class="live-map-tools" aria-label="1층 브랜드 지도 도구">
       <label class="live-map-search">
-        <span>브랜드 찾기</span>
+        <span>브랜드·제품 찾기</span>
         <span class="live-map-search-field">
-          <input id="storeMap1FSearch" type="search" autocomplete="off" enterkeyhint="search" placeholder="예: 세일러, Sailor, 카웨코" />
+          <input id="storeMap1FSearch" type="search" autocomplete="off" enterkeyhint="search" placeholder="예: 세일러, 블랙윙, 제이허빈 10ml" />
           <button id="storeMap1FClear" type="button" aria-label="검색 지우기">×</button>
         </span>
       </label>
@@ -138,16 +138,16 @@ function renderMap(config) {
       </div>
     </div>
 
-    <p class="live-map-language-hint">한국어·영어 브랜드명으로 검색하거나 아래 브랜드를 눌러보세요.</p>
+    <p class="live-map-language-hint">브랜드명·제품명으로 검색하거나 아래 구역을 눌러보세요.</p>
     <p id="storeMap1FResult" class="live-map-result" aria-live="polite"></p>
 
     <div class="live-map-brand-picker">
       <div class="live-map-popular">
-        <strong>자주 찾는 브랜드</strong>
+        <strong>자주 찾는 구역</strong>
         <div class="live-map-chip-row">${popularChips}</div>
       </div>
       <details class="live-map-all-brands">
-        <summary>전체 브랜드 보기</summary>
+        <summary>주요 브랜드 구역 보기</summary>
         <div class="live-map-chip-grid">${allChips}</div>
       </details>
     </div>
@@ -226,3 +226,5 @@ document.addEventListener('fullscreenchange', () => {
   const button = document.querySelector('#storeMap1FFullscreen');
   if (button) button.textContent = document.fullscreenElement ? '전체 화면 종료' : '전체 화면';
 });
+
+import('./store-map-1f-details.js?v=2');
