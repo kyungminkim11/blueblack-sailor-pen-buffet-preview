@@ -1,3 +1,11 @@
+if(!document.querySelector('link[data-store-guide-merged]')){
+  const link=document.createElement('link');
+  link.rel='stylesheet';
+  link.href=new URL('../store-guide/store-guide-merged.css',import.meta.url).href;
+  link.dataset.storeGuideMerged='';
+  document.head.append(link);
+}
+
 const main=document.querySelector('.detail-main');
 const visitCard=main?.querySelector('.detail-card');
 
@@ -13,9 +21,7 @@ if(main&&visitCard&&!document.querySelector('#floor-guide')){
       <button class="merged-floor-tab is-active" type="button" data-merged-floor="1" aria-selected="true"><small>FLOOR 01</small><strong>1층 안내도</strong></button>
       <button class="merged-floor-tab" type="button" data-merged-floor="2" aria-selected="false"><small>FLOOR 02</small><strong>2층 브랜드 안내도</strong></button>
     </div>
-    <div class="merged-floor-panel" data-merged-panel="1">
-      <div id="storeMap1FLive"></div>
-    </div>
+    <div class="merged-floor-panel" data-merged-panel="1"><div id="storeMap1FLive"></div></div>
     <div class="merged-floor-panel" data-merged-panel="2" hidden>
       <div class="merged-floor-panel-head"><div><h3>2층 브랜드 안내도</h3><p>브랜드 위치와 주요 체험 공간을 확인하세요.</p></div><a class="merged-floor-link" href="#store-map">브랜드 검색 지도 열기</a></div>
       <div class="merged-floor-map"><object type="image/svg+xml" data="./store-map.svg"><img src="./store-map.svg" alt="블루블랙 펜샵 2층 브랜드 안내도" /></object></div>
