@@ -178,7 +178,7 @@ function mount(){
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape')document.querySelector('[data-bb-language-menu]')?.removeAttribute('open');
   });
-  import('./public-extra-locales-v53.js?v=53').catch(error=>console.warn('Extra locale module failed',error));
+  import('./public-extra-locales-v54.js?v=54').catch(error=>console.warn('Extra locale module failed',error));
 }
 
 ensurePageTranslationModule();
