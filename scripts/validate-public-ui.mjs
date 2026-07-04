@@ -12,7 +12,7 @@ const pages={
   'ink-price/index.html':['portal.js','ink-price-style-v30-loader.js']
 };
 
-const translationFiles=[
+const baseTranslationFiles=[
   'src/portal.js',
   'news/news.js',
   'review-event/review-event.js',
@@ -24,7 +24,9 @@ const translationFiles=[
   'src/store-map-foreign-v20.js'
 ];
 
-const requiredLocales=['ko','en','ja','zh-Hans','zh-Hant'];
+const baseLocales=['ko','en','ja','zh-Hans','zh-Hant'];
+const extraLocales=['vi','id','th'];
+const allLocales=[...baseLocales,...extraLocales];
 const failures=[];
 
 for(const [page,entryModules] of Object.entries(pages)){
@@ -34,11 +36,16 @@ for(const [page,entryModules] of Object.entries(pages)){
   if(!entryModules.some(module=>html.includes(module)))failures.push(`${page}: no shared public UI entry module found`);
 }
 
-for(const file of translationFiles){
+for(const file of baseTranslationFiles){
   const source=await readFile(file,'utf8');
-  for(const locale of requiredLocales){
+  for(const locale of baseLocales){
     if(!source.includes(locale))failures.push(`${file}: missing locale ${locale}`);
   }
+}
+
+const extraSource=await readFile('src/public-extra-locales-v53.js','utf8');
+for(const locale of extraLocales){
+  if(!extraSource.includes(locale))failures.push(`src/public-extra-locales-v53.js: missing locale ${locale}`);
 }
 
 const css=await readFile('src/public-ui-v52.css','utf8');
@@ -47,9 +54,13 @@ for(const required of ['@media(max-width:820px)','@media(max-width:560px)','over
 }
 
 const ui=await readFile('src/public-ui-v52.js','utf8');
-for(const locale of requiredLocales){
+for(const locale of allLocales){
   if(!ui.includes(locale))failures.push(`src/public-ui-v52.js: missing language option ${locale}`);
 }
+for(const flag of ['🇰🇷','🇺🇸','🇯🇵','🇨🇳','🇹🇼','🇻🇳','🇮🇩','🇹🇭']){
+  if(!ui.includes(flag))failures.push(`src/public-ui-v52.js: missing flag ${flag}`);
+}
+if(!ui.includes('public-extra-locales-v53.js'))failures.push('src/public-ui-v52.js: extra locale module is not connected');
 
 const sharedEntryFiles=[
   'src/portal.js',
@@ -72,4 +83,4 @@ if(failures.length){
   process.exit(1);
 }
 
-console.log(`Validated ${Object.keys(pages).length} public pages and ${requiredLocales.length} languages.`);
+console.log(`Validated ${Object.keys(pages).length} public pages and ${allLocales.length} languages.`);
