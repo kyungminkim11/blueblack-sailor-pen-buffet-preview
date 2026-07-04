@@ -10,4 +10,4 @@ applyStoreFloorInformation();
 import('./store-guide-merged.js');
 import('./store-map-dedupe.js');
 import('./store-map-live.js?v=7');
-import('./store-map-1f-details.js?v=2');
+import('./store-map-1f-details.js?v=3');
