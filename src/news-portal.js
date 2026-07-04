@@ -1,0 +1,11 @@
+const newsPortalCopy={
+  ko:{kicker:'LATEST FROM BLUEBLACK',title:'블루블랙 최신 소식',body:'신제품, 재입고와 제품 소개를 인스타그램에서 자동으로 불러옵니다.'},
+  en:{kicker:'LATEST FROM BLUEBLACK',title:'BlueBlack News',body:'Automatically view new arrivals, restocks and product highlights from Instagram.'},
+  ja:{kicker:'LATEST FROM BLUEBLACK',title:'BlueBlack 最新情報',body:'新商品、再入荷、商品紹介をInstagramから自動で表示します。'},
+  'zh-Hans':{kicker:'LATEST FROM BLUEBLACK',title:'BlueBlack 最新消息',body:'自动显示 Instagram 上的新品、补货和产品介绍。'},
+  'zh-Hant':{kicker:'LATEST FROM BLUEBLACK',title:'BlueBlack 最新消息',body:'自動顯示 Instagram 上的新品、補貨與產品介紹。'}
+};
+function newsPortalLanguage(){const value=(new URLSearchParams(location.search).get('lang')||localStorage.getItem('blueblack-language')||navigator.language||'ko').toLowerCase();if(value.includes('hant')||value.startsWith('zh-tw')||value.startsWith('zh-hk'))return'zh-Hant';if(value.startsWith('zh'))return'zh-Hans';if(value.startsWith('ja'))return'ja';if(value.startsWith('en'))return'en';return'ko';}
+function applyNewsPortalCopy(){const lang=newsPortalLanguage();const text=newsPortalCopy[lang]||newsPortalCopy.ko;const card=document.querySelector('[data-news-portal-card]');if(!card)return;card.href=`./news/?lang=${encodeURIComponent(lang)}`;const kicker=card.querySelector('[data-news-portal-kicker]');const title=card.querySelector('[data-news-portal-title]');const body=card.querySelector('[data-news-portal-body]');if(kicker)kicker.textContent=text.kicker;if(title)title.textContent=text.title;if(body)body.textContent=text.body;}
+document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>setTimeout(applyNewsPortalCopy,0)));
+applyNewsPortalCopy();
