@@ -4,11 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
-  <meta name="description" content="블루블랙 펜샵 1층과 2층의 매장 공간, 입점 브랜드, 주요 제품과 2층 안내도를 미리 확인하세요." />
+  <meta name="description" content="블루블랙 펜샵 1층과 2층의 매장 공간, 입점 브랜드, 주요 제품과 층별 안내도를 미리 확인하세요." />
   <title>블루블랙 펜샵 매장 둘러보기</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../portal.css?v=49" />
   <link rel="stylesheet" href="./store-tour.css?v=1" />
+  <link rel="stylesheet" href="./store-map-live.css?v=2" />
 </head>
 <body class="detail-shell store-tour-shell">
   <header class="detail-header tour-header">
@@ -26,7 +27,7 @@
       <div class="tour-hero-copy">
         <span class="tour-kicker">EXPLORE THE STORE</span>
         <h1 data-tour-t="pageTitle">매장 둘러보기</h1>
-        <p data-tour-t="pageIntro">방문 전에 1층과 2층의 공간, 브랜드와 주요 제품을 살펴보세요. 현재 보유한 매장 안내도는 2층 정보로 제공됩니다.</p>
+        <p data-tour-t="pageIntro">방문 전에 1층과 2층의 공간, 브랜드와 주요 제품을 살펴보세요.</p>
       </div>
     </div>
   </header>
@@ -53,6 +54,8 @@
           <span data-tour-t="badgeEntrance">입구</span><span data-tour-t="badgeNew">신상품</span><span data-tour-t="badgeConsult">상담</span><span data-tour-t="badgeCheckout">계산</span>
         </div>
       </article>
+
+      <section class="tour-card live-map-card" id="storeMap1FLive" aria-label="1층 매장 안내도"></section>
 
       <section class="tour-card">
         <div class="section-heading">
@@ -132,5 +135,6 @@
 
   <script type="module" src="../src/portal.js"></script>
   <script type="module" src="../src/store-tour.js?v=1"></script>
+  <script type="module" src="../src/store-map-live.js?v=2"></script>
 </body>
 </html>
