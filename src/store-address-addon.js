@@ -1,3 +1,5 @@
+import './public-ui-v52.js';
+
 function applyStoreFloorInformation(){
   const address=document.querySelector('[data-map-i18n="addressValue"]');
   if(!address)return;
