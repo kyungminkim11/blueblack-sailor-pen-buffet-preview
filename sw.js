@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v37-20260704';
+const CACHE_NAME = 'blueblack-store-guide-v38-20260704';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -20,6 +20,8 @@ const CORE_PATHS = [
   './news/index.html',
   './news/news.css',
   './news/news.js',
+  './news/news-feed.js',
+  './news/feed-data.json',
   './review-event/',
   './review-event/index.html',
   './review-event/review-event.css',
@@ -78,6 +80,10 @@ const CORE_PATHS = [
   './social-card.png',
   './robots.txt',
   './sitemap.xml',
+  './src/public-ui-v52.js',
+  './src/public-ui-v52.css',
+  './src/public-extra-locales-v53.js',
+  './src/public-extra-locales-v54.js',
   './src/portal.js',
   './src/public-portal-copy.js',
   './src/official-portal-addon.js',
