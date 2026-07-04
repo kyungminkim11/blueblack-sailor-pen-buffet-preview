@@ -43,9 +43,11 @@ for(const file of baseTranslationFiles){
   }
 }
 
-const extraSource=await readFile('src/public-extra-locales-v53.js','utf8');
+const extraData=await readFile('src/public-extra-locales-v53.js','utf8');
+const extraRuntime=await readFile('src/public-extra-locales-v54.js','utf8');
 for(const locale of extraLocales){
-  if(!extraSource.includes(locale))failures.push(`src/public-extra-locales-v53.js: missing locale ${locale}`);
+  if(!extraData.includes(locale))failures.push(`src/public-extra-locales-v53.js: missing locale ${locale}`);
+  if(!extraRuntime.includes(locale))failures.push(`src/public-extra-locales-v54.js: missing locale runtime ${locale}`);
 }
 
 const css=await readFile('src/public-ui-v52.css','utf8');
@@ -60,7 +62,7 @@ for(const locale of allLocales){
 for(const flag of ['🇰🇷','🇺🇸','🇯🇵','🇨🇳','🇹🇼','🇻🇳','🇮🇩','🇹🇭']){
   if(!ui.includes(flag))failures.push(`src/public-ui-v52.js: missing flag ${flag}`);
 }
-if(!ui.includes('public-extra-locales-v53.js'))failures.push('src/public-ui-v52.js: extra locale module is not connected');
+if(!ui.includes('public-extra-locales-v54.js'))failures.push('src/public-ui-v52.js: safe extra locale runtime is not connected');
 
 const sharedEntryFiles=[
   'src/portal.js',
