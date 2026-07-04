@@ -1,3 +1,5 @@
+import './public-ui-v52.js';
+
 const publicPortalIntro={
   ko:'매장에서 필요한 고객 안내와 상담 도구를 한곳에서 빠르게 확인해 보세요.',
   en:'Open customer-facing store guides and consultation tools from one place.',
