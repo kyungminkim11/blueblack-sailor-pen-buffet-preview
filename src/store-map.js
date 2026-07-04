@@ -87,14 +87,10 @@ function searchMap() {
   setResult(matches.length ? 'found' : 'missing', matches.length);
 }
 
-function createSvgNode(doc, name, attributes = {}) {
-  const node = doc.createElementNS('http://www.w3.org/2000/svg', name);
-  Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, value));
-  return node;
-}
+function applyPaperAisleGap(doc) {
+  if (!doc || doc.documentElement.dataset.paperAisleGap === 'true') return;
+  doc.documentElement.dataset.paperAisleGap = 'true';
 
-function applyPaperCorridor(doc) {
-  if (!doc || doc.querySelector('[data-paper-corridor]')) return;
   const paperGroups = [...doc.querySelectorAll('[data-brands="노트류 Papers"]')];
   const innerGroups = paperGroups.filter((group) => Number(group.querySelector('rect')?.getAttribute('x')) === 1070);
   const outerGroup = paperGroups.find((group) => Number(group.querySelector('rect')?.getAttribute('x')) === 1125);
@@ -119,14 +115,6 @@ function applyPaperCorridor(doc) {
     text.setAttribute('transform', `rotate(-90 1155 ${centerY})`);
     text.querySelectorAll('tspan').forEach((span) => span.setAttribute('x', '1155'));
   });
-
-  const root = doc.documentElement;
-  const corridor = createSvgNode(doc, 'g', { 'data-paper-corridor': 'true', 'aria-label': '노트류 진열 사이 복도' });
-  const rect = createSvgNode(doc, 'rect', { x: '1112', y: '235', width: '26', height: '265', rx: '8', fill: '#fbfcfd', stroke: '#c6d0da', 'stroke-width': '1.2', 'stroke-dasharray': '5 5' });
-  const text = createSvgNode(doc, 'text', { x: '1125', y: '367', 'text-anchor': 'middle', 'font-size': '9', fill: '#66768b', 'font-weight': '800', transform: 'rotate(-90 1125 367)' });
-  text.textContent = '복도';
-  corridor.append(rect, text);
-  root.insertBefore(corridor, root.querySelector('g[aria-label="매장 진열 구역"]'));
 }
 
 function baseWidth() { return Math.max(viewport?.clientWidth || 0, 760); }
@@ -136,7 +124,7 @@ async function toggleFullscreen() { if (!viewport) return; if (document.fullscre
 
 mapObject?.addEventListener('load', () => {
   mapDocument = mapObject.contentDocument;
-  applyPaperCorridor(mapDocument);
+  applyPaperAisleGap(mapDocument);
   searchMap();
 });
 
