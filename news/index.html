@@ -13,7 +13,7 @@
   <meta property="og:description" content="See new arrivals, restocks, product highlights and store updates." />
   <title>블루블랙 최신 소식 | BlueBlack Pen Shop</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./news.css?v=2" />
+  <link rel="stylesheet" href="./news.css?v=3" />
 </head>
 <body>
   <header class="news-topbar">
@@ -35,48 +35,42 @@
       <div class="news-hero-copy">
         <span class="news-eyebrow">BLUEBLACK NEWS</span>
         <h1 data-news-copy="title">블루블랙의 새로운 소식을 만나보세요</h1>
-        <p data-news-copy="intro">신제품, 재입고, 기존 제품 소개와 매장 소식을 인스타그램에서 자동으로 불러옵니다.</p>
+        <p data-news-copy="intro">신제품, 재입고, 기존 제품 소개와 매장 소식을 한곳에서 확인하세요.</p>
       </div>
-      <aside class="news-schedule">
-        <small>REGULAR UPDATE</small>
-        <strong data-news-copy="scheduleTitle">매주 화요일·목요일</strong>
-        <p data-news-copy="scheduleBody">정기 제품 소개와 새로운 입고 소식을 확인해 보세요. 별도의 사이트 게시물 등록 없이 SNS에 올라온 내용을 보여드립니다.</p>
-      </aside>
     </section>
 
     <div class="news-section-head">
       <div><small>AUTOMATIC FEED</small><h2 data-news-copy="feedTitle">인스타그램 최신 소식</h2></div>
-      <p data-news-copy="feedBody">게시물은 인스타그램에 새 글이 올라오면 자동으로 갱신됩니다.</p>
+      <p data-news-copy="feedBody">인스타그램에 게시된 최신 소식을 불러옵니다.</p>
     </div>
 
     <section class="instagram-shell" data-instagram-shell aria-label="Instagram latest posts">
       <div class="instagram-loading" data-instagram-loading>
-        <div><span>IG</span><strong data-news-copy="loadingTitle">최신 게시물을 불러오는 중입니다</strong><p data-news-copy="loadingBody">네트워크 환경이나 인스타그램 설정에 따라 표시까지 잠시 걸릴 수 있습니다.</p></div>
+        <div><span>IG</span><strong data-news-copy="loadingTitle">최신 게시물을 불러오는 중입니다</strong><p data-news-copy="loadingBody">잠시만 기다려 주세요.</p></div>
       </div>
-      <blockquote class="instagram-media" data-instgrm-captioned data-instgrm-permalink="https://www.instagram.com/blueblack_korea/" data-instgrm-version="14" style="background:#fff;border:0;margin:0 auto;max-width:100%;min-width:0;width:100%;"></blockquote>
+      <div class="instagram-grid" data-instagram-feed hidden></div>
       <div class="feed-fallback" data-instagram-fallback>
-        <strong data-news-copy="fallbackTitle">게시물을 불러오지 못했습니다</strong>
-        <p data-news-copy="fallbackBody">인스타그램 앱 또는 웹에서 최신 소식을 바로 확인해 주세요.</p>
+        <strong data-news-copy="fallbackTitle">인스타그램 최신 게시물을 표시하지 못했습니다</strong>
+        <p data-news-copy="fallbackBody">인스타그램에서 블루블랙의 최신 소식을 확인해 주세요.</p>
         <a class="news-primary-link" href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-news-copy="instagram">인스타그램 열기</a>
       </div>
     </section>
 
-    <p class="news-note" data-news-copy="note">인스타그램의 로그인 상태, 개인정보 보호 설정 또는 플랫폼 정책에 따라 일부 게시물이 표시되지 않을 수 있습니다.</p>
-
     <div class="news-section-head">
       <div><small>OFFICIAL CHANNELS</small><h2 data-news-copy="channelsTitle">다른 채널에서도 확인하세요</h2></div>
-      <p data-news-copy="channelsBody">같은 소식은 각 채널의 운영 방식에 맞게 게시됩니다.</p>
+      <p data-news-copy="channelsBody">채널별 최신 소식과 자세한 제품 이야기를 확인할 수 있습니다.</p>
     </div>
 
     <section class="channel-grid" aria-label="BlueBlack official channels">
       <a class="channel-card" href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener"><div><small>INSTAGRAM</small><strong data-news-copy="instagram">인스타그램 열기</strong><p>@blueblack_korea</p></div><span class="channel-arrow">→</span></a>
       <a class="channel-card" href="https://x.com/Blueblack_shop" target="_blank" rel="noopener"><div><small>X / TWITTER</small><strong data-news-copy="xTitle">X 소식</strong><p data-news-copy="xBody">제품 소개와 빠른 매장 소식을 확인합니다.</p></div><span class="channel-arrow">→</span></a>
       <a class="channel-card" href="https://map.naver.com/p/entry/place/37683532?placePath=%2Ffeed%3FadditionalHeight%3D76%26bk_query%3D%EB%B8%94%EB%A3%A8%EB%B8%94%EB%9E%99%20%ED%8E%9C%EC%83%B5%26entry%3Dbmp%26fromPanelNum%3D1%26locale%3Dko%26svcName%3Dmap_pcv5%26timestamp%3D202607041650&amp;c=15.00,0,0,0,dh" target="_blank" rel="noopener"><div><small>NAVER MAP</small><strong data-news-copy="naverTitle">네이버 지도 소식</strong><p data-news-copy="naverBody">매장 방문 전 공지와 새로운 소식을 확인합니다.</p></div><span class="channel-arrow">→</span></a>
+      <a class="channel-card" href="https://blog.naver.com/paikorea" target="_blank" rel="noopener"><div><small>NAVER BLOG</small><strong data-news-copy="blogTitle">네이버 블로그</strong><p data-news-copy="blogBody">신제품과 브랜드 이야기를 자세히 살펴봅니다.</p></div><span class="channel-arrow">→</span></a>
       <a class="channel-card" href="https://blueblack.co.kr/" target="_blank" rel="noopener"><div><small>OFFICIAL WEBSITE</small><strong data-news-copy="websiteTitle">공식 홈페이지</strong><p data-news-copy="websiteBody">신제품과 상품 정보를 확인합니다.</p></div><span class="channel-arrow">→</span></a>
     </section>
   </main>
 
-  <footer class="news-footer"><div class="news-footer-inner"><div data-news-copy="footer">BlueBlack Pen Shop 최신 소식</div><div><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">blueblack.co.kr</a> · <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener">Instagram</a></div></div></footer>
-  <script type="module" src="./news.js?v=2"></script>
+  <footer class="news-footer"><div class="news-footer-inner"><div data-news-copy="footer">BlueBlack Pen Shop 최신 소식</div><div><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">blueblack.co.kr</a> · <a href="https://blog.naver.com/paikorea" target="_blank" rel="noopener">Blog</a> · <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener">Instagram</a></div></div></footer>
+  <script type="module" src="./news.js?v=3"></script>
 </body>
 </html>
