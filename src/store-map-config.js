@@ -23,7 +23,79 @@ export const DEFAULT_STORE_MAP={
   ]
 };
 
-function mergeZone(base, saved={}){
+const STORE_MAP_I18N={
+  en:{title:'BlueBlack Pen Shop First-floor Brand Map',subtitle:'Find the main brands and display areas on the first floor.',note:'Brands and displayed products may change according to store operations.',zones:{
+    'ink-top':{label:'Upper ink display wall',description:'These are display ink bottles. The bottles contain ink, but the displayed color is only similar to the actual ink and may not be identical.',items:['Display ink bottles']},
+    'ink-left':{label:'Left ink display wall',description:'These are display ink bottles. The bottles contain ink, but the displayed color is only similar to the actual ink and may not be identical.',items:['Display ink bottles']},
+    'rear-right':{label:'Rear display cabinet',description:'A rear display area featuring stationery and accessory brands.',items:['Blackwing','Message cards','Kirena highlighters','Toneland','Penco','Hightide']},
+    'black-island':{label:'Black display island',description:'A display island centered on writing trials and ink-related accessories.',items:['Glass pen testing','Sailor × BlueBlack collaboration inks (beverage series)','J. Herbin 10ml','Juice Up pens','Ink swatch cards']},
+    'pen-buffet':{label:'Pen Buffet island',description:'Explore Sailor Pen Buffet parts, inks and sample pens here.',items:['Sailor Pen Buffet','Sailor converters','Sailor cartridges (Shikiori, standard and Kiwaguro)','Sailor Manyo','Pen Buffet sample pens']},
+    'glass-a':{label:'Sailor',description:'Sailor products are displayed across both the first and second floors.',items:['Selected Sailor products','Sailor TUZU fountain pens','Rollerball sample pens','Sailor casual fountain pen samples']},
+    'glass-b':{label:'Kaweco',description:'Browse Kaweco products and representative sample pens.',items:['Kaweco product range','Kaweco Sport Classic sample pen']},
+    'glass-c':{label:'Majohn',description:'Browse Majohn products, Ink Wall inks and Visconti fountain pens together.',items:['Majohn product range','Ink Wall inks','Visconti fountain pens','Majohn fountain pen samples']},
+    counter:{label:'Checkout counter'},stools:{label:'Stools'},entrance:{label:'Entrance'},'front-window':{label:'Front window'},'rear-door':{label:'Rear door'}
+  }},
+  ja:{title:'BlueBlack Pen Shop 1階ブランド案内図',subtitle:'1階の主なブランドと陳列エリアをご確認ください。',note:'ブランドや陳列商品は店舗運営状況により変更される場合があります。',zones:{
+    'ink-top':{label:'上部インク展示壁',description:'展示用のインクボトルです。ボトルにはインクが入っていますが、実際のインク色に近い表示であり、完全に同じではない場合があります。',items:['展示用インクボトル']},
+    'ink-left':{label:'左側インク展示壁',description:'展示用のインクボトルです。ボトルにはインクが入っていますが、実際のインク色に近い表示であり、完全に同じではない場合があります。',items:['展示用インクボトル']},
+    'rear-right':{label:'後方陳列棚',description:'文具と小物ブランドをまとめてご覧いただける後方の陳列エリアです。',items:['Blackwing','メッセージカード','キレーナ蛍光ペン','Toneland','Penco','Hightide']},
+    'black-island':{label:'ブラック・ディスプレイアイランド',description:'試筆とインク関連小物を中心に構成したディスプレイです。',items:['ガラスペンの試筆','Sailor × BlueBlack コラボインク（ドリンクシリーズ）','J. Herbin 10ml','Juice Up ボールペン','インク色見本カード']},
+    'pen-buffet':{label:'ペンビュッフェ・アイランド',description:'Sailorペンビュッフェのパーツ、インク、試筆ペンをご確認いただけます。',items:['Sailor ペンビュッフェ','Sailor コンバーター','Sailor カートリッジ（四季織・一般・極黒）','Sailor 万葉','ペンビュッフェ試筆ペン']},
+    'glass-a':{label:'Sailor',description:'Sailor製品は1階と2階に分けて陳列しています。',items:['Sailor 一部商品','Sailor TUZU 万年筆','ローラーボール試筆ペン','Sailor カジュアル万年筆の試筆']},
+    'glass-b':{label:'Kaweco',description:'Kaweco製品と代表的な試筆ペンをご覧いただけます。',items:['Kaweco 全商品','Kaweco Sport Classic 試筆ペン']},
+    'glass-c':{label:'Majohn',description:'Majohn製品、Ink Wallインク、Visconti万年筆をまとめてご覧いただけます。',items:['Majohn 全商品','Ink Wall インク','Visconti 万年筆','Majohn 万年筆の試筆']},
+    counter:{label:'レジ'},stools:{label:'スツール'},entrance:{label:'入口'},'front-window':{label:'正面ガラス窓'},'rear-door':{label:'裏口'}
+  }},
+  'zh-Hans':{title:'BlueBlack Pen Shop 一楼品牌地图',subtitle:'查看一楼主要品牌和陈列区域的位置。',note:'品牌及陈列商品可能会根据门店运营情况调整。',zones:{
+    'ink-top':{label:'上方墨水展示墙',description:'这里展示的是装有墨水的展示瓶。展示颜色仅与实际墨水颜色相近，可能并不完全一致。',items:['展示用墨水瓶']},
+    'ink-left':{label:'左侧墨水展示墙',description:'这里展示的是装有墨水的展示瓶。展示颜色仅与实际墨水颜色相近，可能并不完全一致。',items:['展示用墨水瓶']},
+    'rear-right':{label:'后方陈列柜',description:'可集中查看文具与小物品牌的后方陈列区域。',items:['Blackwing','留言卡','Kirena 荧光笔','Toneland','Penco','Hightide']},
+    'black-island':{label:'黑色展示岛台',description:'以试写体验和墨水相关用品为主的展示岛台。',items:['玻璃笔试写','Sailor × BlueBlack 联名墨水（饮品系列）','J. Herbin 10ml','Juice Up 圆珠笔','墨水色卡']},
+    'pen-buffet':{label:'钢笔自助配色岛台',description:'可查看Sailor钢笔自助配色零件、墨水和试写笔。',items:['Sailor 钢笔自助配色','Sailor 上墨器','Sailor 墨囊（四季织、普通、极黑）','Sailor 万叶','钢笔自助配色试写笔']},
+    'glass-a':{label:'Sailor',description:'Sailor商品分别陈列在一楼和二楼。',items:['部分 Sailor 商品','Sailor TUZU 钢笔','水性笔试写','Sailor 休闲钢笔试写']},
+    'glass-b':{label:'Kaweco',description:'可查看Kaweco商品及代表性试写笔。',items:['Kaweco 全系列商品','Kaweco Sport Classic 试写笔']},
+    'glass-c':{label:'Majohn',description:'可一同查看Majohn商品、Ink Wall墨水和Visconti钢笔。',items:['Majohn 全系列商品','Ink Wall 墨水','Visconti 钢笔','Majohn 钢笔试写']},
+    counter:{label:'收银台'},stools:{label:'座椅'},entrance:{label:'出入口'},'front-window':{label:'正面玻璃窗'},'rear-door':{label:'后门'}
+  }},
+  'zh-Hant':{title:'BlueBlack Pen Shop 一樓品牌地圖',subtitle:'查看一樓主要品牌與陳列區域的位置。',note:'品牌及陳列商品可能會依門市營運情況調整。',zones:{
+    'ink-top':{label:'上方墨水展示牆',description:'這裡展示的是裝有墨水的展示瓶。展示顏色僅與實際墨水顏色相近，可能並不完全一致。',items:['展示用墨水瓶']},
+    'ink-left':{label:'左側墨水展示牆',description:'這裡展示的是裝有墨水的展示瓶。展示顏色僅與實際墨水顏色相近，可能並不完全一致。',items:['展示用墨水瓶']},
+    'rear-right':{label:'後方陳列櫃',description:'可集中查看文具與小物品牌的後方陳列區域。',items:['Blackwing','留言卡','Kirena 螢光筆','Toneland','Penco','Hightide']},
+    'black-island':{label:'黑色展示島台',description:'以試寫體驗與墨水相關用品為主的展示島台。',items:['玻璃筆試寫','Sailor × BlueBlack 聯名墨水（飲品系列）','J. Herbin 10ml','Juice Up 原子筆','墨水色卡']},
+    'pen-buffet':{label:'鋼筆自助配色島台',description:'可查看Sailor鋼筆自助配色零件、墨水與試寫筆。',items:['Sailor 鋼筆自助配色','Sailor 吸墨器','Sailor 墨囊（四季織、一般、極黑）','Sailor 萬葉','鋼筆自助配色試寫筆']},
+    'glass-a':{label:'Sailor',description:'Sailor商品分別陳列於一樓與二樓。',items:['部分 Sailor 商品','Sailor TUZU 鋼筆','水性筆試寫','Sailor 休閒鋼筆試寫']},
+    'glass-b':{label:'Kaweco',description:'可查看Kaweco商品及代表性試寫筆。',items:['Kaweco 全系列商品','Kaweco Sport Classic 試寫筆']},
+    'glass-c':{label:'Majohn',description:'可一同查看Majohn商品、Ink Wall墨水與Visconti鋼筆。',items:['Majohn 全系列商品','Ink Wall 墨水','Visconti 鋼筆','Majohn 鋼筆試寫']},
+    counter:{label:'收銀台'},stools:{label:'座椅'},entrance:{label:'出入口'},'front-window':{label:'正面玻璃窗'},'rear-door':{label:'後門'}
+  }}
+};
+
+function mapLanguage(){
+  const raw=(new URLSearchParams(location.search).get('lang')||document.documentElement.lang||localStorage.getItem('blueblack-language')||'ko').toLowerCase();
+  if(raw.includes('hant')||raw.startsWith('zh-tw')||raw.startsWith('zh-hk'))return'zh-Hant';
+  if(raw.startsWith('zh'))return'zh-Hans';
+  if(raw.startsWith('ja'))return'ja';
+  if(raw.startsWith('en'))return'en';
+  return'ko';
+}
+
+function localizeMap(config){
+  const language=mapLanguage();
+  if(language==='ko')return config;
+  const translation=STORE_MAP_I18N[language];
+  if(!translation)return config;
+  const localized=structuredClone(config);
+  localized.title=translation.title;
+  localized.subtitle=translation.subtitle;
+  localized.note=translation.note;
+  localized.zones=localized.zones.map(zone=>{
+    const copy=translation.zones[zone.id];
+    return copy?{...zone,...copy}:zone;
+  });
+  return localized;
+}
+
+function mergeZone(base,saved={}){
   const merged={...base,...saved};
   merged.searchTerms=base.searchTerms;
   merged.description=base.description;
@@ -36,16 +108,19 @@ function mergeZone(base, saved={}){
 export function loadStoreMap(){
   try{
     const parsed=JSON.parse(localStorage.getItem(STORE_MAP_KEY)||'null');
-    if(!parsed||!Array.isArray(parsed.zones))return structuredClone(DEFAULT_STORE_MAP);
-    const merged={
-      ...structuredClone(DEFAULT_STORE_MAP),
-      ...parsed,
-      zones:DEFAULT_STORE_MAP.zones.map((base)=>mergeZone(base,parsed.zones.find((item)=>item.id===base.id)))
-    };
-    if(merged.title==='블루블랙 펜샵 1층 안내도')merged.title=DEFAULT_STORE_MAP.title;
-    if(merged.subtitle==='1층 주요 진열 구역과 편의시설 위치를 확인하세요.')merged.subtitle=DEFAULT_STORE_MAP.subtitle;
-    return merged;
-  }catch{return structuredClone(DEFAULT_STORE_MAP)}
+    let value;
+    if(!parsed||!Array.isArray(parsed.zones))value=structuredClone(DEFAULT_STORE_MAP);
+    else{
+      value={
+        ...structuredClone(DEFAULT_STORE_MAP),
+        ...parsed,
+        zones:DEFAULT_STORE_MAP.zones.map((base)=>mergeZone(base,parsed.zones.find((item)=>item.id===base.id)))
+      };
+      if(value.title==='블루블랙 펜샵 1층 안내도')value.title=DEFAULT_STORE_MAP.title;
+      if(value.subtitle==='1층 주요 진열 구역과 편의시설 위치를 확인하세요.')value.subtitle=DEFAULT_STORE_MAP.subtitle;
+    }
+    return localizeMap(value);
+  }catch{return localizeMap(structuredClone(DEFAULT_STORE_MAP));}
 }
 
 export function saveStoreMap(value){
