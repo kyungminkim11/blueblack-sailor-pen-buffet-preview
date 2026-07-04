@@ -3,7 +3,7 @@ import { loadStoreMap } from './store-map-config.js';
 if (!document.querySelector('link[data-store-map-live]')) {
   const link = document.createElement('link');
   link.rel = 'stylesheet';
-  link.href = new URL('../store-tour/store-map-live.css?v=6', import.meta.url).href;
+  link.href = new URL('../store-tour/store-map-live.css?v=7', import.meta.url).href;
   link.dataset.storeMapLive = '';
   document.head.append(link);
 }
@@ -30,6 +30,27 @@ function brandZones(config) {
   return config.zones.filter((zone) => zone.visible !== false && preferred.includes(zone.id));
 }
 
+function clearSelection({ focus = false } = {}) {
+  currentQuery = '';
+  const host = document.querySelector('#storeMap1FLive');
+  const input = host?.querySelector('#storeMap1FSearch');
+  if (input) input.value = '';
+  updateSearchState();
+  if (focus) input?.focus();
+}
+
+function selectQuery(value) {
+  const next = String(value || '');
+  if (normalize(currentQuery) === normalize(next)) {
+    clearSelection();
+    return;
+  }
+  currentQuery = next;
+  const input = document.querySelector('#storeMap1FSearch');
+  if (input) input.value = currentQuery;
+  updateSearchState();
+}
+
 function updateSearchState() {
   const host = document.querySelector('#storeMap1FLive');
   if (!host) return;
@@ -37,8 +58,18 @@ function updateSearchState() {
   const zones = [...host.querySelectorAll('.live-map-zone')];
   const result = host.querySelector('#storeMap1FResult');
   const clear = host.querySelector('#storeMap1FClear');
+  const selection = host.querySelector('#storeMap1FSelection');
+  const selectionLabel = host.querySelector('#storeMap1FSelectionLabel');
 
   clear?.classList.toggle('is-visible', Boolean(currentQuery));
+  if (selection) selection.hidden = !query;
+  if (selectionLabel) selectionLabel.textContent = currentQuery;
+
+  host.querySelectorAll('[data-search-chip]').forEach((button) => {
+    button.classList.toggle('is-selected', Boolean(query) && normalize(button.dataset.searchChip) === query);
+    button.setAttribute('aria-pressed', String(Boolean(query) && normalize(button.dataset.searchChip) === query));
+  });
+
   zones.forEach((zone) => zone.classList.remove('is-match', 'is-dimmed'));
 
   if (!query) {
@@ -107,8 +138,8 @@ function renderMap(config) {
     .join('');
 
   const knownBrands = brandZones(config);
-  const popularChips = knownBrands.map((zone) => `<button type="button" class="live-map-chip" data-search-chip="${escapeHtml(zone.label)}">${escapeHtml(zone.label)}</button>`).join('');
-  const allChips = knownBrands.map((zone) => `<button type="button" class="live-map-chip" data-search-chip="${escapeHtml(zone.label)}"><b>${escapeHtml(zone.label)}</b>${zone.subLabel ? `<span>${escapeHtml(zone.subLabel)}</span>` : ''}</button>`).join('');
+  const popularChips = knownBrands.map((zone) => `<button type="button" class="live-map-chip" data-search-chip="${escapeHtml(zone.label)}" aria-pressed="false">${escapeHtml(zone.label)}</button>`).join('');
+  const allChips = knownBrands.map((zone) => `<button type="button" class="live-map-chip" data-search-chip="${escapeHtml(zone.label)}" aria-pressed="false"><b>${escapeHtml(zone.label)}</b>${zone.subLabel ? `<span>${escapeHtml(zone.subLabel)}</span>` : ''}</button>`).join('');
   const standalone = location.pathname.includes('/store-map-1f/');
   const largeViewHref = new URL('../store-map-1f/', import.meta.url).href;
 
@@ -141,6 +172,14 @@ function renderMap(config) {
     <p class="live-map-language-hint">브랜드명·제품명으로 검색하거나 아래 구역을 눌러보세요.</p>
     <p id="storeMap1FResult" class="live-map-result" aria-live="polite"></p>
 
+    <div class="live-map-selection" id="storeMap1FSelection" hidden>
+      <div>
+        <small>현재 선택</small>
+        <strong id="storeMap1FSelectionLabel"></strong>
+      </div>
+      <button type="button" id="storeMap1FClearSelection">선택 해제</button>
+    </div>
+
     <div class="live-map-brand-picker">
       <div class="live-map-popular">
         <strong>자주 찾는 구역</strong>
@@ -171,24 +210,17 @@ function renderMap(config) {
 
   const input = host.querySelector('#storeMap1FSearch');
   const clear = host.querySelector('#storeMap1FClear');
+  const clearSelectionButton = host.querySelector('#storeMap1FClearSelection');
   input.value = currentQuery;
   input.addEventListener('input', () => {
     currentQuery = input.value;
     updateSearchState();
   });
-  clear.addEventListener('click', () => {
-    currentQuery = '';
-    input.value = '';
-    input.focus();
-    updateSearchState();
-  });
+  clear.addEventListener('click', () => clearSelection({ focus: true }));
+  clearSelectionButton.addEventListener('click', () => clearSelection({ focus: true }));
 
   host.querySelectorAll('[data-search-chip]').forEach((button) => {
-    button.addEventListener('click', () => {
-      currentQuery = button.dataset.searchChip || '';
-      input.value = currentQuery;
-      updateSearchState();
-    });
+    button.addEventListener('click', () => selectQuery(button.dataset.searchChip || ''));
   });
 
   host.querySelector('#storeMap1FZoomOut')?.addEventListener('click', () => applyZoom(zoom - 0.2));
@@ -225,6 +257,9 @@ window.addEventListener('storage', (event) => {
 document.addEventListener('fullscreenchange', () => {
   const button = document.querySelector('#storeMap1FFullscreen');
   if (button) button.textContent = document.fullscreenElement ? '전체 화면 종료' : '전체 화면';
+});
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && currentQuery && !document.fullscreenElement) clearSelection();
 });
 
 import('./store-map-1f-details.js?v=2');
