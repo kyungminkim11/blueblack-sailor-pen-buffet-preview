@@ -7,3 +7,4 @@ function applyStoreFloorInformation(){
 }
 document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>queueMicrotask(applyStoreFloorInformation)));
 applyStoreFloorInformation();
+import('./store-guide-merged.js');
