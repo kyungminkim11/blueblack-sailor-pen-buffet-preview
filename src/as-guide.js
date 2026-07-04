@@ -1,3 +1,4 @@
+import './public-ui-v52.js';
 import './as-guide-i18n-v50.js?v=50';
 
 const asCopy={
