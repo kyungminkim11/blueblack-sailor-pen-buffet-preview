@@ -1,24 +1,24 @@
 import { readFile } from 'node:fs/promises';
 
-const pages=[
-  'index.html',
-  'news/index.html',
-  'review-event/index.html',
-  'pen-buffet/index.html',
-  'store-guide/index.html',
-  'official-guide/index.html',
-  'engraving-guide/index.html',
-  'as-guide/index.html',
-  'ink-price/index.html'
-];
+const pages={
+  'index.html':['portal.js','public-portal-copy.js'],
+  'news/index.html':['news-feed.js'],
+  'review-event/index.html':['public-ui-v52.js'],
+  'pen-buffet/index.html':['locale-ui-v10.js'],
+  'store-guide/index.html':['portal.js','store-address-addon.js'],
+  'official-guide/index.html':['portal.js','official-guide-i18n-v50.js'],
+  'engraving-guide/index.html':['portal.js'],
+  'as-guide/index.html':['portal.js','as-guide.js'],
+  'ink-price/index.html':['portal.js','ink-price-style-v30-loader.js']
+};
 
 const translationFiles=[
   'src/portal.js',
   'news/news.js',
   'review-event/review-event.js',
   'src/official-guide.js',
-  'src/engraving-guide-i18n-v50.js',
-  'src/as-guide-i18n-v50.js',
+  'src/engraving-guide.js',
+  'src/as-guide.js',
   'src/pen-buffet-i18n-v50.js',
   'src/ink-price-i18n-v43.js',
   'src/store-map-foreign-v20.js'
@@ -27,11 +27,11 @@ const translationFiles=[
 const requiredLocales=['ko','en','ja','zh-Hans','zh-Hant'];
 const failures=[];
 
-for(const page of pages){
+for(const [page,entryModules] of Object.entries(pages)){
   const html=await readFile(page,'utf8');
   if(!/<html\s+lang="ko"/i.test(html))failures.push(`${page}: missing base html lang`);
   if(!/name="viewport"[^>]*width=device-width/i.test(html))failures.push(`${page}: missing responsive viewport`);
-  if(!html.includes('public-ui-v52.js'))failures.push(`${page}: unified public UI is not connected`);
+  if(!entryModules.some(module=>html.includes(module)))failures.push(`${page}: no shared public UI entry module found`);
 }
 
 for(const file of translationFiles){
@@ -51,10 +51,25 @@ for(const locale of requiredLocales){
   if(!ui.includes(locale))failures.push(`src/public-ui-v52.js: missing language option ${locale}`);
 }
 
+const sharedEntryFiles=[
+  'src/portal.js',
+  'src/public-portal-copy.js',
+  'news/news-feed.js',
+  'src/locale-ui-v10.js',
+  'src/store-address-addon.js',
+  'src/official-guide-i18n-v50.js',
+  'src/as-guide.js',
+  'src/ink-price-style-v30-loader.js'
+];
+for(const file of sharedEntryFiles){
+  const source=await readFile(file,'utf8');
+  if(!source.includes('public-ui-v52.js'))failures.push(`${file}: does not import shared public UI`);
+}
+
 if(failures.length){
   console.error('Public UI validation failed:');
   failures.forEach(item=>console.error(`- ${item}`));
   process.exit(1);
 }
 
-console.log(`Validated ${pages.length} public pages and ${requiredLocales.length} languages.`);
+console.log(`Validated ${Object.keys(pages).length} public pages and ${requiredLocales.length} languages.`);
