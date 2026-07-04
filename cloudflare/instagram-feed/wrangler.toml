@@ -1,3 +1,15 @@
 name = "blueblack-instagram-feed"
 main = "src/index.js"
 compatibility_date = "2026-07-04"
+workers_dev = true
+
+[triggers]
+crons = ["17 0,3,6,9,12,15,18,21 * * *"]
+
+[vars]
+INSTAGRAM_ACCOUNT_USERNAME = "blueblack_korea"
+INSTAGRAM_ITEM_LIMIT = "9"
+
+[[r2_buckets]]
+binding = "INSTAGRAM_BUCKET"
+bucket_name = "blueblack-instagram-feed"
