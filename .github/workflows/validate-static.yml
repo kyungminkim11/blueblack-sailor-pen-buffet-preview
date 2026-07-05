@@ -1,0 +1,56 @@
+name: Validate static site
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Check JavaScript syntax
+        shell: bash
+        run: |
+          set -euo pipefail
+          while IFS= read -r -d '' file; do
+            echo "Checking $file"
+            node --check "$file"
+          done < <(find . -type f -name '*.js' -not -path './node_modules/*' -print0)
+
+      - name: Check required public pages
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            index.html
+            pen-buffet/index.html
+            store-guide/index.html
+            ink-price/index.html
+            engraving-guide/index.html
+            as-guide/index.html
+            review-event/index.html
+            news/index.html
+          )
+          for file in "${required[@]}"; do
+            test -s "$file" || { echo "Missing required page: $file"; exit 1; }
+          done
+
+      - name: Check shared UX assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -s src/global-ux-v60.js
+          test -s src/global-ux-v60.css
+          grep -q "global-ux-v60.js" src/public-ui-v52.js
