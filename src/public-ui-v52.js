@@ -1,3 +1,5 @@
+import './global-ux-v60.js';
+
 const BB_LANGUAGES={
   ko:{flag:'🇰🇷',label:'한국어',aria:'언어 선택'},
   en:{flag:'🇺🇸',label:'English',aria:'Choose language'},
@@ -17,10 +19,10 @@ const RESIDUAL_COPY={
     'zh-Hant':'顧客可自行查看所需資訊，店員也能快速開啟相應頁面，提供更準確的說明。'
   },
   '1층·2층 안내도, 브랜드 위치, 주소, 영업시간과 방문 정보를 한곳에서 확인하세요.':{
-    en:'Check the first- and second-floor maps, brand locations, address, opening hours and visit information in one place.',
-    ja:'1階・2階の案内図、ブランド位置、住所、営業時間、来店情報をまとめて確認できます。',
-    'zh-Hans':'集中查看一楼、二楼导览图、品牌位置、地址、营业时间和到店信息。',
-    'zh-Hant':'集中查看一樓、二樓導覽圖、品牌位置、地址、營業時間與到店資訊。'
+    en:'Check store maps, brand locations, address, opening hours and visit information in one place.',
+    ja:'店舗案内図、ブランド位置、住所、営業時間、来店情報をまとめて確認できます。',
+    'zh-Hans':'集中查看门店导览图、品牌位置、地址、营业时间和到店信息。',
+    'zh-Hant':'集中查看門市導覽圖、品牌位置、地址、營業時間與到店資訊。'
   },
   '브랜드와 시리즈별 잉크를 찾고, 5ml·10ml 소분 가격과 본병 정보를 비교하세요.':{
     en:'Find inks by brand and series, then compare 5ml and 10ml decant prices with full-bottle information.',
@@ -70,7 +72,7 @@ function ensureStyles(){
   if(document.querySelector('link[data-bb-public-ui]'))return;
   const link=document.createElement('link');
   link.rel='stylesheet';
-  link.href=new URL('./public-ui-v52.css',import.meta.url).href;
+  link.href=new URL('./public-ui-v52.css?v=60',import.meta.url).href;
   link.dataset.bbPublicUi='true';
   document.head.append(link);
 }
@@ -142,27 +144,25 @@ function addAlternateLinks(){
     const url=new URL(canonical,location.href);
     url.searchParams.set('lang',language);
     const link=document.createElement('link');
-    link.rel='alternate';
-    link.hreflang=language;
-    link.href=url.href;
+    link.rel='alternate';link.hreflang=language;link.href=url.href;
     document.head.append(link);
   });
 }
 
 async function ensurePageTranslationModule(){
-  const path=location.pathname;
-  if(path.includes('/ink-price/')){
-    try{await import('./ink-price-i18n-completion-v50.js?v=50');}catch(error){console.warn('Ink translation completion failed',error);}
+  if(location.pathname.includes('/ink-price/')){
+    try{await import('./ink-price-i18n-completion-v50.js?v=60');}catch(error){console.warn('Ink translation completion failed',error);}
   }
 }
 
 function mount(){
+  if(document.documentElement.dataset.bbPublicUiMounted)return;
+  document.documentElement.dataset.bbPublicUiMounted='true';
   ensureStyles();
   const language=currentLanguage();
   document.documentElement.lang=language;
   document.querySelectorAll('.portal-language,.news-language,.review-language,.language-menu,.detail-language-menu').forEach(node=>{
-    node.classList.add('bb-original-language');
-    node.setAttribute('aria-hidden','true');
+    node.classList.add('bb-original-language');node.setAttribute('aria-hidden','true');
   });
   document.querySelector('[data-bb-language-menu]')?.remove();
   const target=prepareMountTarget(findMountTarget());
@@ -178,7 +178,7 @@ function mount(){
   document.addEventListener('keydown',event=>{
     if(event.key==='Escape')document.querySelector('[data-bb-language-menu]')?.removeAttribute('open');
   });
-  import('./public-extra-locales-v54.js?v=54').catch(error=>console.warn('Extra locale module failed',error));
+  import('./public-extra-locales-v54.js?v=60').catch(error=>console.warn('Extra locale module failed',error));
 }
 
 ensurePageTranslationModule();
