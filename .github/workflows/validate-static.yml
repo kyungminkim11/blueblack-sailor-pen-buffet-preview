@@ -26,7 +26,10 @@ jobs:
           set -euo pipefail
           while IFS= read -r -d '' file; do
             echo "Checking $file"
-            node --check "$file"
+            temp_file="$(mktemp --suffix=.mjs)"
+            cp "$file" "$temp_file"
+            node --check "$temp_file"
+            rm -f "$temp_file"
           done < <(find . -type f -name '*.js' -not -path './node_modules/*' -print0)
 
       - name: Check required public pages
@@ -53,4 +56,6 @@ jobs:
           set -euo pipefail
           test -s src/global-ux-v60.js
           test -s src/global-ux-v60.css
+          test -s src/pen-model-glb-v60.js
           grep -q "global-ux-v60.js" src/public-ui-v52.js
+          grep -q "pen-model-glb-v60.js" src/app-v12.js
