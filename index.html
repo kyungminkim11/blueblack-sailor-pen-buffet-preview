@@ -23,6 +23,7 @@
   <link rel="icon" href="./app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="./portal.css?v=51" />
   <link rel="stylesheet" href="./src/review-event-portal.css?v=1" />
+  <link rel="stylesheet" href="./src/portal-sitemap.css?v=1" />
   <style id="public-customer-only-guard">
     .bb-home-mode,
     .bb-staff-panel,
@@ -81,7 +82,38 @@
     </section>
   </main>
 
-  <footer class="portal-footer"><div class="portal-footer-inner"><div data-portal-t="footer">더 좋은 필기 경험을 위한 BlueBlack Pen Shop 디지털 가이드</div><div><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">blueblack.co.kr</a> · <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener">Instagram</a></div></div></footer>
+  <footer class="portal-footer">
+    <div class="portal-footer-inner portal-sitemap">
+      <div class="portal-sitemap-head">
+        <div><small>SITE MAP</small><h2 data-sitemap-t="title">사이트맵</h2></div>
+        <p data-sitemap-t="body">고객용 안내 페이지를 목적별로 한눈에 확인하세요.</p>
+      </div>
+      <div class="portal-sitemap-grid">
+        <nav class="portal-sitemap-group" aria-label="매장 체험">
+          <h3 data-sitemap-t="experience">매장 체험</h3>
+          <a href="./pen-buffet/" data-preserve-lang data-sitemap-t="pen">세일러 펜뷔페</a>
+          <a href="./ink-price/" data-preserve-lang data-sitemap-t="ink">잉크 소분 안내</a>
+          <a href="./store-guide/" data-preserve-lang data-sitemap-t="store">매장 안내</a>
+          <a href="./review-event/" data-preserve-lang data-sitemap-t="review">영수증 리뷰 이벤트</a>
+        </nav>
+        <nav class="portal-sitemap-group" aria-label="서비스 안내">
+          <h3 data-sitemap-t="service">서비스 안내</h3>
+          <a href="./official-guide/" data-preserve-lang data-sitemap-t="official">공식 정보 안내</a>
+          <a href="./engraving-guide/" data-preserve-lang data-sitemap-t="engraving">각인 안내</a>
+          <a href="./as-guide/" data-preserve-lang data-sitemap-t="as">A/S 안내</a>
+        </nav>
+        <nav class="portal-sitemap-group" aria-label="소식 및 공식 채널">
+          <h3 data-sitemap-t="channel">소식·채널</h3>
+          <a href="./news/" data-preserve-lang data-sitemap-t="news">블루블랙 최신 소식</a>
+          <a href="https://blueblack.co.kr/" target="_blank" rel="noopener" data-sitemap-t="website">공식 홈페이지</a>
+          <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-sitemap-t="instagram">인스타그램</a>
+        </nav>
+      </div>
+    </div>
+    <div class="portal-footer-bottom">
+      <div class="portal-footer-inner"><div data-portal-t="footer">더 좋은 필기 경험을 위한 BlueBlack Pen Shop 디지털 가이드</div><div><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">blueblack.co.kr</a> · <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener">Instagram</a></div></div>
+    </div>
+  </footer>
   <script type="module" src="./src/portal.js"></script>
   <script type="module" src="./src/public-portal-copy.js?v=2"></script>
   <script type="module" src="./src/official-portal-addon.js"></script>
@@ -91,5 +123,6 @@
   <script type="module" src="./src/portal-copy-v48.js?v=51"></script>
   <script type="module" src="./src/review-event-portal.js?v=1"></script>
   <script type="module" src="./src/news-portal.js?v=1"></script>
+  <script type="module" src="./src/portal-sitemap.js?v=1"></script>
 </body>
 </html>
