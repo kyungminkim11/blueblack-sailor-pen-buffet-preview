@@ -35,7 +35,8 @@ function cleanPublicPortal(){
   try{localStorage.removeItem('bb-home-mode-v60');}catch{}
 
   const intro=document.querySelector('[data-portal-t="portalIntro"]');
-  if(intro)intro.textContent=publicPortalIntro[currentLanguage()]||publicPortalIntro.ko;
+  const copy=publicPortalIntro[currentLanguage()]||publicPortalIntro.ko;
+  if(intro&&intro.textContent!==copy)intro.textContent=copy;
 }
 
 let cleanQueued=false;
