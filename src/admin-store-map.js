@@ -90,3 +90,4 @@ function bindEditor(){
 
 buildEditor();
 if(location.hash==='#store-map-admin')setTimeout(()=>document.querySelector('#store-map-admin')?.scrollIntoView({behavior:'smooth'}),100);
+setTimeout(()=>import('./admin-organized-v2.js').catch((error)=>console.warn('Admin layout failed',error)),0);
