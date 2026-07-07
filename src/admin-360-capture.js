@@ -1,4 +1,12 @@
+function ensureAdminGate(){
+  if(document.querySelector('script[data-blueblack-admin-auth]'))return;
+  const script=document.createElement('script');
+  script.src=new URL('../admin/admin-auth.js?v=2',import.meta.url).href;
+  script.dataset.blueblackAdminAuth='true';
+  document.head.append(script);
+}
 function mountTourManager(){
+  ensureAdminGate();
   const grid=document.querySelector('.admin-grid');
   if(!grid)return;
   let section=document.querySelector('#store-360-capture');
