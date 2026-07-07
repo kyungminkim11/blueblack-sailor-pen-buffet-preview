@@ -1,0 +1,3 @@
+import{ENDPOINT,SPOTS}from'./store-tour-config.js';
+export function mergeSpots(remote,available=true){if(!available||!Array.isArray(remote)||!remote.length)return structuredClone(SPOTS);const base=new Map(SPOTS.map(v=>[v.id,v]));return remote.filter(v=>base.has(v.id)).map(v=>({...base.get(v.id),...v,connections:{...base.get(v.id).connections,...v.connections}})).sort((a,b)=>a.sortOrder-b.sortOrder);}
+export async function loadPublicSpots(){try{const response=await fetch(ENDPOINT,{cache:'no-store'}),body=await response.json();if(!response.ok||body.ok===false)throw new Error('load');return{spots:mergeSpots(body.spots,true),online:true};}catch(error){console.warn(error);return{spots:mergeSpots([],false),online:false};}}
