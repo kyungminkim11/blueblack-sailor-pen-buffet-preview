@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
-  <meta name="description" content="블루블랙 펜샵의 1층·2층 브랜드 안내도, 주소, 영업시간, 연락처와 매장 내부 브랜드 위치를 확인하세요." />
+  <meta name="description" content="블루블랙 펜샵의 1층·2층 브랜드 안내도, 360 매장 둘러보기, 주소, 영업시간과 연락처를 확인하세요." />
   <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/store-guide/" />
   <title>블루블랙 펜샵 매장 안내</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="./store-map.css?v=22" />
   <link rel="stylesheet" href="./store-guide-merged.css?v=3" />
   <link rel="stylesheet" href="../store-tour/store-map-live.css?v=5" />
+  <link rel="stylesheet" href="../store-tour/roadview.css?v=4" />
 </head>
 <body class="detail-shell">
   <header class="detail-header">
@@ -58,6 +59,10 @@
         <div class="merged-floor-map"><object type="image/svg+xml" data="./store-map.svg"><img src="./store-map.svg" alt="블루블랙 펜샵 2층 브랜드 안내도" /></object></div>
         <p class="merged-floor-note">브랜드와 진열 위치는 매장 운영 상황에 따라 변경될 수 있습니다.</p>
       </div>
+    </section>
+
+    <section class="detail-card store-tour-public-card" id="storeTour360">
+      <div class="store-tour-loading-card">1층 360 매장 투어를 불러오는 중입니다.</div>
     </section>
 
     <section class="detail-card">
@@ -121,6 +126,7 @@
   <script type="module" src="../src/store-map-foreign-v20.js"></script>
   <script type="module" src="../src/store-address-addon.js?v=4"></script>
   <script type="module" src="../src/store-map-live.js?v=6"></script>
+  <script type="module" src="../src/store-tour-public.js?v=4"></script>
   <script>
     (function(){
       var tabs=[].slice.call(document.querySelectorAll('[data-merged-floor]'));
