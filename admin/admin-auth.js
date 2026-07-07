@@ -28,7 +28,8 @@
     if(!grid)return;
     const tools=[
       {href:'./inventory-audit/',icon:'▥',small:'INVENTORY AUDIT',title:'재고 조사',copy:'구역을 선택하고 바코드를 스캔해 수량을 자동 집계하고 엑셀로 내려받습니다.'},
-      {href:'./catalog-update/',icon:'↥',small:'CATALOG UPDATE',title:'상품 데이터 업데이트',copy:'상품·바코드 파일과 재고현황 파일을 선택해 Supabase 상품 DB를 직접 업데이트합니다.'}
+      {href:'./catalog-update/',icon:'↥',small:'CATALOG UPDATE',title:'상품 데이터 업데이트',copy:'상품·바코드 파일과 재고현황 파일을 선택해 Supabase 상품 DB를 직접 업데이트합니다.'},
+      {href:'./store-tour/',icon:'◎',small:'360 STORE TOUR',title:'360 매장 로드뷰 관리',copy:'1층 도면 위치별 360 사진을 등록하고 고객용 매장 둘러보기 화면에 반영합니다.'}
     ];
     tools.forEach(tool=>{
       if(grid.querySelector(`[href="${tool.href}"]`))return;
