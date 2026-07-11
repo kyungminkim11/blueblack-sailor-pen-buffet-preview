@@ -5,8 +5,10 @@ on:
     paths:
       - 'src/ink-price-app-v62.js'
       - 'src/ink-brand-logos-v66.js'
+      - 'src/ink-consumer-ux-v69.js'
       - 'ink-price/ink-price-app-v62.css'
       - 'ink-price/ink-brand-logos-v65.css'
+      - 'ink-price/ink-consumer-ux-v69.css'
       - 'src/ink-price-store-v30-*'
       - 'src/ink-price-store-v30.*'
       - 'src/ink-bottle-*'
@@ -43,6 +45,7 @@ jobs:
           node --check /tmp/ink-store-generated.mjs
           node --check src/ink-price-app-v62.js
           node --check src/ink-brand-logos-v66.js
+          node --check src/ink-consumer-ux-v69.js
           node --check src/ink-bottle-price-v36.js
           node --check src/ink-bottle-volume-rpc-v38.js
           node --check src/ink-price-i18n-v43.js
@@ -52,4 +55,6 @@ jobs:
           grep -q 'ink-price-app-v62.js' ink-price/index.html
           grep -q 'ink-brand-logos-v65.css' ink-price/index.html
           grep -q 'ink-brand-logos-v66.js' ink-price/index.html
+          grep -q 'ink-consumer-ux-v69.css' ink-price/index.html
+          grep -q 'ink-consumer-ux-v69.js' ink-price/index.html
           grep -q 'ink-bottle-price-v36.js' ink-price/index.html
