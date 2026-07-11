@@ -1,1 +1,39 @@
-.store-tour-public-card .store-tour-heading{margin:0;padding:22px}.store-tour-action-toast{min-height:18px;margin:0;padding:0 14px 10px;background:#fff;color:#287054;font-size:9px;font-weight:900;text-align:center}.store-tour-action-toast:empty{display:none}@media(max-width:760px){.store-tour-public-card .store-tour-heading{padding:18px 16px}.store-tour-action-toast{padding-inline:10px}}
+.store-tour-public-card .store-tour-heading{margin:0;padding:22px}.store-tour-action-toast{min-height:18px;margin:0;padding:0 14px 10px;background:#fff;color:#287054;font-size:9px;font-weight:900;text-align:center}.store-tour-action-toast:empty{display:none}
+
+/* Prevent the floor plan from growing outside its grid column and covering the viewer. */
+.store-tour-public-card .store-tour-workspace>*{min-width:0}
+.store-tour-public-card .store-tour-plan-card{z-index:1;max-width:100%;overflow:hidden;contain:layout paint}
+.store-tour-public-card .store-tour-view-card{position:relative;z-index:2;min-width:0}
+.store-tour-public-card .store-tour-floorplan{display:block;width:100%;max-width:100%;height:470px;min-height:0;aspect-ratio:auto;overflow:hidden}
+.store-tour-public-card .store-tour-plan-surface{inset:8px;max-width:calc(100% - 16px);max-height:calc(100% - 16px);overflow:hidden}
+
+/* Keep a usable viewer area even while WebGL or an image is still loading. */
+.store-tour-public-card .store-tour-view-shell{position:relative;display:block;min-width:0;min-height:590px;background:#071625;isolation:isolate}
+.store-tour-public-card .store-tour-view-shell>[data-tour-viewer],
+.store-tour-public-card .store-tour-panorama{display:block;width:100%;height:590px;min-height:590px;background:#071625}
+.store-tour-public-card .store-tour-direction-layer{z-index:8}
+.store-tour-public-card .store-tour-view-controls,.tour-view-fullscreen{z-index:12}
+
+@media(max-width:1050px){
+  .store-tour-public-card .store-tour-floorplan{height:390px}
+  .store-tour-public-card .store-tour-view-shell,
+  .store-tour-public-card .store-tour-view-shell>[data-tour-viewer],
+  .store-tour-public-card .store-tour-panorama{height:520px;min-height:520px}
+}
+
+@media(max-width:760px){
+  .store-tour-public-card .store-tour-heading{padding:18px 16px}
+  .store-tour-action-toast{padding-inline:10px}
+  .store-tour-public-card .store-tour-plan-card{contain:layout paint}
+  .store-tour-public-card .store-tour-floorplan{height:400px;min-height:0}
+  .store-tour-public-card .store-tour-view-shell,
+  .store-tour-public-card .store-tour-view-shell>[data-tour-viewer],
+  .store-tour-public-card .store-tour-panorama{height:min(62dvh,470px);min-height:360px}
+}
+
+@media(max-width:420px){
+  .store-tour-public-card .store-tour-floorplan{height:360px}
+  .store-tour-public-card .store-tour-view-shell,
+  .store-tour-public-card .store-tour-view-shell>[data-tour-viewer],
+  .store-tour-public-card .store-tour-panorama{height:58dvh;min-height:340px}
+}
