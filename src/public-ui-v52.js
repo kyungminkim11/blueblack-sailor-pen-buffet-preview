@@ -1,4 +1,5 @@
 import './global-ux-v60.js';
+import './portal-mobile-app.js?v=2';
 
 const BB_LANGUAGES={
   ko:{flag:'🇰🇷',label:'한국어',aria:'언어 선택'},
