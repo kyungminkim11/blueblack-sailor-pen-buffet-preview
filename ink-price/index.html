@@ -17,8 +17,17 @@
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../portal.css?v=52" />
   <link rel="stylesheet" href="./ink-price.css?v=52" />
-  <link rel="stylesheet" href="./mobile-layout-fix.css?v=1" />
-  <style>.ink-loading,[data-ink-loading]{display:none!important}</style>
+  <link rel="stylesheet" href="./mobile-layout-fix.css?v=2" />
+  <style>
+    .ink-app-boot{display:grid;place-items:center;min-height:240px;padding:24px;border:1px solid #ded5c7;border-radius:24px;background:#fff;color:#637186;text-align:center}
+    .ink-app-boot strong{display:block;color:#10233f;font-size:18px}
+    .ink-app-boot span{display:block;margin-top:6px;font-size:13px}
+    html[data-ink-app] .ink-app-boot{display:none}
+    .ink-store-load-error{display:grid;gap:8px;padding:24px;border:1px solid #d7b9b3;border-radius:18px;background:#fff4f2;color:#7f3d34;text-align:center}
+    .ink-store-load-error strong{font-size:16px}.ink-store-load-error span{font-size:13px}
+    .ink-store-load-error button{justify-self:center;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#10233f;color:#fff;font-weight:900}
+    .ink-loading,[data-ink-loading]{display:none!important}
+  </style>
   <script type="module" src="../src/ink-price-style-v30-loader.js?v=52"></script>
 </head>
 <body class="detail-shell ink-price-page">
@@ -31,7 +40,11 @@
   </header>
 
   <main class="ink-price-main">
-    <section id="ink-store-app" aria-label="잉크 소분 가격 검색"></section>
+    <section id="ink-store-app" aria-label="잉크 소분 가격 검색">
+      <div class="ink-app-boot" role="status" aria-live="polite">
+        <div><strong>소분 잉크 검색 화면을 준비하고 있습니다.</strong><span>브랜드와 색상 데이터를 불러오는 중입니다.</span></div>
+      </div>
+    </section>
 
     <details class="ink-notice-details">
       <summary data-store-notice-summary>소분 이용 전 확인해 주세요</summary>
@@ -83,7 +96,7 @@
   <script type="module" src="../src/ink-waterproof-types-v27.js"></script>
   <script type="module" src="../src/ink-price-viewer.js?v=52"></script>
   <script type="module" src="../src/ink-price-viewer-zoom-loader-v30.js?v=52"></script>
-  <script type="module" src="../src/ink-price-store-v30-loader.js?v=60"></script>
+  <script type="module" src="../src/ink-price-store-v30-loader.js?v=61"></script>
   <script type="module" src="../src/ink-price-brand-picker-v31.js?v=52"></script>
   <script type="module" src="../src/ink-price-brand-picker-fix-v33.js?v=52"></script>
   <script type="module" src="../src/ink-price-series-step-v34.js?v=52"></script>
