@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="./store-guide-merged.css?v=3" />
   <link rel="stylesheet" href="../store-tour/store-map-live.css?v=5" />
   <link rel="stylesheet" href="../store-tour/roadview.css?v=4" />
+  <link rel="stylesheet" href="./store-guide-experience-v24.css?v=24" />
 </head>
 <body class="detail-shell">
   <header class="detail-header">
@@ -28,11 +29,22 @@
         </div>
       </div>
       <h1>블루블랙 펜샵 매장 안내</h1>
-      <p>층별 브랜드 안내도부터 위치, 영업시간과 방문 정보를 한곳에서 확인하세요.</p>
+      <p>360 매장 투어와 층별 브랜드 안내도, 위치, 영업시간과 방문 정보를 한곳에서 확인하세요.</p>
     </div>
   </header>
 
+  <nav class="store-guide-quicknav" aria-label="매장 안내 빠른 이동">
+    <a href="#storeTour360" data-store-nav="tour">360 투어</a>
+    <a href="#floor-guide" data-store-nav="floor">층별 지도</a>
+    <a href="#visit-info" data-store-nav="visit">방문 정보</a>
+    <a href="#store-map" data-store-nav="brands">브랜드 지도</a>
+  </nav>
+
   <main class="detail-main">
+    <section class="detail-card store-tour-public-card" id="storeTour360">
+      <div class="store-tour-loading-card">1층 360 매장 투어를 불러오는 중입니다.</div>
+    </section>
+
     <section class="detail-card merged-floor-card" id="floor-guide">
       <div class="merged-floor-heading">
         <div>
@@ -61,11 +73,7 @@
       </div>
     </section>
 
-    <section class="detail-card store-tour-public-card" id="storeTour360">
-      <div class="store-tour-loading-card">1층 360 매장 투어를 불러오는 중입니다.</div>
-    </section>
-
-    <section class="detail-card">
+    <section class="detail-card" id="visit-info">
       <h2 data-portal-t="visitInfo">방문 정보</h2>
       <div class="detail-grid">
         <article class="detail-item"><small data-portal-t="address">매장 주소</small><strong data-map-i18n="addressValue">서울특별시 종로구 사직로 109 · B1, 2F, 4F</strong><span data-map-i18n="areaHint">내자동 · 경복궁역 인근</span></article>
@@ -127,6 +135,7 @@
   <script type="module" src="../src/store-address-addon.js?v=4"></script>
   <script type="module" src="../src/store-map-live.js?v=6"></script>
   <script type="module" src="../src/store-tour-public.js?v=4"></script>
+  <script type="module" src="../src/store-guide-experience-v24.js?v=24"></script>
   <script>
     (function(){
       var tabs=[].slice.call(document.querySelectorAll('[data-merged-floor]'));
