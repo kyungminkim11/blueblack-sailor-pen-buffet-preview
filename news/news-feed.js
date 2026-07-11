@@ -75,9 +75,9 @@ function showProfileFallback(){
   const fallback=document.querySelector('[data-instagram-fallback]');
   const iframe=document.querySelector('[data-instagram-profile-iframe]');
   fallback?.classList.add('is-visible');
-  if(iframe&&!iframe.src){
-    iframe.src='https://www.instagram.com/blueblack_korea/embed/';
+  if(iframe&&!iframe.getAttribute('src')){
     iframe.addEventListener('load',()=>iframe.closest('[data-instagram-profile-frame]')?.classList.add('is-loaded'),{once:true});
+    iframe.setAttribute('src','https://www.instagram.com/blueblack_korea/embed/');
   }
 }
 
