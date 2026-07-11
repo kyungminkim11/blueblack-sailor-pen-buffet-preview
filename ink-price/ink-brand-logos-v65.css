@@ -1,24 +1,73 @@
 @import url('./ink-brand-logos-v63.css?v=63');
 
 .ink-store-quick{grid-auto-columns:minmax(126px,1fr)!important;gap:10px!important}
-.ink-store-quick button{grid-template-rows:44px auto auto!important;min-height:96px!important;padding:10px 9px!important}
-.ink-brand-logo{box-sizing:border-box;background:#fff!important;border:1px solid #d7cec1!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),0 3px 9px rgba(16,35,63,.07)}
-.ink-brand-logo img{box-sizing:border-box;display:none;max-width:90%;max-height:78%;padding:3px;object-fit:contain;filter:saturate(1.02) contrast(1.12) drop-shadow(0 1px 1px rgba(16,35,63,.12))}
+.ink-store-quick button{grid-template-rows:46px auto auto!important;min-height:100px!important;padding:10px 9px!important}
+
+.ink-brand-logo{box-sizing:border-box;display:flex!important;align-items:center!important;justify-content:center!important;overflow:hidden!important;background:#fff!important;border:1px solid #d7cec1!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.9),0 3px 9px rgba(16,35,63,.07)}
+.ink-brand-logo img{box-sizing:border-box;display:none;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;padding:6px!important;object-fit:contain!important;object-position:center!important;transform-origin:center;filter:saturate(1.02) contrast(1.1) drop-shadow(0 1px 1px rgba(16,35,63,.1))}
 .ink-brand-logo.has-image:not(.image-failed) img{display:block}
-.ink-brand-logo.force-dark img{filter:brightness(0) saturate(100%) contrast(1.45) drop-shadow(0 1px 0 rgba(255,255,255,.7))}
-.ink-brand-logo.plate-contrast{background:linear-gradient(180deg,#fff 0%,#f5f2ec 100%)!important;border-color:#bcb3a7!important;box-shadow:inset 0 0 0 2px #fff,0 4px 12px rgba(16,35,63,.12)}
-.ink-brand-logo.plate-contrast img{max-width:86%;max-height:70%;padding:4px}
-.ink-brand-logo-quick{width:96px!important;height:42px!important;border-radius:11px!important}
-.ink-brand-logo-quick .ink-brand-logo-fallback{max-width:88px;padding:0 5px;font-size:10px!important;font-weight:1000;letter-spacing:-.035em;line-height:1.05;text-align:center;overflow-wrap:anywhere}
-.ink-brand-logo-result{width:38px!important;height:28px!important;background:#fff!important}
-.ink-brand-logo-mini{width:30px!important;height:24px!important;background:#fff!important}
+.ink-brand-logo.has-image:not(.image-failed) .ink-brand-logo-fallback{display:none}
+.ink-brand-logo.force-dark img{filter:brightness(0) saturate(100%) contrast(1.55) drop-shadow(0 1px 0 rgba(255,255,255,.75))}
+.ink-brand-logo.plate-contrast{background:linear-gradient(180deg,#fff 0%,#f4f1eb 100%)!important;border-color:#b8aea1!important;box-shadow:inset 0 0 0 2px rgba(255,255,255,.96),0 4px 12px rgba(16,35,63,.12)!important}
+.ink-brand-logo.plate-contrast img{padding:7px!important}
+
+.ink-brand-logo-quick{width:100px!important;height:44px!important;border-radius:11px!important}
+.ink-brand-logo-result{width:40px!important;height:30px!important;border-radius:8px!important;background:#fff!important}
+.ink-brand-logo-mini{width:32px!important;height:25px!important;border-radius:7px!important;background:#fff!important}
+.ink-brand-logo-result img{padding:4px!important}
+.ink-brand-logo-mini img{padding:3px!important}
+
+.ink-brand-logo-quick .ink-brand-logo-fallback{max-width:90px;padding:0 5px;font-size:10px!important;font-weight:1000;letter-spacing:-.035em;line-height:1.05;text-align:center;overflow-wrap:anywhere}
 .ink-brand-card-name{font-size:10px!important;line-height:1.15!important}
 .ink-store-brand b{color:#805d2d!important}
 .ink-brand-guide-note{margin-top:5px!important;color:#68778a!important;font-size:10px!important}
+
 .ink-store-quick button.is-current .ink-brand-logo{border-color:#d9bb78!important;box-shadow:0 0 0 2px rgba(226,194,127,.28)}
 .ink-store-quick button.is-current .ink-brand-logo img{filter:saturate(1.05) contrast(1.15)}
 .ink-store-quick button.is-current .ink-brand-logo.force-dark img{filter:brightness(0) invert(1) contrast(1.35)}
 .ink-store-quick button.is-current .ink-brand-logo.plate-contrast{background:#fff!important}
+
+/* Long horizontal wordmarks */
+.ink-brand-logo-quick[data-brand-key="sailor"] img{padding:10px 9px!important;transform:scale(1.08)}
+.ink-brand-logo-quick[data-brand-key="platinum"] img{padding:10px 8px!important;transform:scale(1.08)}
+.ink-brand-logo-quick[data-brand-key="pilot"] img{padding:11px 8px!important;transform:scale(1.06)}
+.ink-brand-logo-quick[data-brand-key="lamy"] img{padding:12px 9px!important;transform:scale(1.04)}
+.ink-brand-logo-quick[data-brand-key="pelikan"] img{padding:7px 12px!important;transform:scale(1.04)}
+.ink-brand-logo-quick[data-brand-key="fabercastell"] img,
+.ink-brand-logo-quick[data-brand-key="grafvonfabercastell"] img,
+.ink-brand-logo-quick[data-brand-key="ferriswheelpress"] img,
+.ink-brand-logo-quick[data-brand-key="dominantindustry"] img,
+.ink-brand-logo-quick[data-brand-key="lennontoolbar"] img,
+.ink-brand-logo-quick[data-brand-key="robertoster"] img,
+.ink-brand-logo-quick[data-brand-key="jacquesherbin"] img{padding:10px 7px!important;transform:scale(1.06)}
+
+/* Square marks and favicons */
+.ink-brand-logo-quick[data-brand-key="iwi"] img,
+.ink-brand-logo-quick[data-brand-key="colorverse"] img,
+.ink-brand-logo-quick[data-brand-key="inkhouse"] img,
+.ink-brand-logo-quick[data-brand-key="kakimori"] img,
+.ink-brand-logo-quick[data-brand-key="vinta"] img{padding:5px 29px!important;transform:scale(1.08)}
+
+/* Brands whose source files include generous transparent margins */
+.ink-brand-logo-quick[data-brand-key="visconti"] img,
+.ink-brand-logo-quick[data-brand-key="monteverde"] img,
+.ink-brand-logo-quick[data-brand-key="waterman"] img,
+.ink-brand-logo-quick[data-brand-key="parker"] img,
+.ink-brand-logo-quick[data-brand-key="aurora"] img,
+.ink-brand-logo-quick[data-brand-key="kaweco"] img,
+.ink-brand-logo-quick[data-brand-key="sheaffer"] img,
+.ink-brand-logo-quick[data-brand-key="conklin"] img{padding:8px 13px!important;transform:scale(1.08)}
+
+/* Keep compact logos legible in result and cart rows */
+.ink-brand-logo-result[data-brand-key="sailor"] img,
+.ink-brand-logo-result[data-brand-key="platinum"] img,
+.ink-brand-logo-result[data-brand-key="pilot"] img,
+.ink-brand-logo-mini[data-brand-key="sailor"] img,
+.ink-brand-logo-mini[data-brand-key="platinum"] img,
+.ink-brand-logo-mini[data-brand-key="pilot"] img{padding:5px 3px!important;transform:scale(1.12)}
+
+.ink-store-cart-main>b,.ink-store-dialog-list b{display:flex!important;align-items:center;gap:7px}
+.ink-store-cart-main>b>span,.ink-store-dialog-list b>span{min-width:0;overflow-wrap:anywhere}
 
 @media(min-width:1180px){
   .ink-store-quick{grid-auto-flow:initial!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;overflow:visible!important}
@@ -26,9 +75,14 @@
 }
 @media(max-width:760px){
   .ink-store-quick{grid-auto-columns:118px!important}
-  .ink-store-quick button{min-height:92px!important}
-  .ink-brand-logo-quick{width:88px!important;height:40px!important}
-  .ink-brand-logo-quick .ink-brand-logo-fallback{max-width:80px;font-size:9px!important}
+  .ink-store-quick button{min-height:94px!important}
+  .ink-brand-logo-quick{width:90px!important;height:42px!important}
+  .ink-brand-logo-quick .ink-brand-logo-fallback{max-width:82px;font-size:9px!important}
+  .ink-brand-logo-quick[data-brand-key="iwi"] img,
+  .ink-brand-logo-quick[data-brand-key="colorverse"] img,
+  .ink-brand-logo-quick[data-brand-key="inkhouse"] img,
+  .ink-brand-logo-quick[data-brand-key="kakimori"] img,
+  .ink-brand-logo-quick[data-brand-key="vinta"] img{padding-left:25px!important;padding-right:25px!important}
 }
 @media(max-width:390px){
   .ink-store-quick{grid-auto-columns:112px!important}
