@@ -28,11 +28,12 @@ function localizeQuickNav(){
   targets.forEach(target=>observer.observe(target));
 }
 
-function shareCurrent(){
+async function shareCurrent(){
   const title=$('[data-tour-title]')?.textContent?.trim()||document.title;
   const url=location.href;
-  if(navigator.share)return navigator.share({title,text:title,url}).catch(()=>{});
-  return navigator.clipboard?.writeText(url).then(()=>showToast(copy.shared)).catch(()=>window.prompt(copy.share,url));
+  if(navigator.share){try{await navigator.share({title,text:title,url});return;}catch(error){if(error?.name==='AbortError')return;}}
+  if(navigator.clipboard?.writeText){try{await navigator.clipboard.writeText(url);showToast(copy.shared);return;}catch{}}
+  window.prompt(copy.share,url);
 }
 
 function showToast(message){
