@@ -72,7 +72,6 @@ function isCustomerPage(){
   const path=location.pathname.toLowerCase();
   const query=new URLSearchParams(location.search);
   if(/\/(admin|staff)(\/|\.html|$)/.test(path))return false;
-  if(path.includes('/pen-buffet/'))return false;
   if(query.get('staff')==='1'||query.get('admin')==='1'||query.get('mode')==='store')return false;
   return true;
 }
@@ -89,7 +88,7 @@ function ensureStyles(){
   if([...document.styleSheets].some(sheet=>String(sheet.href||'').includes('portal-mobile-app.css')))return;
   const link=document.createElement('link');
   link.rel='stylesheet';
-  link.href=new URL('src/portal-mobile-app.css?v=3',APP_ROOT).href;
+  link.href=new URL('src/portal-mobile-app.css?v=4',APP_ROOT).href;
   link.dataset.mobileAppStyle='true';
   document.head.append(link);
 }
@@ -135,6 +134,7 @@ function ensureNavigation(){
 function activeRoute(){
   const relative=relativePage();
   if(!relative)return'home';
+  if(relative.startsWith('pen-buffet'))return'pen';
   if(relative.startsWith('store-guide')||relative.startsWith('store-tour')||relative.startsWith('store-map'))return'store';
   if(relative.startsWith('ink-price'))return'ink';
   return'more';
@@ -337,10 +337,29 @@ function registerServiceWorker(language){
   },{once:true});
 }
 
+function setupContextNavigation(){
+  const move=()=>{
+    const header=document.querySelector('.app-header,.topbar,.detail-header,.news-topbar,.review-topbar,header');
+    if(!header)return;
+    document.querySelectorAll('.mobile-bottom-nav,.mobile-dock').forEach(navigation=>{
+      if(navigation.classList.contains('mobile-app-nav'))return;
+      navigation.classList.add('mobile-context-nav');
+      if(navigation.previousElementSibling!==header)header.insertAdjacentElement('afterend',navigation);
+    });
+  };
+  move();
+  const observer=new MutationObserver(move);
+  observer.observe(document.body,{childList:true});
+  setTimeout(()=>observer.disconnect(),4000);
+}
+
 function init(){
   if(!isCustomerPage())return;
+  if(window.__blueblackMobileAppShellInitialized)return;
+  window.__blueblackMobileAppShellInitialized=true;
   ensureStyles();
   const language=currentLanguage();
+  setupContextNavigation();
   const nav=ensureNavigation();
   translateNavigation(nav,language);
   preserveLanguage(nav,language);
