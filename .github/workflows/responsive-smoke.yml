@@ -21,6 +21,9 @@ jobs:
         with:
           node-version: 22
 
+      - name: Check enhancement syntax
+        run: node --check src/store-guide-experience-v24.js
+
       - name: Install Playwright
         run: |
           npm install --no-save playwright@1.55.0
