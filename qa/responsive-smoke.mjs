@@ -13,6 +13,7 @@ const routes = [
   ['as-guide', '/as-guide/'],
   ['ink-price', '/ink-price/?lang=ko&qa=responsive'],
   ['store-guide', '/store-guide/?lang=ko'],
+  ['store-guide-tour', '/store-guide/?lang=ko&tour=f1-01'],
   ['admin-tools', '/admin/'],
   ['admin-settings', '/admin.html'],
   ['product-finder', '/admin/product-finder/'],
