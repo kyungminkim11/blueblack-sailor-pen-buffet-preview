@@ -4,45 +4,39 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
-  <meta name="description" content="블루블랙에서 취급하는 잉크의 색상명과 공식 5ml·10ml 소분 가격을 검색하고 확인하세요." />
+  <meta name="description" content="블루블랙에서 취급하는 잉크의 색상명과 공식 5ml·10ml 소분 가격, 본병 가격을 검색하고 장바구니형 목록으로 확인하세요." />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/ink-price/" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="BlueBlack Pen Shop" />
   <meta property="og:title" content="BlueBlack Ink Decant Price Search" />
-  <meta property="og:description" content="Search ink brands, series and colors, then check official 5ml and 10ml decant prices." />
+  <meta property="og:description" content="Search ink brands, series and colors, then compare 5ml, 10ml and full-bottle prices." />
   <meta property="og:url" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/ink-price/" />
   <meta property="og:image" content="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/portal-card.png" />
-  <title>블루블랙 잉크 소분 가격 검색</title>
+  <title>블루블랙 소분 잉크 가격 검색</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../portal.css?v=52" />
   <link rel="stylesheet" href="./ink-price.css?v=52" />
-  <link rel="stylesheet" href="./mobile-layout-fix.css?v=2" />
+  <link rel="stylesheet" href="./ink-price-app-v62.css?v=62" />
   <style>
     .ink-app-boot{display:grid;place-items:center;min-height:240px;padding:24px;border:1px solid #ded5c7;border-radius:24px;background:#fff;color:#637186;text-align:center}
-    .ink-app-boot strong{display:block;color:#10233f;font-size:18px}
-    .ink-app-boot span{display:block;margin-top:6px;font-size:13px}
-    html[data-ink-app] .ink-app-boot{display:none}
-    .ink-store-load-error{display:grid;gap:8px;padding:24px;border:1px solid #d7b9b3;border-radius:18px;background:#fff4f2;color:#7f3d34;text-align:center}
-    .ink-store-load-error strong{font-size:16px}.ink-store-load-error span{font-size:13px}
-    .ink-store-load-error button{justify-self:center;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:#10233f;color:#fff;font-weight:900}
-    .ink-loading,[data-ink-loading]{display:none!important}
+    .ink-app-boot strong{display:block;color:#10233f;font-size:18px}.ink-app-boot span{display:block;margin-top:6px;font-size:13px}
+    html[data-ink-app="ready"] .ink-app-boot{display:none}.ink-loading,[data-ink-loading]{display:none!important}
   </style>
-  <script type="module" src="../src/ink-price-style-v30-loader.js?v=52"></script>
 </head>
 <body class="detail-shell ink-price-page">
   <header class="detail-header">
     <div class="detail-header-inner">
       <a class="detail-back" href="../" data-preserve-lang>← <span data-portal-t="back">디지털 가이드로 돌아가기</span></a>
-      <h1 data-ink-title>잉크 소분 가격 검색</h1>
-      <p data-ink-intro>브랜드·시리즈·색상명을 검색하고 5ml·10ml 가격을 빠르게 확인하세요.</p>
+      <h1 data-ink-title>소분 잉크 가격 검색</h1>
+      <p data-ink-intro>소분 가능한 브랜드와 색상을 찾고, 5ml·10ml·본병 가격을 비교해 목록에 담아보세요.</p>
     </div>
   </header>
 
   <main class="ink-price-main">
-    <section id="ink-store-app" aria-label="잉크 소분 가격 검색">
+    <section id="ink-store-app" aria-label="소분 잉크 가격 검색">
       <div class="ink-app-boot" role="status" aria-live="polite">
-        <div><strong>소분 잉크 검색 화면을 준비하고 있습니다.</strong><span>브랜드와 색상 데이터를 불러오는 중입니다.</span></div>
+        <div><strong>소분 잉크 검색 화면을 준비하고 있습니다.</strong><span>브랜드·색상·가격 데이터를 불러오는 중입니다.</span></div>
       </div>
     </section>
 
@@ -66,22 +60,13 @@
             <button type="button" class="ink-share-page">현재 페이지 공유</button>
           </div>
         </div>
-        <div class="ink-canvas">
-          <img class="ink-sheet" alt="블루블랙 잉크 소분 가격표" decoding="async" />
-        </div>
-        <div class="ink-page-meta">
-          <span><span data-ink-page-label>현재 페이지</span> · <strong data-ink-current>이용 안내</strong></span>
-          <span>5ml · 10ml</span>
-        </div>
+        <div class="ink-canvas"><img class="ink-sheet" alt="블루블랙 잉크 소분 가격표" decoding="async" /></div>
+        <div class="ink-page-meta"><span><span data-ink-page-label>현재 페이지</span> · <strong data-ink-current>이용 안내</strong></span><span>5ml · 10ml</span></div>
       </section>
-
       <section class="ink-source">
         <b data-ink-source-label>원본 안내</b><br />
         <span data-ink-source-copy>가격과 소분 가능 여부는 변경될 수 있습니다. 결제 전 직원과 색상·용량·금액을 함께 확인해 주세요.</span>
-        <div class="detail-actions">
-          <a href="https://m.site.naver.com/25z4y" target="_blank" rel="noopener noreferrer">NAVER 원본 열기</a>
-          <a href="tel:027658868" data-portal-t="call">전화하기</a>
-        </div>
+        <div class="detail-actions"><a href="https://m.site.naver.com/25z4y" target="_blank" rel="noopener noreferrer">NAVER 원본 열기</a><a href="tel:027658868" data-portal-t="call">전화하기</a></div>
       </section>
     </details>
   </main>
@@ -94,13 +79,10 @@
   <script type="module" src="../src/portal.js"></script>
   <script type="module" src="../src/ink-catalog-copy-patch-v23.js"></script>
   <script type="module" src="../src/ink-waterproof-types-v27.js"></script>
-  <script type="module" src="../src/ink-price-viewer.js?v=52"></script>
-  <script type="module" src="../src/ink-price-viewer-zoom-loader-v30.js?v=52"></script>
-  <script type="module" src="../src/ink-price-store-v30-loader.js?v=61"></script>
-  <script type="module" src="../src/ink-price-brand-picker-v31.js?v=52"></script>
-  <script type="module" src="../src/ink-price-brand-picker-fix-v33.js?v=52"></script>
-  <script type="module" src="../src/ink-price-series-step-v34.js?v=52"></script>
-  <script type="module" src="../src/ink-bottle-price-v36.js?v=52"></script>
+  <script type="module" src="../src/ink-price-viewer.js?v=62"></script>
+  <script type="module" src="../src/ink-price-viewer-zoom-loader-v30.js?v=62"></script>
+  <script type="module" src="../src/ink-price-app-v62.js?v=62"></script>
+  <script type="module" src="../src/ink-bottle-price-v36.js?v=62"></script>
   <script type="module" src="../src/ink-price-i18n-completion-v50.js?v=50"></script>
 </body>
 </html>
