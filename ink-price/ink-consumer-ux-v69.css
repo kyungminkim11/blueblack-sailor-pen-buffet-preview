@@ -1,0 +1,45 @@
+:root{--ink-navy:#10233f;--ink-gold:#a77b3b;--ink-paper:#fbf8f2;--ink-line:#ded5c7;--ink-muted:#66758a}
+html[data-consumer-ux="ready"] .ink-store-search-card{overflow:visible}
+.ink-consumer-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:16px}
+.ink-consumer-steps>div{display:flex;align-items:flex-start;gap:9px;min-width:0;padding:11px;border:1px solid #e3dbcf;border-radius:14px;background:rgba(255,255,255,.78)}
+.ink-consumer-steps b{display:grid;place-items:center;flex:0 0 auto;width:26px;height:26px;border-radius:999px;background:var(--ink-navy);color:#fff;font-size:10px}
+.ink-consumer-steps span{min-width:0}.ink-consumer-steps strong,.ink-consumer-steps small{display:block}.ink-consumer-steps strong{color:var(--ink-navy);font-size:11px}.ink-consumer-steps small{margin-top:3px;color:#748196;font-size:9px;line-height:1.45}
+.ink-consumer-brand-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:10px}
+.ink-consumer-brand-controls>div{display:flex;padding:3px;border:1px solid #ded5c7;border-radius:999px;background:#f4efe7}
+.ink-consumer-brand-controls button{min-height:34px!important;padding:0 11px!important;border:0!important;border-radius:999px!important;background:transparent!important;box-shadow:none!important;color:#647286!important;font-size:10px!important;font-weight:900!important}
+.ink-consumer-brand-controls [data-brand-mode].is-selected{background:#fff!important;color:var(--ink-navy)!important;box-shadow:0 3px 10px rgba(16,35,63,.1)!important}
+.ink-consumer-brand-toggle{border:1px solid #d5cab9!important;background:#fff!important;color:var(--ink-navy)!important}
+.ink-store-quick button.is-consumer-hidden{display:none!important}
+.ink-store-quick:not(.is-all-brands){grid-auto-flow:column!important;grid-auto-columns:minmax(118px,1fr)!important;grid-template-columns:none!important;overflow-x:auto!important}
+.ink-consumer-active{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:9px;padding:9px 11px;border:1px solid #d8e1ec;border-radius:12px;background:#f4f8fd;color:#40536d;font-size:10px;font-weight:800}
+.ink-consumer-active button{flex:0 0 auto;min-height:30px;padding:0 10px;border:0;border-radius:9px;background:var(--ink-navy);color:#fff;font-size:9px;font-weight:900}
+.ink-consumer-result-tip{margin:8px 0 0;padding:9px 11px;border-radius:11px;background:#fff8e9;color:#78613e;font-size:9px;line-height:1.5}
+.ink-store-result{border-color:#e1d8cb!important}.ink-store-result-copy h3{font-size:17px!important}.ink-store-result-copy p{font-size:12px!important}
+.ink-store-volume{min-height:82px!important}.ink-store-volume strong{font-size:14px!important}.ink-store-volume small{font-size:9px!important}
+.ink-store-volume:disabled{cursor:not-allowed!important;opacity:.46!important}
+.ink-store-list-card{scroll-margin-top:12px}.ink-consumer-cart-close{display:none}.ink-consumer-cart-hint{display:block;margin-top:5px;color:#8a96a6;font-size:9px}
+.ink-store-mobile-dock{transition:transform .18s ease,box-shadow .18s ease}.ink-store-mobile-dock.has-items{box-shadow:0 12px 32px rgba(16,35,63,.3)}
+.ink-consumer-overlay{display:none}
+@media(min-width:1180px){.ink-store-quick.is-all-brands{grid-template-columns:repeat(6,minmax(0,1fr))!important;overflow:visible!important}}
+@media(max-width:760px){
+  body.ink-price-page{padding-bottom:104px!important}
+  .ink-store-search-card{padding:16px!important;border-radius:22px!important}
+  .ink-store-search-card>h2{font-size:26px!important}.ink-store-search-card>p{font-size:12px!important}
+  .ink-consumer-steps{grid-template-columns:1fr;gap:6px}.ink-consumer-steps>div{padding:9px 10px}.ink-consumer-steps small{font-size:9px}
+  .ink-store-search-field{position:sticky!important;top:calc(env(safe-area-inset-top) + 8px);z-index:40;margin:14px -5px 0!important;padding:5px;border-radius:20px;background:rgba(251,248,242,.93);backdrop-filter:blur(14px);box-shadow:0 8px 24px rgba(16,35,63,.12)}
+  .ink-store-search{height:56px!important;border-radius:15px!important;font-size:16px!important}
+  .ink-consumer-brand-controls{align-items:stretch;flex-direction:column}.ink-consumer-brand-controls>div{width:100%}.ink-consumer-brand-controls [data-brand-mode]{flex:1}.ink-consumer-brand-toggle{width:100%}
+  .ink-store-quick,.ink-store-quick:not(.is-all-brands){grid-auto-columns:112px!important;gap:8px!important;margin-top:9px!important}
+  .ink-store-quick.is-all-brands{display:grid!important;grid-auto-flow:initial!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;overflow:visible!important}
+  .ink-store-quick.is-all-brands button{width:100%!important}
+  .ink-store-result{padding:13px!important;border-radius:18px!important}.ink-store-result-copy h3{font-size:16px!important}.ink-store-prices{gap:6px!important}
+  .ink-store-volume{min-height:76px!important;padding:7px 5px!important;border-radius:13px!important}
+  .ink-store-list-card{position:fixed!important;left:8px;right:8px;bottom:8px;top:auto!important;z-index:13002;max-height:min(88dvh,760px);overflow:auto;transform:translateY(calc(100% + 24px));opacity:0;visibility:hidden;transition:transform .22s ease,opacity .18s ease,visibility .18s;border-radius:24px!important;padding:19px 16px calc(18px + env(safe-area-inset-bottom))!important;box-shadow:0 28px 90px rgba(6,15,27,.42)!important}
+  .ink-store-list-card.is-consumer-open{transform:translateY(0);opacity:1;visibility:visible}
+  .ink-consumer-cart-close{display:grid;place-items:center;position:sticky;float:right;top:0;z-index:3;width:42px;height:42px;margin:-5px -2px 0 8px;border:1px solid #ddd3c4;border-radius:13px;background:#fff;color:var(--ink-navy);font-size:24px}
+  .ink-consumer-overlay{display:block;position:fixed;inset:0;z-index:13001;border:0;background:rgba(5,13,23,.58);backdrop-filter:blur(3px);opacity:0;visibility:hidden;transition:opacity .18s ease,visibility .18s}
+  body.ink-consumer-cart-open{overflow:hidden}body.ink-consumer-cart-open .ink-consumer-overlay{opacity:1;visibility:visible}
+  .ink-store-mobile-dock{display:flex!important;left:10px!important;right:10px!important;bottom:calc(10px + env(safe-area-inset-bottom))!important;width:auto!important;min-height:62px!important;border-radius:18px!important}
+}
+@media(max-width:390px){.ink-store-quick.is-all-brands{grid-template-columns:1fr 1fr!important}.ink-consumer-active{align-items:flex-start}.ink-consumer-active span{line-height:1.45}}
+@media(prefers-reduced-motion:reduce){.ink-store-list-card,.ink-consumer-overlay,.ink-store-mobile-dock{transition:none!important}}
