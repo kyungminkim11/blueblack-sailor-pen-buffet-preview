@@ -1,0 +1,36 @@
+@import url('./ink-brand-logos-v63.css?v=63');
+
+.ink-store-quick{grid-auto-columns:minmax(126px,1fr)!important;gap:10px!important}
+.ink-store-quick button{grid-template-rows:44px auto auto!important;min-height:96px!important;padding:10px 9px!important}
+.ink-brand-logo{box-sizing:border-box;background:#fff!important;border:1px solid #d7cec1!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.85),0 3px 9px rgba(16,35,63,.07)}
+.ink-brand-logo img{box-sizing:border-box;display:none;max-width:90%;max-height:78%;padding:3px;object-fit:contain;filter:saturate(1.02) contrast(1.12) drop-shadow(0 1px 1px rgba(16,35,63,.12))}
+.ink-brand-logo.has-image:not(.image-failed) img{display:block}
+.ink-brand-logo.force-dark img{filter:brightness(0) saturate(100%) contrast(1.45) drop-shadow(0 1px 0 rgba(255,255,255,.7))}
+.ink-brand-logo.plate-contrast{background:linear-gradient(180deg,#fff 0%,#f5f2ec 100%)!important;border-color:#bcb3a7!important;box-shadow:inset 0 0 0 2px #fff,0 4px 12px rgba(16,35,63,.12)}
+.ink-brand-logo.plate-contrast img{max-width:86%;max-height:70%;padding:4px}
+.ink-brand-logo-quick{width:96px!important;height:42px!important;border-radius:11px!important}
+.ink-brand-logo-quick .ink-brand-logo-fallback{max-width:88px;padding:0 5px;font-size:10px!important;font-weight:1000;letter-spacing:-.035em;line-height:1.05;text-align:center;overflow-wrap:anywhere}
+.ink-brand-logo-result{width:38px!important;height:28px!important;background:#fff!important}
+.ink-brand-logo-mini{width:30px!important;height:24px!important;background:#fff!important}
+.ink-brand-card-name{font-size:10px!important;line-height:1.15!important}
+.ink-store-brand b{color:#805d2d!important}
+.ink-brand-guide-note{margin-top:5px!important;color:#68778a!important;font-size:10px!important}
+.ink-store-quick button.is-current .ink-brand-logo{border-color:#d9bb78!important;box-shadow:0 0 0 2px rgba(226,194,127,.28)}
+.ink-store-quick button.is-current .ink-brand-logo img{filter:saturate(1.05) contrast(1.15)}
+.ink-store-quick button.is-current .ink-brand-logo.force-dark img{filter:brightness(0) invert(1) contrast(1.35)}
+.ink-store-quick button.is-current .ink-brand-logo.plate-contrast{background:#fff!important}
+
+@media(min-width:1180px){
+  .ink-store-quick{grid-auto-flow:initial!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;overflow:visible!important}
+  .ink-store-quick button{min-width:0!important}
+}
+@media(max-width:760px){
+  .ink-store-quick{grid-auto-columns:118px!important}
+  .ink-store-quick button{min-height:92px!important}
+  .ink-brand-logo-quick{width:88px!important;height:40px!important}
+  .ink-brand-logo-quick .ink-brand-logo-fallback{max-width:80px;font-size:9px!important}
+}
+@media(max-width:390px){
+  .ink-store-quick{grid-auto-columns:112px!important}
+  .ink-brand-card-name{font-size:9px!important}
+}
