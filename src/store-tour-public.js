@@ -6,10 +6,20 @@ import { renderDirections, renderPlan } from './store-tour-ui.js';
 import { publicTourShell } from './store-tour-public-shell.js';
 import { tourCopy, tourLanguage, tourSpotTitle } from './store-tour-i18n.js';
 
+function ensureHotfixStyle() {
+  if (document.querySelector('link[data-store-tour-hotfix="25"]')) return;
+  const link = document.createElement('link');
+  link.rel = 'stylesheet';
+  link.href = new URL('../store-guide/store-guide-tour-hotfix-v25.css?v=25', import.meta.url).href;
+  link.dataset.storeTourHotfix = '25';
+  document.head.append(link);
+}
+
 async function mount() {
   const root = document.querySelector('#storeTour360');
   if (!root) return;
 
+  ensureHotfixStyle();
   const lang = tourLanguage();
   const copy = tourCopy(lang);
   publicTourShell(root, copy);
