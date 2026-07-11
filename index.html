@@ -4,9 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
+  <meta name="theme-color" content="#f5f6f8" media="(max-width: 760px)" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="BlueBlack" />
   <meta name="description" content="펜뷔페 조합부터 매장 이용, 리뷰 이벤트, 최신 소식, 각인, A/S, 잉크 소분까지 블루블랙 펜샵에서 필요한 정보를 한곳에서 확인하세요." />
   <meta name="robots" content="index, follow, max-image-preview:large" />
   <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/" />
+  <link rel="manifest" href="./manifest.webmanifest" />
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="BlueBlack Pen Shop" />
   <meta property="og:title" content="BlueBlack Pen Shop Digital Guide" />
@@ -24,6 +30,7 @@
   <link rel="stylesheet" href="./portal.css?v=51" />
   <link rel="stylesheet" href="./src/review-event-portal.css?v=1" />
   <link rel="stylesheet" href="./src/portal-sitemap.css?v=1" />
+  <link rel="stylesheet" href="./src/portal-mobile-app.css?v=1" />
   <style id="public-customer-only-guard">
     .bb-home-mode,
     .bb-staff-panel,
@@ -40,7 +47,7 @@
   </script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"BlueBlack Pen Shop Digital Guide","alternateName":"블루블랙 펜샵 디지털 가이드","url":"https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/","inLanguage":["ko","en","ja","zh-Hans","zh-Hant"]}</script>
 </head>
-<body>
+<body class="portal-home">
   <header class="portal-header">
     <div class="portal-header-inner">
       <nav class="portal-nav" aria-label="Main navigation">
@@ -61,7 +68,7 @@
   </header>
 
   <main class="portal-main">
-    <section>
+    <section id="home-tools">
       <div class="portal-section-head"><div><small>EXPLORE BLUEBLACK</small><h2 data-portal-t="toolsTitle">지금 필요한 안내를 선택하세요</h2></div><p data-portal-t="toolsBody">원하는 카드를 누르면 각 안내를 바로 이용할 수 있습니다.</p></div>
       <div class="tool-grid">
         <a class="tool-card review-event-card" href="./review-event/" data-review-event-card><span class="tool-icon">5ml</span><span class="tool-copy"><small data-review-event-kicker>STORE REVIEW EVENT</small><h3 data-review-event-title>영수증 리뷰 이벤트</h3><p data-review-event-body>매장 리뷰를 남기고 완료 화면을 직원에게 보여주면 랜덤 5ml 소분 잉크 1병을 드립니다.</p></span><span class="tool-status" data-review-event-status>진행 중</span><span class="tool-arrow">→</span></a>
@@ -82,7 +89,7 @@
     </section>
   </main>
 
-  <footer class="portal-footer">
+  <footer class="portal-footer" id="site-map">
     <div class="portal-footer-inner portal-sitemap">
       <div class="portal-sitemap-head">
         <div><small>SITE MAP</small><h2 data-sitemap-t="title">사이트맵</h2></div>
@@ -114,6 +121,30 @@
       <div class="portal-footer-inner"><div data-portal-t="footer">더 좋은 필기 경험을 위한 BlueBlack Pen Shop 디지털 가이드</div><div><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">blueblack.co.kr</a> · <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener">Instagram</a></div></div>
     </div>
   </footer>
+
+  <nav class="mobile-app-nav" aria-label="하단 주요 메뉴">
+    <a href="./" aria-current="page" data-mobile-link>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 10.5 12 3.5l8.5 7v8.2a1.8 1.8 0 0 1-1.8 1.8H5.3a1.8 1.8 0 0 1-1.8-1.8z"/><path d="M9 20.5v-6h6v6"/></svg>
+      <span data-mobile-nav-label="home">홈</span>
+    </a>
+    <a class="mobile-nav-pen" href="./pen-buffet/" data-mobile-link>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14.5 4.5 5 5-8.7 8.7-6.3 1.3 1.3-6.3z"/><path d="m12.8 6.2 5 5M4.8 19.2l4.7-4.7"/></svg>
+      <span data-mobile-nav-label="pen">펜뷔페</span>
+    </a>
+    <a href="./store-guide/" data-mobile-link>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10c0 5.2-8 10.5-8 10.5S4 15.2 4 10a8 8 0 1 1 16 0Z"/><circle cx="12" cy="10" r="2.5"/></svg>
+      <span data-mobile-nav-label="store">매장</span>
+    </a>
+    <a href="./ink-price/" data-mobile-link>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.2S6.2 10 6.2 14.6a5.8 5.8 0 0 0 11.6 0C17.8 10 12 3.2 12 3.2Z"/><path d="M9.5 16.2c.5 1 1.4 1.6 2.5 1.6"/></svg>
+      <span data-mobile-nav-label="ink">잉크</span>
+    </a>
+    <a href="#site-map">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="4" width="6" height="6" rx="1.5"/><rect x="14" y="4" width="6" height="6" rx="1.5"/><rect x="4" y="14" width="6" height="6" rx="1.5"/><rect x="14" y="14" width="6" height="6" rx="1.5"/></svg>
+      <span data-mobile-nav-label="more">더보기</span>
+    </a>
+  </nav>
+
   <script type="module" src="./src/portal.js"></script>
   <script type="module" src="./src/public-portal-copy.js?v=2"></script>
   <script type="module" src="./src/official-portal-addon.js"></script>
@@ -124,5 +155,6 @@
   <script type="module" src="./src/review-event-portal.js?v=1"></script>
   <script type="module" src="./src/news-portal.js?v=1"></script>
   <script type="module" src="./src/portal-sitemap.js?v=1"></script>
+  <script type="module" src="./src/portal-mobile-app.js?v=1"></script>
 </body>
 </html>
