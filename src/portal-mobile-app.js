@@ -33,6 +33,7 @@ function isCustomerPage(){
   const path=location.pathname.toLowerCase();
   const query=new URLSearchParams(location.search);
   if(/\/(admin|staff)(\/|\.html|$)/.test(path))return false;
+  if(path.includes('/pen-buffet/'))return false;
   if(query.get('staff')==='1'||query.get('admin')==='1'||query.get('mode')==='store')return false;
   return true;
 }
@@ -87,7 +88,6 @@ function ensureNavigation(){
 function activeRoute(){
   const relative=location.pathname.replace(APP_ROOT.pathname,'').replace(/^\/+|\/+$/g,'').toLowerCase();
   if(!relative||relative==='index.html')return'home';
-  if(relative.startsWith('pen-buffet'))return'pen';
   if(relative.startsWith('store-guide')||relative.startsWith('store-tour')||relative.startsWith('store-map'))return'store';
   if(relative.startsWith('ink-price'))return'ink';
   return'more';
