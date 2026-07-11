@@ -3,6 +3,8 @@ name: Validate ink store modules
 on:
   push:
     paths:
+      - 'src/ink-price-app-v62.js'
+      - 'ink-price/ink-price-app-v62.css'
       - 'src/ink-price-store-v30-*'
       - 'src/ink-price-store-v30.*'
       - 'src/ink-bottle-*'
@@ -16,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Rebuild generated ink store module
+      - name: Rebuild generated legacy ink store module
         run: |
           python - <<'PY'
           import base64, json
@@ -37,6 +39,12 @@ jobs:
       - name: Check JavaScript syntax
         run: |
           node --check /tmp/ink-store-generated.mjs
+          node --check src/ink-price-app-v62.js
           node --check src/ink-bottle-price-v36.js
           node --check src/ink-bottle-volume-rpc-v38.js
           node --check src/ink-price-i18n-v43.js
+      - name: Verify restored page wiring
+        run: |
+          grep -q 'ink-price-app-v62.css' ink-price/index.html
+          grep -q 'ink-price-app-v62.js' ink-price/index.html
+          grep -q 'ink-bottle-price-v36.js' ink-price/index.html
