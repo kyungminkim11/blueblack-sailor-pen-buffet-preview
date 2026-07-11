@@ -13,7 +13,7 @@
   <meta property="og:description" content="See new arrivals, restocks, product highlights and store updates." />
   <title>블루블랙 최신 소식 | BlueBlack Pen Shop</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="./news.css?v=3" />
+  <link rel="stylesheet" href="./news.css?v=4" />
 </head>
 <body>
   <header class="news-topbar">
@@ -50,9 +50,16 @@
       </div>
       <div class="instagram-grid" data-instagram-feed hidden></div>
       <div class="feed-fallback" data-instagram-fallback>
-        <strong data-news-copy="fallbackTitle">인스타그램 최신 게시물을 표시하지 못했습니다</strong>
-        <p data-news-copy="fallbackBody">인스타그램에서 블루블랙의 최신 소식을 확인해 주세요.</p>
-        <a class="news-primary-link" href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-news-copy="instagram">인스타그램 열기</a>
+        <div class="instagram-profile-frame" data-instagram-profile-frame>
+          <div class="instagram-profile-skeleton" aria-hidden="true"><span>IG</span><i></i><i></i><i></i></div>
+          <iframe data-instagram-profile-iframe title="BlueBlack Pen Shop 인스타그램 프로필" loading="lazy" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture" scrolling="no"></iframe>
+        </div>
+        <strong data-news-copy="fallbackTitle">공식 인스타그램에서 최신 소식을 확인하세요</strong>
+        <p data-news-copy="fallbackBody">자동 게시물 목록 연결이 지연될 때도 아래 공식 프로필에서 최신 게시물을 바로 확인할 수 있습니다.</p>
+        <div class="feed-fallback-actions">
+          <button class="news-secondary-button" type="button" data-instagram-retry data-news-copy="retry">다시 불러오기</button>
+          <a class="news-primary-link" href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-news-copy="instagram">인스타그램 열기</a>
+        </div>
       </div>
     </section>
 
@@ -71,7 +78,7 @@
   </main>
 
   <footer class="news-footer"><div class="news-footer-inner"><div data-news-copy="footer">BlueBlack Pen Shop 최신 소식</div><div><a href="https://blueblack.co.kr/" target="_blank" rel="noopener">blueblack.co.kr</a> · <a href="https://blog.naver.com/paikorea" target="_blank" rel="noopener">Blog</a> · <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener">Instagram</a></div></div></footer>
-  <script type="module" src="./news.js?v=3"></script>
-  <script type="module" src="./news-feed.js?v=1"></script>
+  <script type="module" src="./news.js?v=4"></script>
+  <script type="module" src="./news-feed.js?v=2"></script>
 </body>
 </html>
