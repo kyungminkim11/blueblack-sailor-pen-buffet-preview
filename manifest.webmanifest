@@ -4,19 +4,45 @@
   "short_name": "BlueBlack",
   "description": "블루블랙 펜샵의 펜뷔페, 매장 안내, 각인, A/S와 잉크 정보를 확인하는 모바일 디지털 가이드",
   "lang": "ko",
+  "dir": "ltr",
   "start_url": "./",
   "scope": "./",
   "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
   "orientation": "any",
   "background_color": "#f5f6f8",
   "theme_color": "#10233f",
   "categories": ["lifestyle", "utilities"],
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "./app-icon.svg",
       "sizes": "any",
       "type": "image/svg+xml",
       "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "세일러 펜뷔페",
+      "short_name": "펜뷔페",
+      "description": "6개 파츠의 색상을 조합하고 3D로 확인합니다.",
+      "url": "./pen-buffet/",
+      "icons": [{"src": "./app-icon.svg", "sizes": "any", "type": "image/svg+xml"}]
+    },
+    {
+      "name": "매장 안내",
+      "short_name": "매장",
+      "description": "층별 안내와 브랜드 위치를 확인합니다.",
+      "url": "./store-guide/",
+      "icons": [{"src": "./app-icon.svg", "sizes": "any", "type": "image/svg+xml"}]
+    },
+    {
+      "name": "잉크 소분 안내",
+      "short_name": "잉크",
+      "description": "브랜드와 용량별 잉크 정보를 확인합니다.",
+      "url": "./ink-price/",
+      "icons": [{"src": "./app-icon.svg", "sizes": "any", "type": "image/svg+xml"}]
     }
   ]
 }
