@@ -15,6 +15,24 @@ function ensureHotfixStyle() {
   document.head.append(link);
 }
 
+function isSmallMobile() {
+  return matchMedia('(max-width: 760px), (pointer: coarse)').matches;
+}
+
+function installMobileStart(root, onStart) {
+  const shell = root.querySelector('.store-tour-view-shell');
+  if (!shell || shell.querySelector('.store-tour-mobile-start')) return null;
+  const overlay = document.createElement('div');
+  overlay.className = 'store-tour-mobile-start';
+  overlay.innerHTML = '<div class="store-tour-mobile-start-box"><small>MOBILE SAFE MODE</small><strong>360 사진은 버튼을 눌러 불러옵니다.</strong><p>모바일 브라우저 멈춤을 줄이기 위해 큰 360 이미지는 자동으로 열지 않습니다.</p><button type="button">360 투어 시작</button></div>';
+  overlay.querySelector('button').addEventListener('click', () => {
+    overlay.hidden = true;
+    onStart();
+  });
+  shell.append(overlay);
+  return overlay;
+}
+
 async function mount() {
   const root = document.querySelector('#storeTour360');
   if (!root) return;
@@ -42,6 +60,8 @@ async function mount() {
   let selected = new URLSearchParams(location.search).get('tour');
   if (!byId.has(selected)) selected = spots[0].id;
   let selectionToken = 0;
+  let deferMobileImage = isSmallMobile();
+  let mobileOverlay = null;
 
   async function loadSpotImage(spot, token) {
     const title = `${titleFor(spot)} 360`;
@@ -66,9 +86,10 @@ async function mount() {
     return false;
   }
 
-  async function select(id) {
+  async function select(id, options = {}) {
     const spot = byId.get(id);
     if (!spot) return;
+    selected = id;
     const token = ++selectionToken;
 
     root.querySelectorAll('[data-spot-id]').forEach((node) => {
@@ -80,12 +101,18 @@ async function mount() {
     if (titleNode) titleNode.textContent = titleFor(spot);
 
     renderDirections(directions, spot, byId, select, { labels: copy.labels, titleFor });
-    const loaded = await loadSpotImage(spot, token);
-    if (token === selectionToken) status.textContent = loaded ? (result.online ? '' : copy.offline) : copy.loadError;
 
     const url = new URL(location.href);
     url.searchParams.set('tour', id);
     history.replaceState(null, '', url);
+
+    if (options.deferImage || deferMobileImage) {
+      status.textContent = '모바일 안정성을 위해 360 사진은 버튼을 누른 뒤 불러옵니다.';
+      return;
+    }
+
+    const loaded = await loadSpotImage(spot, token);
+    if (token === selectionToken) status.textContent = loaded ? (result.online ? '' : copy.offline) : copy.loadError;
   }
 
   renderPlan(plan, loadStoreMap(), spots, select, { titleFor });
@@ -98,7 +125,12 @@ async function mount() {
     return button;
   }));
 
-  await select(selected);
+  mobileOverlay = installMobileStart(root, async () => {
+    deferMobileImage = false;
+    await select(selected);
+  });
+  if (!deferMobileImage && mobileOverlay) mobileOverlay.hidden = true;
+  await select(selected, { deferImage: deferMobileImage });
 }
 
 document.readyState === 'loading'
