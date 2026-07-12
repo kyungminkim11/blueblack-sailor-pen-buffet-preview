@@ -3,7 +3,7 @@ import './nib-import-ui.js';
 
 const SUPABASE_URL = 'https://jnciddblcndmthmmvqrz.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_UUzSE7O9wqI0WN9cKG9OAQ_VleRkL4I';
-const ACCESS_KEY = 'blueblack-product-access-key';
+const SESSION_KEY = 'blueblack-catalog-session';
 
 const nibButtons = [...document.querySelectorAll('[data-nib]')];
 const brandButtons = [...document.querySelectorAll('[data-brand]')];
@@ -47,36 +47,26 @@ function showToast(message) {
   showToast.timer = setTimeout(() => toast.classList.remove('show'), 2800);
 }
 
-function getToken() {
-  return sessionStorage.getItem(ACCESS_KEY) || '';
-}
-
-function requestToken() {
-  const current = getToken();
-  const value = window.prompt('비공개 상품 DB 접근키를 입력해 주세요.', current);
-  if (value === null) return '';
-  const clean = value.trim();
-  if (clean) sessionStorage.setItem(ACCESS_KEY, clean);
-  return clean;
+function getSession() {
+  return sessionStorage.getItem(SESSION_KEY) || localStorage.getItem(SESSION_KEY) || '';
 }
 
 async function fetchProducts() {
   if (!selectedNibs.size) return [];
-  let token = getToken();
-  if (!token) token = requestToken();
-  if (!token) throw new Error('상품 DB 접근키가 필요합니다.');
+  const session = getSession();
+  if (!session) throw new Error('관리자 세션이 만료되었습니다. 관리자 페이지에서 다시 로그인해 주세요.');
 
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/internal_nib_search`, {
+  const response = await fetch(`${SUPABASE_URL}/rest/v1/rpc/internal_catalog_session_nib_search`, {
     method: 'POST',
     headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ p_token: token, p_nib_sizes: [...selectedNibs], p_query: keywordInput?.value.trim() || '', p_limit: 2500 })
+    body: JSON.stringify({ p_session: session, p_nib_sizes: [...selectedNibs], p_query: keywordInput?.value.trim() || '', p_limit: 2500 })
   });
 
   const data = await response.json().catch(() => null);
   if (!response.ok) {
-    if (response.status === 401 || /authorized|42501|permission/i.test(String(data?.message || data?.error || ''))) {
-      sessionStorage.removeItem(ACCESS_KEY);
-      throw new Error('접근키가 올바르지 않습니다. 다시 검색해 주세요.');
+    if (response.status === 401 || response.status === 403 || /authorized|42501|permission|session/i.test(String(data?.message || data?.error || ''))) {
+      sessionStorage.removeItem(SESSION_KEY);
+      throw new Error('관리자 세션이 만료되었습니다. 관리자 페이지에서 다시 로그인해 주세요.');
     }
     throw new Error(data?.message || '펜촉 상품을 불러오지 못했습니다.');
   }
@@ -143,7 +133,7 @@ async function searchProducts() {
     resultCount.textContent = '조회 실패';
     accessNote.hidden = false;
     accessNote.textContent = error.message;
-    resultList.innerHTML = '<div class="nib-result-empty">접근키와 상품 DB 등록 상태를 확인해 주세요.</div>';
+    resultList.innerHTML = '<div class="nib-result-empty">관리자 로그인 상태와 상품 DB 등록 상태를 확인해 주세요.</div>';
     showToast(error.message);
   } finally {
     searchButton.disabled = false;
