@@ -4,21 +4,18 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#10233f" />
-  <meta name="description" content="블루블랙 펜샵의 1층·2층 브랜드 안내도, 360 매장 둘러보기, 주소, 영업시간과 연락처를 확인하세요." />
+  <meta name="description" content="블루블랙 펜샵의 1층 360 매장 투어, 1층·2층 브랜드 안내도, 주소, 영업시간과 연락처를 확인하세요." />
   <link rel="canonical" href="https://kyungminkim11.github.io/blueblack-sailor-pen-buffet-preview/store-guide/" />
   <title>블루블랙 펜샵 매장 안내</title>
   <link rel="icon" href="../app-icon.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="../portal.css?v=52" />
   <link rel="stylesheet" href="./store-map.css?v=22" />
   <link rel="stylesheet" href="./store-guide-merged.css?v=3" />
-  <link rel="stylesheet" href="../store-tour/store-map-live.css?v=5" />
+  <link rel="stylesheet" href="../store-tour/store-map-live.css?v=7" />
   <link rel="stylesheet" href="../store-tour/roadview.css?v=4" />
-  <link rel="stylesheet" href="./store-guide-experience-v24.css?v=26" />
-  <link rel="stylesheet" href="./store-guide-experience-v24-fix.css?v=26" />
-  <link rel="stylesheet" href="./store-guide-tour-hotfix-v25.css?v=26" />
-  <link rel="stylesheet" href="./store-guide-mobile-ratio-hotfix.css?v=27" />
+  <link rel="stylesheet" href="./store-guide-roadview-v28.css?v=28" />
 </head>
-<body class="detail-shell">
+<body class="detail-shell store-guide-shell">
   <header class="detail-header">
     <div class="detail-header-inner">
       <div class="detail-topbar">
@@ -32,15 +29,14 @@
         </div>
       </div>
       <h1>블루블랙 펜샵 매장 안내</h1>
-      <p>360 매장 투어와 층별 브랜드 안내도, 위치, 영업시간과 방문 정보를 한곳에서 확인하세요.</p>
+      <p>360 매장 투어로 1층을 미리 둘러보고, 층별 브랜드 위치와 방문 정보를 한곳에서 확인하세요.</p>
     </div>
   </header>
 
   <nav class="store-guide-quicknav" aria-label="매장 안내 빠른 이동">
     <a href="#storeTour360" data-store-nav="tour">360 투어</a>
-    <a href="#floor-guide" data-store-nav="floor">층별 지도</a>
+    <a href="#floor-guide" data-store-nav="floor">층별·브랜드 지도</a>
     <a href="#visit-info" data-store-nav="visit">방문 정보</a>
-    <a href="#store-map" data-store-nav="brands">브랜드 지도</a>
   </nav>
 
   <main class="detail-main">
@@ -51,14 +47,14 @@
     <section class="detail-card merged-floor-card" id="floor-guide">
       <div class="merged-floor-heading">
         <div>
-          <small>EXPLORE THE STORE</small>
-          <h2>층별 매장 안내</h2>
-          <p>1층과 2층의 주요 브랜드와 진열 구역을 검색하고 확인하세요.</p>
+          <small>FLOOR & BRAND DIRECTORY</small>
+          <h2>층별·브랜드 안내도</h2>
+          <p>1층은 브랜드와 제품명을 검색할 수 있고, 2층은 주요 브랜드와 체험 공간을 한눈에 확인할 수 있습니다.</p>
         </div>
       </div>
 
       <div class="merged-floor-tabs" role="tablist" aria-label="층 선택">
-        <button class="merged-floor-tab is-active" type="button" data-merged-floor="1" aria-selected="true"><small>FLOOR 01</small><strong>1층 브랜드 안내도</strong></button>
+        <button class="merged-floor-tab is-active" type="button" data-merged-floor="1" aria-selected="true"><small>FLOOR 01</small><strong>1층 브랜드 검색 지도</strong></button>
         <button class="merged-floor-tab" type="button" data-merged-floor="2" aria-selected="false"><small>FLOOR 02</small><strong>2층 브랜드 안내도</strong></button>
       </div>
 
@@ -69,7 +65,7 @@
       <div class="merged-floor-panel" data-merged-panel="2" hidden>
         <div class="merged-floor-panel-head">
           <div><h3>2층 브랜드 안내도</h3><p>브랜드 위치와 주요 체험 공간을 확인하세요.</p></div>
-          <a class="merged-floor-link" href="#store-map">브랜드 검색 지도 열기</a>
+          <a class="merged-floor-link" href="./store-map.svg" target="_blank" rel="noopener">새 창에서 크게 보기</a>
         </div>
         <div class="merged-floor-map"><object type="image/svg+xml" data="./store-map.svg"><img src="./store-map.svg" alt="블루블랙 펜샵 2층 브랜드 안내도" /></object></div>
         <p class="merged-floor-note">브랜드와 진열 위치는 매장 운영 상황에 따라 변경될 수 있습니다.</p>
@@ -87,7 +83,7 @@
       <div class="detail-actions">
         <a class="primary" href="https://map.naver.com/p/search/%EB%B8%94%EB%A3%A8%EB%B8%94%EB%9E%99%20%ED%8E%9C%EC%83%B5" target="_blank" rel="noopener" data-map-i18n="naverMap">네이버지도</a>
         <a href="https://www.google.com/maps/search/?api=1&query=BlueBlack%20Pen%20Shop%2C%20109%20Sajik-ro%2C%20Jongno-gu%2C%20Seoul" target="_blank" rel="noopener" data-map-i18n="googleMap">Google Maps</a>
-        <a href="#store-map" data-map-i18n="openMap">매장 내부 지도</a>
+        <a href="#floor-guide" data-map-i18n="openMap">매장 내부 지도</a>
         <button class="store-action-button" type="button" id="copyStoreAddress" data-map-i18n="copyAddress">주소 복사</button>
         <a href="tel:027658868" data-portal-t="call">전화하기</a>
         <a href="../official-guide/" data-preserve-lang data-official-portal-t="title">공식 홈페이지 정보</a>
@@ -95,29 +91,6 @@
         <a href="https://www.instagram.com/blueblack_korea/" target="_blank" rel="noopener" data-portal-t="instagram">인스타그램</a>
       </div>
       <p class="store-utility-status" id="storeUtilityStatus" aria-live="polite"></p>
-    </section>
-
-    <section class="detail-card store-map-card" id="store-map">
-      <div class="store-map-heading">
-        <div><small class="store-map-kicker">IN-STORE DIRECTORY</small><h2 data-map-i18n="title">매장 내부 브랜드 지도</h2><p data-map-i18n="intro">입구와 카운터를 기준으로 원하는 브랜드의 진열 위치를 빠르게 확인하세요.</p></div>
-        <a class="store-map-new-window" href="./store-map.svg" target="_blank" rel="noopener" data-map-i18n="largeView">새 창에서 크게 보기</a>
-      </div>
-
-      <div class="store-map-tools" aria-label="매장 지도 도구" data-map-i18n-aria="toolsAria">
-        <label class="store-map-search">
-          <span data-map-i18n="searchLabel">브랜드 찾기</span>
-          <span class="store-map-search-field"><input id="storeMapSearch" type="search" list="storeMapBrands" autocomplete="off" enterkeyhint="search" aria-describedby="storeMapResult storeMapLanguageHint" placeholder="예: 세일러, Sailor, セーラー" data-map-i18n-placeholder="searchPlaceholder" /><button type="button" id="storeMapClear" class="store-map-clear" data-map-i18n-aria="clearSearch" aria-label="검색 지우기">×</button></span>
-        </label>
-        <datalist id="storeMapBrands"><option value="Sailor"></option><option value="Pilot"></option><option value="Platinum"></option><option value="Lamy"></option><option value="Parker"></option><option value="Waterman"></option><option value="Pelikan"></option><option value="Aurora"></option><option value="Mont Blanc"></option><option value="TWSBI"></option><option value="Monteverde"></option><option value="Conklin"></option><option value="Nahvalur"></option><option value="Graf von Faber-Castell"></option><option value="Caran d'Ache"></option><option value="Sheaffer"></option><option value="Cross"></option><option value="Diplomat"></option><option value="Rhodia"></option><option value="Monami"></option><option value="Opus 88"></option></datalist>
-        <div class="store-map-buttons"><button type="button" id="storeMapZoomOut" data-map-i18n-aria="zoomOut" aria-label="지도 축소">−</button><button type="button" id="storeMapFit" data-map-i18n="fit">맞춤</button><button type="button" id="storeMapZoomIn" data-map-i18n-aria="zoomIn" aria-label="지도 확대">＋</button><button type="button" id="storeMapFullscreen" data-map-i18n="fullscreen">전체 화면</button></div>
-      </div>
-
-      <p class="store-map-language-hint" id="storeMapLanguageHint" data-map-i18n="searchLanguageHint">한국어·영어·일본어·중국어 브랜드명으로 검색하거나 아래 브랜드를 눌러보세요.</p>
-      <p class="store-map-result" id="storeMapResult" aria-live="polite" data-map-i18n="searchHint">브랜드명을 입력하면 해당 진열 구역이 강조됩니다.</p>
-      <div class="store-map-brand-picker"><div class="store-map-popular"><strong data-map-i18n="popularBrands">자주 찾는 브랜드</strong><div class="store-map-chip-row" id="storeMapPopularBrands"></div></div><details class="store-map-all-brands"><summary data-map-i18n="allBrands">전체 브랜드 보기</summary><div class="store-map-chip-grid" id="storeMapAllBrands"></div></details></div>
-      <div class="store-map-viewport" id="storeMapViewport" tabindex="0" aria-label="블루블랙 펜샵 내부 지도" data-map-i18n-aria="mapAria"><div class="store-map-canvas" id="storeMapCanvas"><object id="storeMapObject" type="image/svg+xml" data="./store-map.svg" aria-label="블루블랙 펜샵 내부 브랜드 위치도" data-map-i18n-aria="mapAria"><img src="./store-map.svg" alt="블루블랙 펜샵 내부 브랜드 위치도" /></object></div></div>
-      <div class="store-map-legend" aria-label="지도 범례" data-map-i18n-aria="legendAria"><span><i class="legend-brand"></i><b data-map-i18n="legendBrand">브랜드 진열</b></span><span><i class="legend-table"></i><b data-map-i18n="legendTable">테이블·체험</b></span><span><i class="legend-service"></i><b data-map-i18n="legendService">카운터·출입구</b></span></div>
-      <p class="store-map-note" data-map-i18n="note">브랜드 진열 위치는 매장 운영과 입고 상황에 따라 변경될 수 있습니다.</p>
     </section>
 
     <section class="detail-card">
@@ -133,12 +106,10 @@
 
   <script type="module" src="../src/portal.js"></script>
   <script type="module" src="../src/official-portal-addon.js"></script>
-  <script type="module" src="../src/store-map.js?v=23"></script>
-  <script type="module" src="../src/store-map-foreign-v20.js"></script>
   <script type="module" src="../src/store-address-addon.js?v=4"></script>
-  <script type="module" src="../src/store-map-live.js?v=6"></script>
-  <script type="module" src="../src/store-tour-public-v26.js?v=27"></script>
-  <script type="module" src="../src/store-guide-experience-v26.js?v=26"></script>
+  <script type="module" src="../src/store-map-live.js?v=7"></script>
+  <script type="module" src="../src/store-tour-public-v28.js?v=28"></script>
+  <script type="module" src="../src/store-guide-experience-v28.js?v=28"></script>
   <script>
     (function(){
       var tabs=[].slice.call(document.querySelectorAll('[data-merged-floor]'));
