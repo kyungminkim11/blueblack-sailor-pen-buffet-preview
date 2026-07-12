@@ -1,5 +1,6 @@
 export function publicTourShell(root, copy) {
   root.innerHTML = `
+    <link rel="stylesheet" href="./store-guide-roadview-v28-fix.css?v=28" data-roadview-fix="28" />
     <div class="store-tour-heading">
       <div>
         <small>360 STORE TOUR</small>
