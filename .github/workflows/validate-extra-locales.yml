@@ -4,9 +4,12 @@ on:
   push:
     branches: [main]
     paths:
+      - 'index.html'
       - 'src/public-ui-v52.js'
       - 'src/public-extra-locales-v53.js'
       - 'src/public-extra-locales-v54.js'
+      - 'src/as-guide.js'
+      - 'src/news-portal.js'
       - 'scripts/validate-public-ui.mjs'
       - 'scripts/audit-responsive.mjs'
       - 'sw.js'
@@ -29,6 +32,8 @@ jobs:
           node --check src/public-ui-v52.js
           node --check src/public-extra-locales-v53.js
           node --check src/public-extra-locales-v54.js
+          node --check src/as-guide.js
+          node --check src/news-portal.js
           node --check scripts/validate-public-ui.mjs
           node --check scripts/audit-responsive.mjs
           node --check sw.js
