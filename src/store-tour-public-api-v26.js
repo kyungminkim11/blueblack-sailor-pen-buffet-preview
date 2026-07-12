@@ -28,7 +28,7 @@ export function mergeSpots(remote, available = true) {
 
   const merged = SPOTS.map((baseSpot) => {
     const remoteSpot = remoteById.get(baseSpot.id);
-    if (!remoteSpot) return structuredClone(baseSpot);
+    if (!remoteSpot) return available ? null : structuredClone(baseSpot);
     const item = {
       ...baseSpot,
       ...remoteSpot,
@@ -41,7 +41,7 @@ export function mergeSpots(remote, available = true) {
     item.code = usableText(remoteSpot.code) || baseSpot.code;
     item.sortOrder = Number.isFinite(Number(remoteSpot.sortOrder)) ? Number(remoteSpot.sortOrder) : baseSpot.sortOrder;
     return item;
-  }).filter(canRenderSpot).sort((a, b) => a.sortOrder - b.sortOrder);
+  }).filter(Boolean).filter(canRenderSpot).sort((a, b) => a.sortOrder - b.sortOrder);
 
   return removeUnavailableConnections(merged);
 }
