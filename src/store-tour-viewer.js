@@ -29,15 +29,31 @@ function makeProgram(gl) {
 
 export function createPanoramaViewer(root) {
   root.classList.add('store-tour-panorama');
-  root.innerHTML = '<canvas aria-label="360도 매장 사진"></canvas><div class="store-tour-loading">360 사진을 불러오는 중입니다.</div><div class="store-tour-view-controls"><button type="button" data-view="left" aria-label="왼쪽으로 보기">←</button><button type="button" data-view="right" aria-label="오른쪽으로 보기">→</button><button type="button" data-view="in" aria-label="확대">＋</button><button type="button" data-view="out" aria-label="축소">−</button><button type="button" data-view="reset">정면</button></div>';
+  root.innerHTML = `
+    <canvas aria-label="360도 매장 사진"></canvas>
+    <div class="store-tour-loading" role="status" aria-live="polite">
+      <span class="tour-loading-spinner" aria-hidden="true"></span>
+      <strong>360 사진을 불러오는 중입니다.</strong>
+      <small>사진 용량에 따라 잠시 걸릴 수 있습니다.</small>
+    </div>
+    <div class="store-tour-view-controls" aria-label="360 화면 조작">
+      <button type="button" data-view="in" aria-label="확대">＋</button>
+      <button type="button" data-view="out" aria-label="축소">−</button>
+      <button type="button" data-view="reset" aria-label="정면으로 초기화">정면</button>
+    </div>
+  `;
 
   const canvas = root.querySelector('canvas');
   const loading = root.querySelector('.store-tour-loading');
+  const loadingTitle = loading.querySelector('strong');
+  const loadingCopy = loading.querySelector('small');
   const gl = canvas.getContext('webgl', { antialias: true, alpha: false });
 
   if (!gl) {
-    loading.textContent = '이 브라우저에서는 360 뷰어를 사용할 수 없습니다.';
-    return { setSource: async () => false, reset() {} };
+    loadingTitle.textContent = '이 브라우저에서는 360 뷰어를 사용할 수 없습니다.';
+    loadingCopy.textContent = '최신 Chrome, Edge 또는 Safari에서 다시 열어 주세요.';
+    root.classList.add('is-error');
+    return { setSource: async () => false, reset() {}, render() {} };
   }
 
   const program = makeProgram(gl);
@@ -105,10 +121,15 @@ export function createPanoramaViewer(root) {
 
   async function setSource(source, alt = '360도 매장 사진') {
     const current = ++token;
+    root.classList.add('is-loading');
+    root.classList.remove('is-error', 'is-ready');
     loading.hidden = false;
-    loading.textContent = '360 사진을 불러오는 중입니다.';
+    loadingTitle.textContent = '360 사진을 불러오는 중입니다.';
+    loadingCopy.textContent = '다음 위치 사진도 함께 준비하고 있습니다.';
+
     const image = new Image();
     image.crossOrigin = 'anonymous';
+    image.decoding = 'async';
     const loaded = await new Promise((resolve) => {
       image.onload = () => resolve(true);
       image.onerror = () => resolve(false);
@@ -117,22 +138,31 @@ export function createPanoramaViewer(root) {
 
     if (current !== token) return false;
     if (!loaded || !image.naturalWidth) {
+      root.classList.remove('is-loading');
+      root.classList.add('is-error');
       loading.hidden = false;
-      loading.textContent = '360 사진을 불러오지 못했습니다.';
+      loadingTitle.textContent = '360 사진을 불러오지 못했습니다.';
+      loadingCopy.textContent = '아래 다시 불러오기 버튼을 눌러 주세요.';
       return false;
     }
 
-    if (texture) gl.deleteTexture(texture);
-    texture = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, texture);
+    const nextTexture = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, nextTexture);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, image);
+
+    if (texture) gl.deleteTexture(texture);
+    texture = nextTexture;
     canvas.setAttribute('aria-label', alt);
-    loading.hidden = true;
     reset();
+    render();
+
+    loading.hidden = true;
+    root.classList.remove('is-loading', 'is-error');
+    root.classList.add('is-ready');
     return true;
   }
 
@@ -141,6 +171,7 @@ export function createPanoramaViewer(root) {
     previousX = event.clientX;
     previousY = event.clientY;
     canvas.setPointerCapture?.(event.pointerId);
+    canvas.classList.add('is-dragging');
   });
   canvas.addEventListener('pointermove', (event) => {
     if (!dragging) return;
@@ -151,7 +182,10 @@ export function createPanoramaViewer(root) {
     clamp();
     render();
   });
-  const stopDragging = () => { dragging = false; };
+  const stopDragging = () => {
+    dragging = false;
+    canvas.classList.remove('is-dragging');
+  };
   canvas.addEventListener('pointerup', stopDragging);
   canvas.addEventListener('pointercancel', stopDragging);
   canvas.addEventListener('wheel', (event) => {
@@ -164,8 +198,6 @@ export function createPanoramaViewer(root) {
   root.addEventListener('click', (event) => {
     const action = event.target.closest('[data-view]')?.dataset.view;
     if (!action) return;
-    if (action === 'left') yaw -= 0.3;
-    if (action === 'right') yaw += 0.3;
     if (action === 'in') fov -= 0.12;
     if (action === 'out') fov += 0.12;
     if (action === 'reset') reset();
@@ -174,5 +206,5 @@ export function createPanoramaViewer(root) {
   });
 
   new ResizeObserver(render).observe(root);
-  return { setSource, reset };
+  return { setSource, reset, render };
 }
