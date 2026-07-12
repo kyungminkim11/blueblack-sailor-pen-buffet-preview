@@ -30,7 +30,7 @@ jobs:
             cp "$file" "$temp_file"
             node --check "$temp_file"
             rm -f "$temp_file"
-          done < <(find . -type f -name '*.js' -not -path './node_modules/*' -print0)
+          done < <(find . -type f \( -name '*.js' -o -name '*.mjs' \) -not -path './node_modules/*' -print0)
 
       - name: Check required public pages
         shell: bash
