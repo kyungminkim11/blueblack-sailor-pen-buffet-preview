@@ -40,7 +40,16 @@ function installBrandExplorer(){
   explorer.querySelectorAll('[data-brand-value]').forEach(button=>button.addEventListener('click',()=>selectBrand(button.dataset.brandValue||'')));
 }
 
-function selectBrand(value){if(!input)return;input.value=value;renderAs();input.focus({preventScroll:true});document.querySelector('#asCenterGrid')?.scrollIntoView({behavior:'smooth',block:'start'});}
+function notifySearchChange(){input?.dispatchEvent(new Event('input',{bubbles:true}));}
+function selectBrand(value){
+  if(!input)return;
+  input.value=value;
+  allBrandsOpen=false;
+  renderBrandExplorer();
+  notifySearchChange();
+  input.focus({preventScroll:true});
+  document.querySelector('#asCenterGrid')?.scrollIntoView({behavior:'smooth',block:'start'});
+}
 
 function renderBrandExplorer(){
   const t=asCopy[asLang()]||asCopy.ko;
@@ -78,10 +87,13 @@ function applyAsLanguage(){
   renderAs();
 }
 
+function removeLegacyVerifiedBadge(){document.querySelector('.as-source-card>.bb-verified-date')?.remove();}
+
 installPenBuffetGuide();
 installBrandExplorer();
 input?.addEventListener('input',renderAs);
-clearButton?.addEventListener('click',()=>{if(input){input.value='';renderAs();input.focus();}});
+clearButton?.addEventListener('click',()=>{if(input){input.value='';notifySearchChange();input.focus();}});
 document.querySelectorAll('[data-as-quick]').forEach(button=>button.addEventListener('click',()=>selectBrand(button.dataset.asQuick||'')));
 document.querySelectorAll('[data-portal-lang]').forEach(button=>button.addEventListener('click',()=>queueMicrotask(applyAsLanguage)));
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',()=>setTimeout(removeLegacyVerifiedBadge,0),{once:true});else setTimeout(removeLegacyVerifiedBadge,0);
 applyAsLanguage();
