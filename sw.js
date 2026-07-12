@@ -1,4 +1,4 @@
-const CACHE_NAME = 'blueblack-store-guide-v40-20260711';
+const CACHE_NAME = 'blueblack-store-guide-v41-20260712';
 const BASE = new URL('./', self.location.href);
 const CORE_PATHS = [
   './',
@@ -83,6 +83,8 @@ const CORE_PATHS = [
   './sitemap.xml',
   './src/public-ui-v52.js',
   './src/public-ui-v52.css',
+  './src/global-ux-v60.js',
+  './src/global-ux-v60.css',
   './src/portal-mobile-app.js?v=4',
   './src/portal-mobile-app.css?v=4',
   './src/public-extra-locales-v53.js',
@@ -120,6 +122,7 @@ const CORE_PATHS = [
   './src/app-v12.js',
   './src/data.js',
   './src/pen-model.js',
+  './src/pen-model-glb-v60.js',
   './src/nib-feed.js',
   './src/i18n-v3.js',
   './src/i18n-v9.js',
@@ -170,7 +173,8 @@ async function networkFirst(request) {
     if (response.ok || response.type === 'opaque') cache.put(request, response.clone());
     return response;
   } catch {
-    const cached = await cache.match(request, { ignoreSearch: request.mode === 'navigate' });
+    const sameOrigin = new URL(request.url).origin === self.location.origin;
+    const cached = await cache.match(request, { ignoreSearch: sameOrigin });
     if (cached) return cached;
     if (request.mode === 'navigate') return cache.match(new URL('./index.html', BASE).href);
     throw new Error('Offline resource unavailable');
