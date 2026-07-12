@@ -43,6 +43,13 @@ for(const file of baseTranslationFiles){
   }
 }
 
+for(const file of ['src/as-guide.js','src/news-portal.js']){
+  const source=await readFile(file,'utf8');
+  for(const locale of allLocales){
+    if(!source.includes(locale))failures.push(`${file}: missing dynamic locale ${locale}`);
+  }
+}
+
 const extraData=await readFile('src/public-extra-locales-v53.js','utf8');
 const extraRuntime=await readFile('src/public-extra-locales-v54.js','utf8');
 for(const locale of extraLocales){
@@ -78,6 +85,13 @@ for(const file of sharedEntryFiles){
   const source=await readFile(file,'utf8');
   if(!source.includes('public-ui-v52.js'))failures.push(`${file}: does not import shared public UI`);
 }
+
+const home=await readFile('index.html','utf8');
+if(home.includes('인스타그램에서 자동으로 불러옵니다'))failures.push('index.html: stale automatic Instagram feed claim remains');
+const officialGuide=await readFile('official-guide/index.html','utf8');
+if(!officialGuide.includes('https://blueblack.co.kr/as'))failures.push('official-guide/index.html: current official A/S destination is missing');
+const asGuide=await readFile('as-guide/index.html','utf8');
+if(!asGuide.includes('2026년 7월 12일'))failures.push('as-guide/index.html: current official verification date is missing');
 
 if(failures.length){
   console.error('Public UI validation failed:');
