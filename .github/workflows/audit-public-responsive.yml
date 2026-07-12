@@ -13,10 +13,13 @@ on:
       - 'engraving-guide/**'
       - 'as-guide/**'
       - 'ink-price/**'
+      - 'admin.html'
+      - 'admin/**'
       - 'src/**'
       - 'qa/**'
       - 'scripts/audit-responsive.mjs'
       - 'scripts/audit-release.mjs'
+      - 'scripts/audit-admin-security.mjs'
       - 'scripts/validate-public-ui.mjs'
       - '.github/workflows/audit-public-responsive.yml'
   workflow_dispatch:
@@ -47,6 +50,8 @@ jobs:
         run: AUDIT_BASE_URL=http://127.0.0.1:4173 node scripts/audit-responsive.mjs
       - name: Test public interactions and release integrity
         run: AUDIT_BASE_URL=http://127.0.0.1:4173 node scripts/audit-release.mjs
+      - name: Test internal route access gates
+        run: AUDIT_BASE_URL=http://127.0.0.1:4173 node scripts/audit-admin-security.mjs
       - name: Test extended mobile routes and 360 controls
         run: QA_BASE_URL=http://127.0.0.1:4173 node qa/responsive-smoke.mjs
       - name: Stop local site
@@ -61,6 +66,7 @@ jobs:
           path: |
             artifacts/responsive
             artifacts/release-audit
+            artifacts/admin-security-audit
             qa-artifacts/responsive
           if-no-files-found: ignore
           retention-days: 7
