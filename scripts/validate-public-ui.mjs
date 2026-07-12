@@ -93,6 +93,13 @@ if(!officialGuide.includes('https://blueblack.co.kr/as'))failures.push('official
 const asGuide=await readFile('as-guide/index.html','utf8');
 if(!asGuide.includes('2026년 7월 12일'))failures.push('as-guide/index.html: current official verification date is missing');
 
+const tourApi=await readFile('src/store-tour-public-api-v26.js','utf8');
+for(const required of ['DEFAULT_IMAGE_IDS','available ? null','filter(Boolean)','isPublic === false','imageMode === \'hidden\'']){
+  if(!tourApi.includes(required))failures.push(`src/store-tour-public-api-v26.js: missing public tour safeguard ${required}`);
+}
+const tourImages=await readFile('src/store-tour-images-v26.js','utf8');
+if(!tourImages.includes("'f1-09'"))failures.push('src/store-tour-images-v26.js: bundled tour images are missing');
+
 if(failures.length){
   console.error('Public UI validation failed:');
   failures.forEach(item=>console.error(`- ${item}`));
