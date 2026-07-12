@@ -1,3 +1,4 @@
+import'../admin-auth.js';
 import'./audit-render.js';
 import'./audit-scanner.js';
 import'./audit-excel.js';
