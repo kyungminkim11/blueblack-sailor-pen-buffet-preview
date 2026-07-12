@@ -1,17 +1,35 @@
 import { ENDPOINT, SPOTS } from './store-tour-config.js?v=26';
 
+const DEFAULT_IMAGE_IDS = new Set(Array.from({ length: 9 }, (_, index) => `f1-${String(index + 1).padStart(2, '0')}`));
+
 function usableText(value) {
   return typeof value === 'string' && value.trim() ? value.trim() : '';
+}
+
+function canRenderSpot(spot) {
+  if (!spot || spot.isPublic === false || spot.imageMode === 'hidden') return false;
+  if (spot.imageMode === 'custom' && usableText(spot.imageUrl)) return true;
+  return DEFAULT_IMAGE_IDS.has(spot.id);
+}
+
+function removeUnavailableConnections(spots) {
+  const visibleIds = new Set(spots.map((spot) => spot.id));
+  return spots.map((spot) => ({
+    ...spot,
+    connections: Object.fromEntries(
+      Object.entries(spot.connections || {}).filter(([, targetId]) => visibleIds.has(targetId))
+    ),
+  }));
 }
 
 export function mergeSpots(remote, available = true) {
   const remoteItems = available && Array.isArray(remote) ? remote : [];
   const remoteById = new Map(remoteItems.filter((item) => item?.id).map((item) => [item.id, item]));
 
-  return SPOTS.map((baseSpot) => {
+  const merged = SPOTS.map((baseSpot) => {
     const remoteSpot = remoteById.get(baseSpot.id);
     if (!remoteSpot) return structuredClone(baseSpot);
-    const merged = {
+    const item = {
       ...baseSpot,
       ...remoteSpot,
       connections: {
@@ -19,11 +37,13 @@ export function mergeSpots(remote, available = true) {
         ...(remoteSpot.connections || {}),
       },
     };
-    merged.title = usableText(remoteSpot.title) || baseSpot.title;
-    merged.code = usableText(remoteSpot.code) || baseSpot.code;
-    merged.sortOrder = Number.isFinite(Number(remoteSpot.sortOrder)) ? Number(remoteSpot.sortOrder) : baseSpot.sortOrder;
-    return merged;
-  }).sort((a, b) => a.sortOrder - b.sortOrder);
+    item.title = usableText(remoteSpot.title) || baseSpot.title;
+    item.code = usableText(remoteSpot.code) || baseSpot.code;
+    item.sortOrder = Number.isFinite(Number(remoteSpot.sortOrder)) ? Number(remoteSpot.sortOrder) : baseSpot.sortOrder;
+    return item;
+  }).filter(canRenderSpot).sort((a, b) => a.sortOrder - b.sortOrder);
+
+  return removeUnavailableConnections(merged);
 }
 
 export async function loadPublicSpots() {
