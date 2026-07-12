@@ -14,7 +14,9 @@ on:
       - 'as-guide/**'
       - 'ink-price/**'
       - 'src/**'
+      - 'qa/**'
       - 'scripts/audit-responsive.mjs'
+      - 'scripts/audit-release.mjs'
       - 'scripts/validate-public-ui.mjs'
       - '.github/workflows/audit-public-responsive.yml'
   workflow_dispatch:
@@ -36,17 +38,29 @@ jobs:
         run: |
           npm install --no-save playwright
           npx playwright install --with-deps chromium
-      - name: Test desktop tablet and mobile layouts
+      - name: Start local site
         run: |
           python3 -m http.server 4173 > /tmp/blueblack-http.log 2>&1 &
-          SERVER_PID=$!
-          trap 'kill $SERVER_PID' EXIT
-          AUDIT_BASE_URL=http://127.0.0.1:4173 node scripts/audit-responsive.mjs
+          echo $! > /tmp/blueblack-http.pid
+          sleep 2
+      - name: Test desktop tablet and mobile layouts
+        run: AUDIT_BASE_URL=http://127.0.0.1:4173 node scripts/audit-responsive.mjs
+      - name: Test public interactions and release integrity
+        run: AUDIT_BASE_URL=http://127.0.0.1:4173 node scripts/audit-release.mjs
+      - name: Test extended mobile routes and 360 controls
+        run: QA_BASE_URL=http://127.0.0.1:4173 node qa/responsive-smoke.mjs
+      - name: Stop local site
+        if: always()
+        run: |
+          if test -f /tmp/blueblack-http.pid; then kill "$(cat /tmp/blueblack-http.pid)" || true; fi
       - name: Upload responsive screenshots
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: responsive-audit-screenshots
-          path: artifacts/responsive
+          path: |
+            artifacts/responsive
+            artifacts/release-audit
+            qa-artifacts/responsive
           if-no-files-found: ignore
           retention-days: 7
