@@ -45,9 +45,43 @@ for (const viewport of viewports) {
     page.on('pageerror', error => consoleErrors.push(error.message));
 
     let navigationError = '';
+    const interactionErrors = [];
+    let interaction = null;
     try {
       await page.goto(`${baseURL}${route}`, { waitUntil: 'domcontentloaded', timeout: 30000 });
       await page.waitForTimeout(900);
+
+      if (name === 'store-guide-tour') {
+        await page.waitForSelector('.store-tour-view-shell', { timeout: 12000 });
+        await page.waitForSelector('[data-tour-next]', { timeout: 12000 });
+        await page.locator('.store-tour-mobile-start button').click({ timeout: 1500 }).catch(() => {});
+        await page.waitForTimeout(300);
+
+        const before = (await page.locator('[data-tour-progress]').textContent())?.trim() || '';
+        const next = page.locator('[data-tour-next]');
+        const clickGeometry = await next.evaluate((element) => {
+          const rect = element.getBoundingClientRect();
+          const x = rect.left + rect.width / 2;
+          const y = rect.top + rect.height / 2;
+          const hit = document.elementFromPoint(x, y);
+          return {
+            disabled: element.disabled,
+            width: Math.round(rect.width),
+            height: Math.round(rect.height),
+            hitTag: hit?.tagName || '',
+            hitText: (hit?.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 50),
+            ownsHit: hit === element || element.contains(hit),
+          };
+        });
+        if (clickGeometry.disabled) interactionErrors.push('next location button is disabled at the first viewpoint');
+        if (!clickGeometry.ownsHit) interactionErrors.push(`next location button is covered by ${clickGeometry.hitTag}:${clickGeometry.hitText}`);
+
+        await next.click({ timeout: 3000 });
+        await page.waitForTimeout(250);
+        const after = (await page.locator('[data-tour-progress]').textContent())?.trim() || '';
+        if (before === after || !after.includes('2 / 11')) interactionErrors.push(`tour progress did not advance: ${before} -> ${after}`);
+        interaction = { before, after, clickGeometry };
+      }
     } catch (error) {
       navigationError = String(error?.message || error);
     }
@@ -99,6 +133,7 @@ for (const viewport of viewports) {
     if (!metrics.viewportMeta.includes('width=device-width')) hardErrors.push('missing responsive viewport meta');
     if (metrics.overflow > 4) hardErrors.push(`horizontal overflow ${metrics.overflow}px`);
     if (metrics.wideFixed.length) hardErrors.push(`oversized fixed/sticky element: ${JSON.stringify(metrics.wideFixed)}`);
+    hardErrors.push(...interactionErrors);
     if (hardErrors.length) failed = true;
 
     const screenshotPath = path.join(outDir, `${name}-${viewport.name}.png`);
@@ -111,6 +146,7 @@ for (const viewport of viewports) {
       route,
       viewport,
       ...metrics,
+      interaction,
       hardErrors,
       consoleErrors: consoleErrors.slice(0, 12),
     });
