@@ -1,0 +1,271 @@
+:root{
+  --bb-site-max:1240px;
+  --bb-site-gutter:28px;
+  --bb-site-gutter-mobile:16px;
+  --bb-site-line:#dce3ea;
+  --bb-site-navy:#10233f;
+  --bb-site-navy-2:#173657;
+  --bb-site-gold:#a77a3d;
+  --bb-site-muted:#667488;
+  --bb-site-soft:#f5f7fa;
+  --bb-site-radius:20px;
+  --bb-site-shadow:0 12px 34px rgba(16,35,63,.07);
+}
+
+body.bb-customer-site{
+  --bb-shell-width:min(var(--bb-site-max),calc(100% - (var(--bb-site-gutter) * 2)));
+  overflow-x:hidden;
+}
+
+body.bb-customer-site *,
+body.bb-customer-site *::before,
+body.bb-customer-site *::after{box-sizing:border-box}
+
+body.bb-customer-site .portal-header-inner,
+body.bb-customer-site .portal-main,
+body.bb-customer-site .detail-header-inner,
+body.bb-customer-site .detail-main,
+body.bb-customer-site .ink-price-main,
+body.bb-customer-site .news-topbar-inner,
+body.bb-customer-site .news-main,
+body.bb-customer-site .review-topbar-inner,
+body.bb-customer-site .review-main,
+body.bb-site-page-pen-buffet .header-inner,
+body.bb-site-page-pen-buffet > main,
+body.bb-site-page-store-map-1f .map-page,
+body.bb-site-page-guide .shell{
+  width:var(--bb-shell-width)!important;
+  max-width:var(--bb-site-max)!important;
+  margin-left:auto!important;
+  margin-right:auto!important;
+}
+
+body.bb-customer-site .portal-header,
+body.bb-customer-site .detail-header,
+body.bb-site-page-pen-buffet .app-header,
+body.bb-site-page-news .news-topbar,
+body.bb-site-page-review-event .review-topbar,
+body.bb-site-page-guide .topbar{
+  border-bottom:1px solid rgba(16,35,63,.10);
+}
+
+body.bb-customer-site .detail-header-inner,
+body.bb-site-page-pen-buffet .header-inner{
+  padding-left:0!important;
+  padding-right:0!important;
+}
+
+body.bb-site-page-news .news-topbar-inner,
+body.bb-site-page-review-event .review-topbar-inner,
+body.bb-site-page-guide .topbar-inner{
+  min-height:64px!important;
+}
+
+body.bb-customer-site .detail-card,
+body.bb-site-page-store-map-1f .map-page-card,
+body.bb-site-page-pen-buffet .viewer-card,
+body.bb-site-page-pen-buffet .control-card,
+body.bb-site-page-pen-buffet .summary-card,
+body.bb-site-page-pen-buffet .action-card,
+body.bb-site-page-pen-buffet .visit-card,
+body.bb-site-page-news .channel-card,
+body.bb-site-page-review-event .review-guide,
+body.bb-site-page-review-event .review-poster,
+body.bb-site-page-ink-price .ink-store-search-card,
+body.bb-site-page-ink-price .ink-store-list-card{
+  border-radius:var(--bb-site-radius)!important;
+}
+
+body.bb-customer-site button,
+body.bb-customer-site a[role="button"],
+body.bb-customer-site .detail-actions a,
+body.bb-customer-site .visit-actions a,
+body.bb-customer-site .review-primary-action,
+body.bb-customer-site .review-secondary-action,
+body.bb-customer-site .news-primary-link{
+  min-height:44px;
+}
+
+body.bb-customer-site button:focus-visible,
+body.bb-customer-site a:focus-visible,
+body.bb-customer-site input:focus-visible,
+body.bb-customer-site select:focus-visible,
+body.bb-customer-site textarea:focus-visible,
+body.bb-customer-site summary:focus-visible{
+  outline:3px solid rgba(167,122,61,.30)!important;
+  outline-offset:3px;
+}
+
+/* Shared customer footer */
+.bb-site-footer{
+  position:relative;
+  z-index:2;
+  margin-top:clamp(46px,7vw,84px);
+  border-top:1px solid var(--bb-site-line);
+  background:#fff;
+  color:var(--bb-site-muted);
+}
+
+.bb-site-footer__inner{
+  width:var(--bb-shell-width);
+  max-width:var(--bb-site-max);
+  margin:0 auto;
+  padding:34px 0 28px;
+}
+
+.bb-site-footer__head{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:24px;
+  padding-bottom:22px;
+  border-bottom:1px solid #edf0f3;
+}
+
+.bb-site-footer__brand small,
+.bb-site-footer__group small{
+  display:block;
+  color:var(--bb-site-gold);
+  font-size:10px;
+  font-weight:900;
+  letter-spacing:.13em;
+}
+
+.bb-site-footer__brand strong{
+  display:block;
+  margin-top:6px;
+  color:var(--bb-site-navy);
+  font-size:20px;
+  letter-spacing:-.02em;
+}
+
+.bb-site-footer__head p{
+  max-width:520px;
+  margin:0;
+  color:var(--bb-site-muted);
+  font-size:12px;
+  line-height:1.7;
+  text-align:right;
+}
+
+.bb-site-footer__grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px 32px;
+  padding:24px 0 26px;
+}
+
+.bb-site-footer__group{
+  display:grid;
+  align-content:start;
+  gap:3px;
+}
+
+.bb-site-footer__group h2{
+  margin:4px 0 8px;
+  color:var(--bb-site-navy);
+  font-size:14px;
+  letter-spacing:-.015em;
+}
+
+.bb-site-footer__group a{
+  display:flex;
+  align-items:center;
+  min-height:34px;
+  width:max-content;
+  max-width:100%;
+  color:#59697d;
+  font-size:12px;
+  font-weight:750;
+  line-height:1.4;
+  text-decoration:none;
+}
+
+.bb-site-footer__group a:hover{color:var(--bb-site-navy)}
+.bb-site-footer__group a::after{
+  content:"→";
+  margin-left:6px;
+  color:#a9b2bd;
+  font-size:10px;
+  transition:transform .18s ease;
+}
+.bb-site-footer__group a:hover::after{transform:translateX(2px)}
+
+.bb-site-footer__bottom{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  padding-top:18px;
+  border-top:1px solid #edf0f3;
+  color:#7a8796;
+  font-size:11px;
+  line-height:1.6;
+}
+
+.bb-site-footer__bottom a{
+  color:var(--bb-site-navy);
+  font-weight:850;
+  text-decoration:none;
+}
+
+.bb-site-footer__links{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:flex-end;
+  gap:6px 14px;
+}
+
+/* Make the shared footer end cleanly above the app-style bottom navigation. */
+body.bb-customer-site:has(.mobile-app-nav) .bb-site-footer{
+  padding-bottom:max(0px,env(safe-area-inset-bottom));
+}
+
+@media(max-width:900px){
+  .bb-site-footer__head{align-items:flex-start;flex-direction:column}
+  .bb-site-footer__head p{max-width:680px;text-align:left}
+  .bb-site-footer__grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:760px){
+  body.bb-customer-site{
+    --bb-shell-width:min(var(--bb-site-max),calc(100% - (var(--bb-site-gutter-mobile) * 2)));
+  }
+
+  body.bb-customer-site .portal-header-inner,
+  body.bb-customer-site .portal-main,
+  body.bb-customer-site .detail-header-inner,
+  body.bb-customer-site .detail-main,
+  body.bb-customer-site .ink-price-main,
+  body.bb-customer-site .news-topbar-inner,
+  body.bb-customer-site .news-main,
+  body.bb-customer-site .review-topbar-inner,
+  body.bb-customer-site .review-main,
+  body.bb-site-page-pen-buffet .header-inner,
+  body.bb-site-page-pen-buffet > main,
+  body.bb-site-page-store-map-1f .map-page,
+  body.bb-site-page-guide .shell{
+    width:var(--bb-shell-width)!important;
+  }
+
+  body.bb-site-page-ink-price .ink-price-main{
+    padding-left:0!important;
+    padding-right:0!important;
+  }
+
+  .bb-site-footer{margin-top:42px}
+  .bb-site-footer__inner{padding:28px 0 24px}
+  .bb-site-footer__grid{gap:14px 22px;padding:20px 0 22px}
+  .bb-site-footer__bottom{align-items:flex-start;flex-direction:column}
+  .bb-site-footer__links{justify-content:flex-start}
+}
+
+@media(max-width:520px){
+  .bb-site-footer__grid{grid-template-columns:1fr}
+  .bb-site-footer__group{padding:3px 0}
+  .bb-site-footer__brand strong{font-size:18px}
+}
+
+@media print{
+  .bb-site-footer{display:none!important}
+}
