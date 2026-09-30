@@ -1,3 +1,4 @@
+import './site-consistency-v72.js?v=72';
 const APP_ROOT=new URL('../',import.meta.url);
 const RECENT_KEY='blueblack-mobile-recents-v1';
 const INSTALL_DISMISS_KEY='blueblack-install-dismissed-at';
