@@ -100,13 +100,7 @@ for(const required of ['DEFAULT_IMAGE_IDS','available ? null','filter(Boolean)',
 const tourImages=await readFile('src/store-tour-images-v26.js','utf8');
 if(!tourImages.includes("'f1-09'"))failures.push('src/store-tour-images-v26.js: bundled tour images are missing');
 
-if(failures.length){
-  console.error('Public UI validation failed:');
-  failures.forEach(item=>console.error(`- ${item}`));
-  process.exit(1);
-}
 
-console.log(`Validated ${Object.keys(pages).length} public pages and ${allLocales.length} languages.`);
 
 const shellPages=[
   'index.html',
@@ -137,3 +131,11 @@ const siteShellCss=await readFile('src/site-consistency-v72.css','utf8');
 for(const required of ['--bb-site-max:1240px','--bb-site-gutter-mobile:16px','.bb-site-footer__grid']){
   if(!siteShellCss.includes(required))failures.push(`src/site-consistency-v72.css: shared layout rule missing ${required}`);
 }
+
+if(failures.length){
+  console.error('Public UI validation failed:');
+  failures.forEach(item=>console.error(`- ${item}`));
+  process.exit(1);
+}
+
+console.log(`Validated ${Object.keys(pages).length} public pages and ${allLocales.length} languages.`);
