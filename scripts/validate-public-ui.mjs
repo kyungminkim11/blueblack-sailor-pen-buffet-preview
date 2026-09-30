@@ -2,7 +2,7 @@ import { readFile } from 'node:fs/promises';
 
 const pages={
   'index.html':['portal.js','public-portal-copy.js'],
-  'news/index.html':['news-feed.js'],
+  'news/index.html':['news.js'],
   'review-event/index.html':['public-ui-v52.js'],
   'pen-buffet/index.html':['locale-ui-v10.js'],
   'store-guide/index.html':['portal.js','store-address-addon.js'],
@@ -74,7 +74,7 @@ if(!ui.includes('public-extra-locales-v54.js'))failures.push('src/public-ui-v52.
 const sharedEntryFiles=[
   'src/portal.js',
   'src/public-portal-copy.js',
-  'news/news-feed.js',
+  'news/news.js',
   'src/locale-ui-v10.js',
   'src/store-address-addon.js',
   'src/official-guide-i18n-v50.js',
@@ -107,3 +107,33 @@ if(failures.length){
 }
 
 console.log(`Validated ${Object.keys(pages).length} public pages and ${allLocales.length} languages.`);
+
+const shellPages=[
+  'index.html',
+  'as-guide/index.html',
+  'engraving-guide/index.html',
+  'guide/index.html',
+  'news/index.html',
+  'official-guide/index.html',
+  'pen-buffet/index.html',
+  'review-event/index.html',
+  'store-guide/index.html',
+  'store-map-1f/index.html'
+];
+for(const page of shellPages){
+  const html=await readFile(page,'utf8');
+  if(!html.includes('portal-mobile-app.js'))failures.push(`${page}: shared customer shell entry is missing`);
+}
+const inkShell=await readFile('ink-price/index.html','utf8');
+if(!inkShell.includes('site-consistency-v72.js'))failures.push('ink-price/index.html: shared customer shell entry is missing');
+
+const mobileShell=await readFile('src/portal-mobile-app.js','utf8');
+if(!mobileShell.includes('site-consistency-v72.js'))failures.push('src/portal-mobile-app.js: site consistency module is not connected');
+const siteShell=await readFile('src/site-consistency-v72.js','utf8');
+for(const required of ['bb-customer-site','bb-site-footer','site-consistency-v72.css']){
+  if(!siteShell.includes(required))failures.push(`src/site-consistency-v72.js: shared customer shell missing ${required}`);
+}
+const siteShellCss=await readFile('src/site-consistency-v72.css','utf8');
+for(const required of ['--bb-site-max:1240px','--bb-site-gutter-mobile:16px','.bb-site-footer__grid']){
+  if(!siteShellCss.includes(required))failures.push(`src/site-consistency-v72.css: shared layout rule missing ${required}`);
+}
